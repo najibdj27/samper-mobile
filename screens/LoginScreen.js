@@ -3,12 +3,15 @@ import { KeyboardAvoidingView } from "react-native";
 import { Button, Text, TextInput  } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Pressable } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
 function LoginScreen(){
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [isPasswordInvisible, setIsPasswordInvisible] = React.useState(true);
     const [iconEye, setIconEye] = React.useState("eye");
+
+    const navigation = useNavigation();
 
     const handleEyePressed = () => {
         if (isPasswordInvisible == true && iconEye === "eye") {
@@ -30,7 +33,6 @@ function LoginScreen(){
                 placeholder='Input your username here'
                 value={username}
                 mode='outlined'
-                underlineColor='blue'
                 activeOutlineColor='#02a807'
                 style={styles.form}
                 outlineStyle={{borderRadius:16}}
@@ -41,7 +43,6 @@ function LoginScreen(){
                 placeholder='Input your password here'
                 value={password}
                 mode='outlined'
-                underlineColor='blue'
                 activeOutlineColor='#02a807'
                 style={styles.form}
                 right={<TextInput.Icon icon={iconEye} onPress={() => {handleEyePressed()}} />}
@@ -49,7 +50,13 @@ function LoginScreen(){
                 onChangeText={text => setPassword(text)}
                 secureTextEntry={isPasswordInvisible}
             />
-            <Pressable style={{alignSelf: 'flex-end', marginEnd: 70}}>
+            <Pressable 
+                style={{
+                    alignSelf: 'flex-end', 
+                    marginEnd: 70
+                }}
+                onPress={() => navigation.navigate("ForgetPassword")}
+            >
                 <Text style={styles.forgetText}>
                     Forget your password?
                 </Text>
@@ -59,8 +66,8 @@ function LoginScreen(){
                 mode="contained" 
                 style={styles.button} 
                 contentStyle={styles.buttonContent} 
-                buttonColor="#02a807"
-                onPress={() => navigation.navigate("Login")}
+                buttonColor="#03913E"
+                onPress={() => navigation.navigate("Main")}
                 labelStyle={{
                     fontSize: 18, 
                     fontWeight: "bold"
