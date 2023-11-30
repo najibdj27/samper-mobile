@@ -21,7 +21,7 @@ function StartScreen() {
                 mode="contained" 
                 style={styles.button} 
                 contentStyle={styles.buttonContent} 
-                buttonColor="#02a807"
+                buttonColor="#03913E"
                 onPress={() => navigation.navigate("Login")}
                 labelStyle={{
                     fontSize: 18, 
