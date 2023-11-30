@@ -29,13 +29,13 @@ const MainScreen = () => {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
-      activeColor='#03913E'
+      activeColor='#F8C301'
+      inactiveColor='white'
       sceneAnimationType='shifting'
       barStyle={{
-        backgroundColor: '#F8C301',
+        backgroundColor: '#D8261D',
       }}
       style={{
-        backgroundColor: '#e3e1e1'
       }}
     />
   );
