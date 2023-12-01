@@ -4,10 +4,11 @@ export default [
         lectureName: 'Missi Hikmatyar M.Si',
         subjectName: 'Rekayasa Perangkat Lunak',
         date: '30 November 2023',
-        timeStart: '8:00',
+        timeStart: '08:00',
         timeEnd: '10:00',
-        clockIn: '',
-        clockout: ''
+        clockIn: '08:00',
+        clockOut: '10:00',
+        isActive: false
     },
     {
         id: 2,
@@ -17,7 +18,8 @@ export default [
         timeStart: '10:00',
         timeEnd: '12:00',
         clockIn: '',
-        clockout: ''
+        clockOut: '',
+        isActive: true
     },
     {
         id: 3,
@@ -27,7 +29,8 @@ export default [
         timeStart: '13:00',
         timeEnd: '14:30',
         clockIn: '',
-        clockout: ''
+        clockOut: '',
+        isActive: false
     },
     {
         id: 4,
@@ -37,6 +40,7 @@ export default [
         timeStart: '15:00',
         timeEnd: '17:00',
         clockIn: '',
-        clockout: ''
+        clockOut: '',
+        isActive: false
     },
 ];

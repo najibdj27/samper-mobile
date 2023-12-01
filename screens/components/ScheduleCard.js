@@ -1,41 +1,34 @@
-import { StyleSheet } from "react-native";
-import { View, SafeAreaView, useWindowDimensions } from "react-native";
-import { Surface, Button, SegmentedButtons, Text, Divider } from "react-native-paper";
+import { View, SafeAreaView, useWindowDimensions, Image, StyleSheet } from "react-native";
+import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } from "react-native-paper";
 
-const ScheduleCard = () => {
+const ScheduleCard = ({item}) => {
     const { width } = useWindowDimensions();
+    const freeClassImg = require("../../assets/students_09.jpg");
 
-    return (
-        <View style={[styles.container, {width}]}>
-            {/* Inactive class/schedule */}
+    const todayClassAvailable = 
             <Surface style={styles.bannerView} elevation={1} >
                 <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
-                    <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={true} style={{width: 180}} labelStyle={[styles.bannerLectureText, styles.disabledText]} onPress={() => console.log('Pressed')}>
-                        Missi Hikmayat M.Si
+                    <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} style={{width: 180}} labelStyle={[styles.bannerLectureText, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
+                        {item.lectureName}
                     </Button>
-                    <Text style={[styles.bannerSubjectText, styles.disabledText]}>
-                        Rekayasa Perangkat Lunak
+                    <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey"}]}>
+                        {item.subjectName}
                     </Text>
-                    <Text style={[styles.bannerTimeText, styles.disabledText]}>
-                        29 November 2023 | 08:00 - 11:00
+                    <Text style={[styles.bannerTimeText, {color: item.isActive? "black" : "grey"}]}>
+                        {item.date} | {item.timeStart} - {item.timeEnd}
                     </Text>
                     <SafeAreaView style={{marginVertical: 7, alignSelf: "center"}}>
-                        {/* <Text style={[{fontWeight: "bold", fontSize: 24}, styles.disabledText]}>
-                            08:04 | 11:06
-                        </Text> */}
                         <SegmentedButtons
-                            // value={value}
-                            // onValueChange={setValue}
                             style={{alignSelf: "center", width: 200}}
                             buttons={[
                             {
                                 value: 'walk',
-                                label: '08:03',
+                                label: item.clockIn == ''? '~' : item.clockIn,
                                 disabled: true
                             },
                             {
                                 value: 'train',
-                                label: '11:02',
+                                label: item.clockOut == ''? '~' : item.clockOut,
                                 disabled: true
                             }
                             ]}
@@ -44,14 +37,40 @@ const ScheduleCard = () => {
                     <Divider />
                 </View>
                 <View style={{position: "absolute", bottom: 0, flexDirection: "row", marginVertical: 5}}>
-                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={true} style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
                         Clock In
                     </Button>
-                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={true} style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockOut == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
                         Clock Out
                     </Button>
                 </View>
             </Surface>
+        
+    const loadingClass = 
+            <Surface style={[styles.bannerView, {justifyContent: "center", alignItems: "center"}]} elevation={1}>
+                <View style={{alignSelf: "flex-start", paddingTop: 70, width: "100%"}}>
+                    <ActivityIndicator color="#D8261D" size={"large"} />
+                </View>
+            </Surface>
+
+    const todayClassUnavailable =
+        <Surface style={[styles.bannerView, {justifyContent: "center", alignItems: "center"}]} elevation={1}>
+            <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%" }}>
+                <Image source={freeClassImg} style={{height: 150, width: 200, alignSelf: "center"}}>
+
+                </Image>
+                <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold"}}>
+                    No class today!
+                </Text>
+            </View>
+        </Surface>
+    
+
+    return (
+        <View style={[styles.container, {width}]}>
+            {
+                item? loadingClass : todayClassUnavailable
+            }
         </View>
     );
 }
@@ -64,14 +83,14 @@ const styles = StyleSheet.create({
         height:250
     },
     bannerView: {
-        flexDirection: "row", 
-        backgroundColor: "#fff", 
+        flexDirection: "row",
+        backgroundColor: "#fff",
         paddingHorizontal: 20,
         justifyContent: "center",
         height: 200,
         marginVertical: 5,
         marginHorizontal: 10,
-        borderRadius: 30,
+        borderRadius: 30
     },
     bannerButton: {
         marginHorizontal: 5,
@@ -91,11 +110,8 @@ const styles = StyleSheet.create({
     bannerLectureText:{
         // alignSelf: "flex-end",
         color: 'black',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: "bold"
-    },
-    disabledText:{
-        color: 'grey'
     },
 })
 
