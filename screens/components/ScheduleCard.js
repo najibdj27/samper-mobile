@@ -1,5 +1,6 @@
 import { View, SafeAreaView, useWindowDimensions, Image, StyleSheet } from "react-native";
 import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } from "react-native-paper";
+import Skeleton from "./Skeleton";
 
 const ScheduleCard = ({item}) => {
     const { width } = useWindowDimensions();
@@ -8,7 +9,7 @@ const ScheduleCard = ({item}) => {
     const todayClassAvailable = 
             <Surface style={styles.bannerView} elevation={1} >
                 <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
-                    <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} style={{width: 180}} labelStyle={[styles.bannerLectureText, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
+                    <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={{width: 180, height:40}} style={{width: 180, borderRadius: 8, padding: 0}} labelStyle={[styles.bannerLectureText, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
                         {item.lectureName}
                     </Button>
                     <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey"}]}>
@@ -47,11 +48,20 @@ const ScheduleCard = ({item}) => {
             </Surface>
         
     const loadingClass = 
-            <Surface style={[styles.bannerView, {justifyContent: "center", alignItems: "center"}]} elevation={1}>
-                <View style={{alignSelf: "flex-start", paddingTop: 70, width: "100%"}}>
-                    <ActivityIndicator color="#D8261D" size={"large"} />
-                </View>
-            </Surface>
+    <Surface style={styles.bannerView} elevation={1} >
+        <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
+            <Skeleton width={180} height={40} style={{ borderRadius: 8 }} />
+            <Skeleton width={300} height={22} style={{ borderRadius: 8, marginVertical: 5 }} />
+            <Skeleton width={250} height={16} style={{ borderRadius: 8, marginVertical: 3 }} />
+            <SafeAreaView style={{marginVertical: 7, alignSelf: "center"}}>
+                <Skeleton width={200} height={40} style={{ borderRadius: 20, marginTop: 0}} />
+            </SafeAreaView>
+        </View>
+        <View style={{position: "absolute", bottom: 0, flexDirection: "row", marginVertical: 5}}>
+            <Skeleton width={120} height={40} style={{ borderRadius: 20, marginTop: 5, marginHorizontal: 5, bottom: 0}} />
+            <Skeleton width={120} height={40} style={{ borderRadius: 20, marginTop: 5, marginHorizontal: 5, bottom: 0}} />
+        </View>
+    </Surface>
 
     const todayClassUnavailable =
         <Surface style={[styles.bannerView, {justifyContent: "center", alignItems: "center"}]} elevation={1}>
@@ -110,7 +120,7 @@ const styles = StyleSheet.create({
     bannerLectureText:{
         // alignSelf: "flex-end",
         color: 'black',
-        fontSize: 12,
+        fontSize:12,
         fontWeight: "bold"
     },
 })
