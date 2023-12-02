@@ -2,17 +2,30 @@ import { Pressable, ScrollView, StyleSheet, View, StatusBar, FlatList, Animated 
 import { Text, Avatar, List, Divider } from "react-native-paper";
 import ScheduleCard from "./components/ScheduleCard";
 import schedule from "../data/schedule";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Paginator from "./components/Paginator";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [scheduleData, setScheduleData] = useState({data: []});
+    const [isLoading, setIsLoading] = useState(true);
+
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
 
     const viewableItemChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
     }).current;
+
+    const loadScheduleData = () => {
+        setScheduleData(schedule);
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
+        setTimeout(loadScheduleData, 3000);
+        console.log(scheduleData)
+    }, [])
 
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
@@ -36,13 +49,20 @@ function HomeScreen() {
                 Today's Schedule
             </Text>
             <FlatList 
-                data={schedule}
-                renderItem={({item}) => <ScheduleCard item={item} />}
+                data={scheduleData.data}
+                renderItem={({item}) => <ScheduleCard item={item} isEmpty={false} isLoading={false}/>}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
+                ListEmptyComponent={(index) => {
+                    if (isLoading) {
+                        return <ScheduleCard isEmpty={false} isLoading={true} />
+                    }else{
+                        return <ScheduleCard isEmpty={true} />
+                    }
+                }}
                 bounces={false}
-                keyExtractor={(item) => item.id}
+                // keyExtractor={(item, index) => index.toString()}
                 scrollEventThrottle={32}
                 onViewableItemsChanged={viewableItemChanged}
                 viewabilityConfig={viewConfig}
@@ -52,7 +72,7 @@ function HomeScreen() {
                 ref={slidesRef}
             />
             <Paginator 
-                data={schedule}
+                data={scheduleData.data}
                 scrollX={scrollX}
             />
             {/* History Section */}
