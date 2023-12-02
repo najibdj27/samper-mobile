@@ -1,10 +1,10 @@
 import { View } from "react-native";
+import ComingSoon from "./components/ComingSoon";
 
 const NotificationScreen = () => {
+    const notificationComingSoonImg = require("../assets/19245722_6101668.jpg")
     return (
-        <View>
-
-        </View>
+        <ComingSoon imageSource={notificationComingSoonImg} />
     );
 }
 
