@@ -1,13 +1,16 @@
 import { Pressable, ScrollView, StyleSheet, View, StatusBar, FlatList, Animated } from "react-native";
 import { Text, Avatar, List, Divider } from "react-native-paper";
 import ScheduleCard from "./components/ScheduleCard";
-import schedule from "../data/schedule";
 import { useRef, useState, useEffect } from "react";
 import Paginator from "./components/Paginator";
+import History from "./components/History";
+import schedule from "../data/schedule";
+import history from "../data/history"
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [scheduleData, setScheduleData] = useState({data: []});
+    const [presenceHistory, setPresenceHistory] = useState([{data: []}, {isLoading:true}])
     const [isLoading, setIsLoading] = useState(true);
 
     const scrollX = useRef(new Animated.Value(0)).current;
@@ -16,21 +19,32 @@ function HomeScreen() {
     const viewableItemChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
     }).current;
-
+    
     const loadScheduleData = () => {
         setScheduleData(schedule);
         setIsLoading(false);
+        console.log("schedule after: " + JSON.stringify(scheduleData.data))
+    }
+
+    const loadPresenceHistory = () => {
+        let newArr = [...presenceHistory]
+        newArr[0] = history
+        newArr[1].isLoading = false
+        setPresenceHistory(newArr)
+        console.log("presence after: " + JSON.stringify(presenceHistory[0].data))
     }
 
     useEffect(() => {
         setTimeout(loadScheduleData, 3000);
-        console.log(scheduleData)
+        setTimeout(loadPresenceHistory, 2000);
+        console.log("schedule before: " + JSON.stringify(scheduleData.data))
+        console.log("presence before: " + JSON.stringify(presenceHistory[0].data))
     }, [])
 
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     return (
-        <ScrollView style={styles.navbarContainer} >
+        <ScrollView style={styles.navbarContainer} showsVerticalScrollIndicator={false}>
             <StatusBar 
                 backgroundColor={'#D8261D'}
                 animated={true}
@@ -54,7 +68,7 @@ function HomeScreen() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
-                ListEmptyComponent={(index) => {
+                ListEmptyComponent={() => {
                     if (isLoading) {
                         return <ScheduleCard isEmpty={false} isLoading={true} />
                     }else{
@@ -62,7 +76,6 @@ function HomeScreen() {
                     }
                 }}
                 bounces={false}
-                // keyExtractor={(item, index) => index.toString()}
                 scrollEventThrottle={32}
                 onViewableItemsChanged={viewableItemChanged}
                 viewabilityConfig={viewConfig}
@@ -79,24 +92,17 @@ function HomeScreen() {
             <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
                 History
             </Text>
-            <View style={{marginBottom: 20, padding:10, justifyContent: "center"}}>
-                <Pressable onPress={() => {console.log('History button pressed')}}>
-                    <List.Item
-                        title="Rekayasa Perangkat Lunak"
-                        description="29 November 2023 | 11:00"
-                        left={props => <List.Icon {...props} icon="clock-out" color="#D8261D" />}
-                    />
-                </Pressable>
-                <Divider />
-                <Pressable>
-                    <List.Item
-                        title="Rekayasa Perangkat Lunak"
-                        description="29 November 2023 | 08:00"
-                        left={props => <List.Icon {...props} icon="clock-in" color="#03913E" />}
-                    />
-                </Pressable>
-                <Divider />
-            </View>
+            <ScrollView style={{marginBottom: 20, padding:10, height: 270}} showsVerticalScrollIndicator={false} >
+                {
+                    presenceHistory[1].isLoading? 
+                    ( <History isLoading={true}  />) :
+                        presenceHistory[0].data.length == 0 ?
+                            (<History isEmpty={true} isLoading={false} /> ) : 
+                            presenceHistory[0].data.map((presence) => {
+                                return <History key={presence.id.toString()} item={presence} isEmpty={false} isLoading={false} />
+                            })
+                }
+            </ScrollView>
         </ScrollView>
     );
 }
@@ -104,6 +110,7 @@ function HomeScreen() {
 const styles = StyleSheet.create({
     navbarContainer: {
         flex: 1,
+        
     },
     welcomeView: {
         flexDirection: "row", 
