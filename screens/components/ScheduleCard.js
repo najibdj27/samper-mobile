@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
     bannerButton: {
         marginHorizontal: 5,
         width: 120,
-        bottom: 0
+        bottom: 0,
+        borderRadius: 8
         // alignSelf: "flex-end"
     },
     bannerSubjectText: {
