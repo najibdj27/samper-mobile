@@ -26,12 +26,12 @@ const ScheduleCard = ({item, isEmpty, isLoading}) => {
                                 buttons={[
                                 {
                                     value: 'walk',
-                                    label: item.clockIn == ''? '~' : item.clockIn,
+                                    label: item.clockIn == ''? '-' : item.clockIn,
                                     disabled: true
                                 },
                                 {
                                     value: 'train',
-                                    label: item.clockOut == ''? '~' : item.clockOut,
+                                    label: item.clockOut == ''? '-' : item.clockOut,
                                     disabled: true
                                 }
                                 ]}
