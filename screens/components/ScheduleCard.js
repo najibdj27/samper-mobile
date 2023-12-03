@@ -37,7 +37,6 @@ const ScheduleCard = ({item, isEmpty, isLoading}) => {
                                 ]}
                             />
                         </SafeAreaView>
-                        <Divider />
                     </View>
                     <View style={{position: "absolute", bottom: 0, flexDirection: "row", marginVertical: 5}}>
                         <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
