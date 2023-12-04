@@ -1,15 +1,29 @@
-import { StyleSheet, View } from 'react-native'
-import React, { useState } from 'react'
+import { FlatList, StyleSheet, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Appbar, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
 import moment from 'moment/moment'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import Request from './components/Request'
+import request from '../data/request.json'
 
 const RequestScreen = () => {
     const [chip, setChip] = useState([]);
     const [date, setDate] = useState(new Date());
+    const [requestData, setRequestData] = useState([{data: []}, {isLoading: true}])
 
     moment.suppressDeprecationWarnings = true;
+
+    useEffect(() => {
+        setTimeout(loadRequestData, 2000)
+    }, [])
+
+    const loadRequestData = () => {
+        let newArr = [...requestData]
+        newArr[0] = request
+        newArr[1].isLoading = false
+        setRequestData(newArr)
+    }
 
     const onChange = async (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -75,17 +89,27 @@ const RequestScreen = () => {
             </Appbar.Header>
             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                 {
-                    [
-                        chip.length > 0 ?
-                        chip.map((chipIcon, index) => {
-                            return <SortingChip key={index.toString()} icon={chipIcon.icon} label={chipIcon.label} onClose={() => {closeChip(chipIcon.key)}} />
-                        })
-                        : 
-                        [] 
-                        ,
-                        // console.log(chip)
-                    ]
+                    chip.length > 0 ?
+                    chip.map((chipIcon, index) => {
+                        return <SortingChip key={index.toString()} icon={chipIcon.icon} label={chipIcon.label} onClose={() => {closeChip(chipIcon.key)}} />
+                    })
+                    : 
+                    [] 
                 }
+            </View>
+            <View style={{paddingTop: 5, paddingBottom:60}}>
+                <FlatList 
+                    data={requestData[0].data}
+                    renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={() => {
+                        if (requestData[1].isLoading) {
+                            return <Request isLoading={true} isEmpty={false} />
+                        } else {
+                            return <Request isEmpty={true} />
+                        }
+                    }}
+                />
             </View>
         </View>
     )
