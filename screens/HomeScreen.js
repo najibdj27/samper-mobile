@@ -23,7 +23,6 @@ function HomeScreen() {
     const loadScheduleData = () => {
         setScheduleData(schedule);
         setIsLoading(false);
-        console.log("schedule after: " + JSON.stringify(scheduleData.data))
     }
 
     const loadPresenceHistory = () => {
@@ -31,14 +30,11 @@ function HomeScreen() {
         newArr[0] = history
         newArr[1].isLoading = false
         setPresenceHistory(newArr)
-        console.log("presence after: " + JSON.stringify(presenceHistory[0].data))
     }
 
     useEffect(() => {
         setTimeout(loadScheduleData, 3000);
         setTimeout(loadPresenceHistory, 2000);
-        console.log("schedule before: " + JSON.stringify(scheduleData.data))
-        console.log("presence before: " + JSON.stringify(presenceHistory[0].data))
     }, [])
 
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
