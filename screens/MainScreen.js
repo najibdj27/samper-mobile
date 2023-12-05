@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BottomNavigation } from 'react-native-paper';
 import HomeScreen from './HomeScreen';
-import ChatScreen from './ChatScreen';
+import MessageScreen from './MessageScreen';
 import ScheduleScreen from './ScheduleScreen';
 import RequestScreen from './RequestScreen';
 import NotificationScreen from './NotificationScreen';
@@ -9,7 +9,7 @@ import NotificationScreen from './NotificationScreen';
 const MainScreen = () => {
   const [index, setIndex] = React.useState(2);
   const [routes] = React.useState([
-    { key: 'chat', title: 'Chat', focusedIcon: 'chat', unfocusedIcon: 'chat-outline'},
+    { key: 'message', title: 'Message', focusedIcon: 'message-text', unfocusedIcon: 'message-text-outline'},
     { key: 'schedule', title: 'Schedule', focusedIcon: 'calendar-month', unfocusedIcon: 'calendar-month-outline'},
     { key: 'home', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home-outline'},
     { key: 'request', title: 'Request', focusedIcon: 'clipboard-text-clock', unfocusedIcon: 'clipboard-text-clock-outline'},
@@ -17,7 +17,7 @@ const MainScreen = () => {
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    chat: ChatScreen,
+    message: MessageScreen,
     schedule: ScheduleScreen,
     home: HomeScreen,
     request: RequestScreen,
