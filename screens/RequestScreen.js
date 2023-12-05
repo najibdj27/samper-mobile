@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet, View, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Appbar, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
@@ -11,6 +11,7 @@ const RequestScreen = () => {
     const [chip, setChip] = useState([]);
     const [date, setDate] = useState(new Date());
     const [requestData, setRequestData] = useState([{data: []}, {isLoading: true}])
+    const {height} = useWindowDimensions()
 
     moment.suppressDeprecationWarnings = true;
 
@@ -78,6 +79,14 @@ const RequestScreen = () => {
         return updatedChip
     }
 
+    const requestPaddingBottom = () => {
+        if (chip.length > 0) {
+            return {paddingTop: 5, paddingBottom:100}
+        }else {
+            return {paddingTop: 5, paddingBottom:60}
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Appbar.Header elevated={true}>
@@ -97,7 +106,7 @@ const RequestScreen = () => {
                     [] 
                 }
             </View>
-            <View style={{paddingTop: 5, paddingBottom:60}}>
+            <View style={requestPaddingBottom()}>
                 <FlatList 
                     data={requestData[0].data}
                     renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
@@ -108,6 +117,9 @@ const RequestScreen = () => {
                         } else {
                             return <Request isEmpty={true} />
                         }
+                    }}
+                    style={{
+                        height: {height}
                     }}
                 />
             </View>
