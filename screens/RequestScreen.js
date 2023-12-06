@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { Appbar, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
 import moment from 'moment/moment'
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import Request from './components/Request'
 import request from '../data/request.json'
+import { List } from 'react-native-paper'
+import Tab from './components/Tab'
 
 const RequestScreen = () => {
     const [chip, setChip] = useState([]);
@@ -87,6 +89,24 @@ const RequestScreen = () => {
         }
     }
 
+    const requestForMe = () => (
+        <FlatList 
+            data={requestData[0].data}
+            renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={() => {
+                if (requestData[1].isLoading) {
+                    return <Request isLoading={true} isEmpty={false} />
+                } else {
+                    return <Request isEmpty={true} />
+                }
+            }}
+            style={{
+                height: {height}
+            }}
+        />
+    )
+
     return (
         <View style={styles.container}>
             <Appbar.Header elevated={true}>
@@ -96,7 +116,7 @@ const RequestScreen = () => {
                 <Appbar.Action icon="sort-calendar-ascending" onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} />
                 <Appbar.Action icon="sort-calendar-descending" onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} />
             </Appbar.Header>
-            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            <View style={{flexDirection: 'row', flexWrap: 'wrap', backgroundColor: "#D8261D"}}>
                 {
                     chip.length > 0 ?
                     chip.map((chipIcon, index) => {
@@ -106,23 +126,8 @@ const RequestScreen = () => {
                     [] 
                 }
             </View>
-            <View style={requestPaddingBottom()}>
-                <FlatList 
-                    data={requestData[0].data}
-                    renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={() => {
-                        if (requestData[1].isLoading) {
-                            return <Request isLoading={true} isEmpty={false} />
-                        } else {
-                            return <Request isEmpty={true} />
-                        }
-                    }}
-                    style={{
-                        height: {height}
-                    }}
-                />
-            </View>
+            <Tab keys={["Sent", "Received"]} element={[requestForMe, requestForMe]} />
+            
         </View>
     )
 }
