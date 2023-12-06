@@ -1,6 +1,6 @@
 import { Image, StyleSheet, View, useWindowDimensions } from 'react-native'
 import React from 'react'
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import { Avatar, Badge, Button, Card, Text } from 'react-native-paper';
 import Skeleton from './Skeleton';
 import moment from 'moment';
 
@@ -40,7 +40,7 @@ const Request = ({item, isLoading, isEmpty}) => {
     }
   }
 
-  const LeftContent = props => <Avatar.Icon {...props} icon="clipboard-text-clock" color='#fff' style={statusColor(item.status)} />
+  const LeftContent = props => <Avatar.Icon {...props} icon="clipboard-text-clock" color='#fff' style={statusColor(item.status)}></Avatar.Icon>
   // 
   const RightContent = props => <Avatar.Icon {...props} icon={statusType(item.type)} color='#000' size={40} style={{backgroundColor: "rgba(0,0,0,0)"}} />
 
