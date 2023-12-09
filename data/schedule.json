@@ -8,7 +8,7 @@
                     "lectureName": "Missi Hikmatyar M.Si",
                     "timeStart": "08:00",
                     "timeEnd": "10:00",
-                    "isActive": false,
+                    "isActive": true,
                     "meetingLabel": "1",
                     "isRescheduled": false,
                     "status": true
