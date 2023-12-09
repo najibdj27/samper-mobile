@@ -4,7 +4,7 @@ import ScheduleCard from "./components/ScheduleCard";
 import { useRef, useState, useEffect } from "react";
 import Paginator from "./components/Paginator";
 import History from "./components/History";
-import schedule from "../data/schedule";
+import todaySchedule from "../data/todaySchedule";
 import history from "../data/history"
 
 function HomeScreen() {
@@ -21,7 +21,7 @@ function HomeScreen() {
     }).current;
     
     const loadScheduleData = () => {
-        setScheduleData(schedule);
+        setScheduleData(todaySchedule);
         setIsLoading(false);
     }
 
