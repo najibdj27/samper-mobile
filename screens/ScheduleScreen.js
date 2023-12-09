@@ -1,10 +1,9 @@
 import { View } from "react-native";
+import CalendarAgenda from "./components/CalendarAgenda";
 
 const ScheduleScreen = () => {
     return (
-        <View>
-
-        </View>
+        <CalendarAgenda />
     );
 }
 
