@@ -12,7 +12,6 @@ function OtpForm({setPinReady, code, setCode, maxlength}){
 
     useEffect(() => {
         Keyboard.addListener('keyboardDidHide', () => {
-            textInputRef?.current?.blur()
             setInputContainerIsFocused(false)
         })
 
