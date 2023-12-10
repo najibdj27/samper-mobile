@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 80,
+        borderRadius: 8
     },
     buttonContent: {
         fontWeight: "bold",
