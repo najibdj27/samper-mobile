@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, View, StatusBar, FlatList, Animated } from "react-native";
-import { Text, Avatar, List, Divider } from "react-native-paper";
+import { Text, Avatar, Icon } from "react-native-paper";
 import ScheduleCard from "./components/ScheduleCard";
 import { useRef, useState, useEffect } from "react";
 import Paginator from "./components/Paginator";
@@ -50,9 +50,14 @@ function HomeScreen() {
                 <Text style={styles.welcomeText}>
                     Welcome back, Najib! 
                 </Text>
-                <Pressable onPress={() => {console.log("Profile pict pressed!")}}>
-                    <Avatar.Icon size={42} icon="account" />
-                </Pressable>
+                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <Pressable onPress={() => {console.log("Setting pressed!")}} style={{marginHorizontal: 5}}>
+                        <Icon source="cog" color="#fff" size={25} />
+                    </Pressable>
+                    <Pressable style={{marginHorizontal: 5}} onPress={() => {console.log("Profile pict pressed!")}}>
+                        <Avatar.Icon size={42} icon="account" />
+                    </Pressable>
+                </View>
             </View>
             {/* Today's Schedule Section */}
             <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
