@@ -15,6 +15,9 @@ function ForgetPasswordOtpScreen(){
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
       <Image source={topImg} style={{width: 320, height: 260}} />
       <Text style={styles.headerText}>Enter your OTP</Text>
+      <Text style={styles.informationText}>
+        Please enter the 4-digits verification code that was sent to your email. The code will be valid for 10 minutes.
+      </Text>
       <OtpForm 
         setPinReady={setPinReady}
         code={code}
@@ -52,7 +55,13 @@ const styles = StyleSheet.create({
   headerText : {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20
+    marginBottom: 10
+  },
+  informationText: {
+    textAlign: "center",
+    width: "70%",
+    fontSize: 14,
+    marginVertical: 15
   },
   button: {
     alignSelf: "center",
