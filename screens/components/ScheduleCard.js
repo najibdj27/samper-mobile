@@ -9,7 +9,7 @@ const ScheduleCard = ({item, isEmpty, isLoading}) => {
     const todayClassAvailable = () => {
         return (
             <View style={[styles.container, {width}]}>
-                <Surface style={styles.bannerView} elevation={3} >
+                <Surface style={styles.bannerView} elevation={item.isActive? 3 : 1} >
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
                         <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={{width: 180, height:40}} style={{width: 180, borderRadius: 8, padding: 0}} labelStyle={[styles.bannerLectureText, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
                             {item.lectureName}
