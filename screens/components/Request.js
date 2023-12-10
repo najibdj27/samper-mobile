@@ -50,7 +50,7 @@ const Request = ({item, isLoading, isEmpty}) => {
 
   const requestAvailable = () => {
     return (
-      <Card style={{marginBottom: 10, marginHorizontal: 5, paddingEnd: 5}}>
+      <Card style={{marginVertical: 10, marginHorizontal: 5, paddingEnd: 5}}>
           <Card.Title title={item.subjectName} subtitle={`${moment(item.timestamp, "YYYY-MM-DD hh:mm").format("D MMMM YYYY | hh:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold"}} />
           <Card.Content>
               <Text variant="titleMedium">Reason</Text>

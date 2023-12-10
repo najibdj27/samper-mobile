@@ -41,7 +41,6 @@ const RequestScreen = () => {
         }else{
             setShowChip('date', 'calendar', chipDate)
         }
-        console.log("chip1: " + JSON.stringify(chip))
       };
 
     const showMode = (currentMode) => {
@@ -62,7 +61,6 @@ const RequestScreen = () => {
         }else{
             setChip([...chip, newElement])
         }
-        console.log("chip2: " + JSON.stringify(chip))
     }
 
     const closeChip = (key) => {
@@ -89,22 +87,64 @@ const RequestScreen = () => {
         }
     }
 
-    const requestForMe = () => (
-        <FlatList 
-            data={requestData[0].data}
-            renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={() => {
-                if (requestData[1].isLoading) {
-                    return <Request isLoading={true} isEmpty={false} />
-                } else {
-                    return <Request isEmpty={true} />
-                }
-            }}
-            style={{
-                height: {height}
-            }}
-        />
+    const requestSent = () => (
+        <View>
+            <View style={{flexDirection: "row"}}>
+                {
+                    chip.length > 0 ?
+                    chip.map((chipIcon, index) => {
+                        return <SortingChip key={index.toString()} icon={chipIcon.icon} label={chipIcon.label} onClose={() => {closeChip(chipIcon.key)}} />
+                    })
+                    : 
+                    [] 
+                }          
+            </View>
+            <FlatList 
+                data={requestData[0].data}
+                renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={() => {
+                    if (requestData[1].isLoading) {
+                        return <Request isLoading={true} isEmpty={false} />
+                    } else {
+                        return <Request isEmpty={true} />
+                    }
+                }}
+                style={{
+                    height: {height},
+                }}
+            />
+        </View>
+    )
+
+    const requestReceived = () => (
+        <View>
+            <View style={{flexDirection: "row"}}>
+                {
+                    chip.length > 0 ?
+                    chip.map((chipIcon, index) => {
+                        return <SortingChip key={index.toString()} icon={chipIcon.icon} label={chipIcon.label} onClose={() => {closeChip(chipIcon.key)}} />
+                    })
+                    : 
+                    [] 
+                }          
+            </View>
+            <FlatList 
+                data={requestData[0].data}
+                renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={() => {
+                    if (requestData[1].isLoading) {
+                        return <Request isLoading={true} isEmpty={false} />
+                    } else {
+                        return <Request isEmpty={true} />
+                    }
+                }}
+                style={{
+                    height: {height},
+                }}
+            />
+        </View>
     )
 
     return (
@@ -116,17 +156,7 @@ const RequestScreen = () => {
                 <Appbar.Action icon="sort-calendar-ascending" onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} />
                 <Appbar.Action icon="sort-calendar-descending" onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} />
             </Appbar.Header>
-            <View style={{flexDirection: 'row', flexWrap: 'wrap', backgroundColor: "#D8261D"}}>
-                {
-                    chip.length > 0 ?
-                    chip.map((chipIcon, index) => {
-                        return <SortingChip key={index.toString()} icon={chipIcon.icon} label={chipIcon.label} onClose={() => {closeChip(chipIcon.key)}} />
-                    })
-                    : 
-                    [] 
-                }
-            </View>
-            <Tab keys={["Sent", "Received"]} element={[requestForMe, requestForMe]} />
+            <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]} />
             
         </View>
     )
