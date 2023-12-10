@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { KeyboardAvoidingView, StyleSheet, Image } from "react-native";
+import { Pressable, StyleSheet, Image, Keyboard } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
@@ -11,7 +11,7 @@ function ForgetPasswordScreen(){
     const topImg = require("../assets/76fa4704-6ac7-4e25-bf37-68479913878f.png")
 
     return(
-        <KeyboardAvoidingView style={styles.container}>
+        <Pressable style={styles.container} onPress={Keyboard.dismiss}>
             <Image source={topImg} style={{width: 320, height: 260}} />
             <Text variant="titleLarge" style={styles.titleText}>
                 We will send OTP code to your email!
@@ -22,6 +22,8 @@ function ForgetPasswordScreen(){
                 value={email}
                 mode='outlined'
                 activeOutlineColor='#02a807'
+                inputMode='email'
+                keyboardType='email-address'
                 style={styles.form}
                 outlineStyle={{borderRadius:16}}
                 onChangeText={text => setEmail(text)}
@@ -40,7 +42,7 @@ function ForgetPasswordScreen(){
             >
                 Send OTP
             </Button>
-        </KeyboardAvoidingView>
+        </Pressable>
     );
 }
 
