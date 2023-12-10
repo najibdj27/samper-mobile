@@ -1,64 +1,65 @@
-import { useState, useRef } from 'react';
-import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
-import { TextInput } from 'react-native-paper';
-import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { Image, Keyboard, Pressable, StyleSheet, View } from "react-native";
+import { Text, Button } from "react-native-paper";
+import OtpForm from "./components/OtpForm";
+import { useState } from "react";
 
 function ForgetPasswordOtpScreen(){
-    // const [Otp1, setOtp1] = useState("");
-    // const [Otp2, setOtp2] = useState("");
-    // const [Otp3, setOtp3] = useState("");
-    // const [Otp4, setOtp4] = useState("");
-    // const [Otp5, setOtp5] = useState("");
-    // const [Otp6, setOtp6] = useState("");
 
-    // const inputRef = useRef(null)
+  const [code, setCode] = useState("")
+  const [pinReady, setPinReady] = useState(false)
+  const MAX_CODE_LENGTH = 4;
 
-    return (
-        <KeyboardAvoidingView style={styles.container}>
-            {/* <View style={{flexDirection: 'row'}}>
-            </View> */}
-            <OTPInputView
-                style={{width: '80%', height: 200}}
-                pinCount={4}
-                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                // onCodeChanged = {code => { this.setState({code})}}
-                autoFocusOnLoad
-                codeInputFieldStyle={styles.underlineStyleBase}
-                
-                codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                onCodeFilled = {(code => {
-                    console.log(`Code is ${code}, you are good to go!`)
-                })}
-            />
-        </KeyboardAvoidingView>
-    );
+  const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
+
+  return (
+    <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+      <Image source={topImg} style={{width: 320, height: 260}} />
+      <Text style={styles.headerText}>Enter your OTP</Text>
+      <OtpForm 
+        setPinReady={setPinReady}
+        code={code}
+        setCode={setCode}
+        maxlength={MAX_CODE_LENGTH} 
+      />
+      <Button 
+          icon="login" 
+          mode="contained" 
+          style={styles.button} 
+          contentStyle={styles.buttonContent} 
+          buttonColor="#03913E"
+          onPress={() => navigation.navigate("ForgetPasswordOtp")}
+          labelStyle={{
+              fontSize: 18, 
+              fontWeight: "bold"
+          }}
+          disabled={!pinReady}
+      >
+          Send OTP
+      </Button>
+    </Pressable>
+  );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    borderStyleBase: {
-        width: 30,
-        height: 45
-      },
-    
-      borderStyleHighLighted: {
-        borderColor: "#03DAC6",
-      },
-    
-      underlineStyleBase: {
-        width: 30,
-        height: 45,
-        borderWidth: 0,
-        borderBottomWidth: 1,
-      },
-    
-      underlineStyleHighLighted: {
-        borderColor: "#03DAC6",
-      },
-})
-
 export default ForgetPasswordOtpScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 30
+  },
+  headerText : {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20
+  },
+  button: {
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    borderRadius: 8,
+    marginTop: 20
+  },
+})
