@@ -34,7 +34,7 @@ function ForgetPasswordScreen(){
                 style={styles.button} 
                 contentStyle={styles.buttonContent} 
                 buttonColor="#03913E"
-                onPress={() => navigation.navigate("ForgetPasswordOtp")}
+                onPress={() => navigation.navigate("ForgetPasswordOtp", {email: email})}
                 labelStyle={{
                     fontSize: 18, 
                     fontWeight: "bold"
