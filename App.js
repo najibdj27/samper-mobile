@@ -7,6 +7,7 @@ import StartScreen from '../samper-mobile/screens/StartScreen';
 import LoginScreen from './screens/LoginScreen';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ForgetPasswordOtpScreen from './screens/ForgetPasswordOtpScreen';
+import ForgetPasswordNewPassScreen from './screens/ForgetPasswordNewPassScreen';
 import MainScreen from './screens/MainScreen';
 
 const Stack = createNativeStackNavigator();
@@ -40,6 +41,13 @@ export default function App() {
           <Stack.Screen 
             name="ForgetPasswordOtp" 
             component={ForgetPasswordOtpScreen}
+            options={{
+              headerShown: false
+            }} 
+          />
+          <Stack.Screen 
+            name="ForgetPasswordNewPass" 
+            component={ForgetPasswordNewPassScreen}
             options={{
               headerShown: false
             }} 
