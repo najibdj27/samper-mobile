@@ -33,7 +33,7 @@ function ForgetPasswordOtpScreen(){
       />
       <Pressable 
         style={{marginTop: 15}}
-        disabled={timeLeft}
+        disabled={timeLeft? true : false}
         onPress={() => {console.log("Resend otp pressed")}}
       >
           <Text style={[styles.resendOtpText, {color: `${timeLeft? "#c6c6c6" : "#02a807"}`}]}>
