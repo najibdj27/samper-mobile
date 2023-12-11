@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, View, StatusBar, FlatList, Animated } from "react-native";
 import { Text, Avatar, Icon } from "react-native-paper";
-import ScheduleCard from "./components/ScheduleCard";
 import { useRef, useState, useEffect } from "react";
+import StudentScheduleCard from "./components/StudentScheduleCard";
 import Paginator from "./components/Paginator";
 import History from "./components/History";
 import todaySchedule from "../data/todaySchedule";
@@ -65,15 +65,15 @@ function HomeScreen() {
             </Text>
             <FlatList 
                 data={scheduleData.data}
-                renderItem={({item}) => <ScheduleCard item={item} isEmpty={false} isLoading={false}/>}
+                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false}/>}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
                 ListEmptyComponent={() => {
                     if (isLoading) {
-                        return <ScheduleCard isEmpty={false} isLoading={true} />
+                        return <StudentScheduleCard isEmpty={false} isLoading={true} />
                     }else{
-                        return <ScheduleCard isEmpty={true} />
+                        return <StudentScheduleCard isEmpty={true} />
                     }
                 }}
                 bounces={false}

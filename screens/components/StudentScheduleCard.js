@@ -2,7 +2,7 @@ import { View, SafeAreaView, useWindowDimensions, Image, StyleSheet } from "reac
 import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } from "react-native-paper";
 import Skeleton from "./Skeleton";
 
-const ScheduleCard = ({item, isEmpty, isLoading}) => {
+const StudentScheduleCard = ({item, isEmpty, isLoading}) => {
     const { width } = useWindowDimensions();
     const freeClassImg = require("../../assets/students_09.jpg");
 
@@ -132,4 +132,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ScheduleCard;
+export default StudentScheduleCard;
