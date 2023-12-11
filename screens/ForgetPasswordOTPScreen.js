@@ -3,27 +3,36 @@ import { Text, Button } from "react-native-paper";
 import OtpForm from "./components/OtpForm";
 import { useEffect, useState } from "react";
 import useCountDown from "./hooks/useCountDown"
+import { useNavigation } from "@react-navigation/native";
 
-function ForgetPasswordOtpScreen(){
+function ForgetPasswordOtpScreen({route}){
 
   const [code, setCode] = useState("")
+  const [email, setEmail] = useState()
   const [pinReady, setPinReady] = useState(false)
   const MAX_CODE_LENGTH = 4;
 
+  const navigation = useNavigation()
   const {timeLeft, start} = useCountDown()
 
   const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
 
   useEffect(() => {
-    start(60)
+    setEmail(route.params.email)
+    start(30)
   }, [])
+
+  const handleOnResendOtp = () => {
+    start(30)
+    console.log(email)
+  }
 
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
       <Image source={topImg} style={{width: 320, height: 260}} />
       <Text style={styles.headerText}>Enter your OTP</Text>
       <Text style={styles.informationText}>
-        Please enter the 4-digits verification code that was sent to your email. The code will be valid for 10 minutes.
+        Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
       </Text>
       <OtpForm 
         setPinReady={setPinReady}
@@ -34,7 +43,7 @@ function ForgetPasswordOtpScreen(){
       <Pressable 
         style={{marginTop: 15}}
         disabled={timeLeft? true : false}
-        onPress={() => {console.log("Resend otp pressed")}}
+        onPress={handleOnResendOtp}
       >
           <Text style={[styles.resendOtpText, {color: `${timeLeft? "#c6c6c6" : "#02a807"}`}]}>
               Resend OTP {timeLeft? `(${timeLeft})` : ""}
@@ -46,7 +55,7 @@ function ForgetPasswordOtpScreen(){
           style={styles.button}
           contentStyle={styles.buttonContent} 
           buttonColor="#03913E"
-          onPress={() => navigation.navigate("ForgetPasswordOtp")}
+          onPress={() => navigation.navigate("ForgetPasswordNewPass", {email: email})}
           labelStyle={{
               fontSize: 18, 
               fontWeight: "bold"
