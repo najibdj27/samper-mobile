@@ -82,13 +82,14 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: "center",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center",                                   
     marginTop: 10,
     borderRadius: 8,
     marginTop: 20
   },
   resendOtpText : {
     fontSize: 16,
+    fontWeight:"bold",
     marginBottom: 20
   }
 })
