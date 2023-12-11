@@ -1,7 +1,8 @@
 import { Image, Keyboard, Pressable, StyleSheet, View } from "react-native";
 import { Text, Button } from "react-native-paper";
 import OtpForm from "./components/OtpForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useCountDown from "./hooks/useCountDown"
 
 function ForgetPasswordOtpScreen(){
 
@@ -9,7 +10,13 @@ function ForgetPasswordOtpScreen(){
   const [pinReady, setPinReady] = useState(false)
   const MAX_CODE_LENGTH = 4;
 
+  const {timeLeft, start} = useCountDown()
+
   const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
+
+  useEffect(() => {
+    start(60)
+  }, [])
 
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
@@ -24,10 +31,19 @@ function ForgetPasswordOtpScreen(){
         setCode={setCode}
         maxlength={MAX_CODE_LENGTH} 
       />
+      <Pressable 
+        style={{marginTop: 15}}
+        disabled={timeLeft}
+        onPress={() => {console.log("Resend otp pressed")}}
+      >
+          <Text style={[styles.resendOtpText, {color: `${timeLeft? "#c6c6c6" : "#02a807"}`}]}>
+              Resend OTP {timeLeft? `(${timeLeft})` : ""}
+          </Text>
+      </Pressable>
       <Button 
           icon="login" 
           mode="contained" 
-          style={styles.button} 
+          style={styles.button}
           contentStyle={styles.buttonContent} 
           buttonColor="#03913E"
           onPress={() => navigation.navigate("ForgetPasswordOtp")}
@@ -71,4 +87,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 20
   },
+  resendOtpText : {
+    fontSize: 16,
+    marginBottom: 20
+  }
 })
