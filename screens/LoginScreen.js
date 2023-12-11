@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { KeyboardAvoidingView } from "react-native";
+import { Image, Keyboard } from "react-native";
 import { Button, Text, TextInput  } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Pressable } from 'react-native';
@@ -13,6 +13,8 @@ function LoginScreen(){
 
     const navigation = useNavigation();
 
+    const topImg = require("../assets/0675bf6f-3740-4818-9af4-2fe15b1b565b.png")
+
     const handleEyePressed = () => {
         if (isPasswordInvisible == true && iconEye === "eye") {
             setIconEye("eye-off");
@@ -24,7 +26,8 @@ function LoginScreen(){
     }
 
     return(
-        <KeyboardAvoidingView style={styles.container}>
+        <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+            <Image source={topImg} style={{width: 320, height: 260}} />
             <Text variant="titleLarge" style={styles.welcomeText}>
                 Welcome to Samper!
             </Text>
@@ -75,7 +78,7 @@ function LoginScreen(){
             >
                 Login
             </Button>
-        </KeyboardAvoidingView>
+        </Pressable>
     );
 }
 
