@@ -140,12 +140,12 @@ const RequestScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Appbar.Header elevated={true}>
-                <Icon source="clipboard-text-clock" size={30} />
-                <Appbar.Content title="Request" style={{marginStart: 5}} />
-                <Appbar.Action icon="calendar" size={30} onPress={() => showMode('date')} />
-                <Appbar.Action icon="sort-calendar-ascending" onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} />
-                <Appbar.Action icon="sort-calendar-descending" onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} />
+            <Appbar.Header mode='small' style={{backgroundColor: "#D8261D"}}>
+                <Icon source="clipboard-text-clock" size={30} color='#FFF' />
+                <Appbar.Content title="Request" titleStyle={{fontSize: 18, fontWeight: "bold"}} style={{marginStart: 5}} color='#fff' />
+                <Appbar.Action icon="calendar" size={30} color='#fff' onPress={() => showMode('date')} />
+                <Appbar.Action icon="sort-calendar-ascending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} />
+                <Appbar.Action icon="sort-calendar-descending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} />
             </Appbar.Header>
             <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]} />
             
