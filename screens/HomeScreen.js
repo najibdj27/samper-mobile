@@ -6,6 +6,7 @@ import Paginator from "./components/Paginator";
 import History from "./components/History";
 import todaySchedule from "../data/todaySchedule";
 import history from "../data/history"
+import { useNavigation } from "@react-navigation/native";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,6 +16,8 @@ function HomeScreen() {
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
+
+    const navigation = useNavigation()
 
     const viewableItemChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
@@ -51,7 +54,7 @@ function HomeScreen() {
                     Welcome back, Najib! 
                 </Text>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                    <Pressable onPress={() => {console.log("Setting pressed!")}} style={{marginHorizontal: 5}}>
+                    <Pressable onPress={() => {navigation.navigate('Setting')}} style={{marginHorizontal: 5}}>
                         <Icon source="cog" color="#fff" size={25} />
                     </Pressable>
                     <Pressable style={{marginHorizontal: 5}} onPress={() => {console.log("Profile pict pressed!")}}>
