@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View, useWindowDimensions } from 'react-native'
+import { FlatList, StyleSheet, View, useWindowDimensions, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Appbar, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
@@ -6,7 +6,6 @@ import moment from 'moment/moment'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import Request from './components/Request'
 import request from '../data/request.json'
-import { List } from 'react-native-paper'
 import Tab from './components/Tab'
 
 const RequestScreen = () => {
@@ -77,14 +76,6 @@ const RequestScreen = () => {
             return chip.key !== key
         })
         return updatedChip
-    }
-
-    const requestPaddingBottom = () => {
-        if (chip.length > 0) {
-            return {paddingTop: 5, paddingBottom:100}
-        }else {
-            return {paddingTop: 5, paddingBottom:60}
-        }
     }
 
     const requestSent = () => (
