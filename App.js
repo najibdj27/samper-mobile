@@ -9,6 +9,7 @@ import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ForgetPasswordOtpScreen from './screens/ForgetPasswordOtpScreen';
 import ForgetPasswordNewPassScreen from './screens/ForgetPasswordNewPassScreen';
 import MainScreen from './screens/MainScreen';
+import SettingScreen from './screens/SettingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,13 @@ export default function App() {
           <Stack.Screen 
             name="Main" 
             component={MainScreen}
+            options={{
+              headerShown: false
+            }} 
+          />
+          <Stack.Screen 
+            name="Setting" 
+            component={SettingScreen}
             options={{
               headerShown: false
             }} 
