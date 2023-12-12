@@ -36,7 +36,7 @@ export default function App() {
             name="ForgetPassword" 
             component={ForgetPasswordScreen}
             options={{
-              title: 'Forget Password'
+              headerShown: false
             }} 
           />
           <Stack.Screen 
