@@ -2,16 +2,35 @@ import * as React from 'react';
 import { Pressable, StyleSheet, Image, Keyboard } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import useAPI from './hooks/useAPI';
+import axios from 'axios';
+import Loader from './components/Loader';
 
 function ForgetPasswordScreen(){
     const [email, setEmail] = React.useState("");
 
     const navigation = useNavigation();
+    const [response, isLoading, isSuccess, errorCode, errorMessage, callAPI] = useAPI();
+    const reqBody ={emailAddress: email}
+
+    const handleSendOtp = async () => {
+        const successCallback = () => {
+            navigation.navigate('ForgetPasswordOtp', reqBody)
+        }
+        await callAPI('post', '/auth/forgetpassword', reqBody, null, successCallback, null)
+        
+    }
 
     const topImg = require("../assets/76fa4704-6ac7-4e25-bf37-68479913878f.png")
 
     return(
         <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+            {
+                isLoading? 
+                    <Loader />
+                    :
+                    null
+            }
             <Image source={topImg} style={{width: 320, height: 260}} />
             <Text variant="titleLarge" style={styles.titleText}>
                 We will send OTP code to your email!
@@ -34,7 +53,7 @@ function ForgetPasswordScreen(){
                 style={styles.button} 
                 contentStyle={styles.buttonContent} 
                 buttonColor="#03913E"
-                onPress={() => navigation.navigate("ForgetPasswordOtp", {email: email})}
+                onPress={handleSendOtp}
                 labelStyle={{
                     fontSize: 18, 
                     fontWeight: "bold"
