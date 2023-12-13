@@ -1,25 +1,22 @@
-import { StyleSheet, View, useWindowDimensions } from 'react-native'
-import React from 'react'
-import { ActivityIndicator, MD2Colors } from 'react-native-paper'
+import { StyleSheet } from 'react-native'
+import * as React from 'react'
+import { ActivityIndicator, Modal, Portal } from 'react-native-paper';
 
-const Loader = () => {
+const Loader = React.forwardRef((props, ref) => {
+    const [visible, setVisible] = React.useState(false);
+    
+    React.useImperativeHandle(ref, () => ({
+        showDialog(){setVisible(true)},
+        hideDialog(){setVisible(false)}
+    }))
+
     return (
-        <View style={styles.container} >
-            <ActivityIndicator animating={true} size={80} color="#F8C301" />
-        </View>
+        <Portal>
+            <Modal visible={visible} dismissable={false} dismissableBackButton={false}>
+                <ActivityIndicator animating={true} size={80} color="#F8C301" />
+            </Modal>
+        </Portal>
     )
-}
+})
 
 export default Loader
-
-const styles = StyleSheet.create({
-    container: {
-        position: "absolute",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        justifyContent: 'center',
-        alignItems: "center",
-        zIndex: 10,
-        width: "100%", 
-        height: "100%"
-    }
-})
