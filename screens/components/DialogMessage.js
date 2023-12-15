@@ -37,7 +37,7 @@ const DialogMessage = React.forwardRef((props, ref) => {
         <Dialog.Icon icon="alert-rhombus" size={75} color='#F8C301' />
         <Dialog.Title style={{textAlign: "center"}}>Alert</Dialog.Title>
         <Dialog.Content>
-          <Text style={{textAlign: "center"}} variant="bodyMedium">Please enter the correct email address.</Text>
+          <Text style={{textAlign: "center"}} variant="bodyMedium">{props.message}</Text>
         </Dialog.Content>
         <Dialog.Actions style={{justifyContent: "center"}}>
           <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
@@ -51,7 +51,7 @@ const DialogMessage = React.forwardRef((props, ref) => {
         <Dialog.Icon icon="checkbox-marked" size={75} color='#03913E' />
         <Dialog.Title style={{textAlign: "center"}}>Success</Dialog.Title>
         <Dialog.Content>
-          <Text style={{textAlign: "center"}} variant="bodyMedium">Successfully send your request.</Text>
+          <Text style={{textAlign: "center"}} variant="bodyMedium">{props.message}</Text>
         </Dialog.Content>
         <Dialog.Actions style={{justifyContent: "center"}}>
           <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
