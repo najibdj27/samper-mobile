@@ -9,12 +9,12 @@ import DialogMessage from './components/DialogMessage';
 function ForgetPasswordScreen(){
     const [email, setEmail] = React.useState("");
     const [screenLoading, setScreenLoading] = React.useState();
+    const [message, setMessage] = React.useState()
 
     const dialogRef = React.useRef()
     const loaderRef = React.useRef()
     const navigation = useNavigation();
     const [response, isLoading, isSuccess, errorCode, errorMessage, callAPI] = useAPI();
-    const reqBody ={emailAddress: email}
 
     React.useEffect(() => {
         if (screenLoading) {
@@ -33,6 +33,8 @@ function ForgetPasswordScreen(){
     }, [isLoading])
 
     const handleSendOtp = async () => {
+        Keyboard.dismiss()
+        const reqBody ={emailAddress: email}
         const successCallback = () => {
             navigation.navigate('ForgetPasswordOtp', reqBody)
             setEmail()
@@ -41,7 +43,6 @@ function ForgetPasswordScreen(){
             dialogRef.current.showDialog('error')
         }
         await callAPI('post', '/auth/forgetpassword', reqBody, null, successCallback, errorCallback)
-        
     }
 
     const topImg = require("../assets/76fa4704-6ac7-4e25-bf37-68479913878f.png")
@@ -81,7 +82,7 @@ function ForgetPasswordScreen(){
                 </Button>
             </Pressable>
             <Loader ref={loaderRef} />
-            <DialogMessage errorCode={errorCode} errorMessage={errorMessage} ref={dialogRef} />
+            <DialogMessage errorCode={errorCode} errorMessage={errorMessage} message={message} ref={dialogRef} />
         </PaperProvider>
 );
 }
