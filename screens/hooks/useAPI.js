@@ -10,7 +10,7 @@ const useAPI = () => {
 
     const sendRequest = axios.create({
         baseURL: 'http://10.0.2.2:8080',
-        timeout: 3000
+        timeout: 3000,
     })
 
     const get = async (url, request, param, successCallback, errorCallback) => {
@@ -32,10 +32,10 @@ const useAPI = () => {
             console.log(err)
             if (err.response) {
                 setResponse(null)
-                setIsSuccess(err.response.success)
+                setIsSuccess(err.response.data.success)
                 setLoading(false)
-                setErrorCode(err.repsonse.error_code)
-                setErrorMessage(err.repsonse.error_message)
+                setErrorCode(err.response.data.error_code)
+                setErrorMessage(err.response.data.error_message)
             }else if (err.request) {
                 setResponse(null)
                 setIsSuccess(err.response.success)
@@ -67,13 +67,13 @@ const useAPI = () => {
             setErrorCode(null)
             setErrorMessage(null)
             successCallback()
-        }).catch(err => {
+        }).catch((err) => {
             if (err.response) {
                 setResponse(null)
-                setIsSuccess(err.response.success)
+                setIsSuccess(err.response.data.success)
                 setLoading(false)
-                setErrorCode(err.repsonse.error_code)
-                setErrorMessage(err.repsonse.error_message)
+                setErrorCode(err.response.data.error_code)
+                setErrorMessage(err.response.data.error_message)
             }else if (err.request) {
                 setResponse(null)
                 setIsSuccess(false)
@@ -106,10 +106,10 @@ const useAPI = () => {
         }).catch(err => {
             if (err.response) {
                 setResponse(null)
-                setIsSuccess(err.response.success)
+                setIsSuccess(err.response.data.success)
                 setLoading(false)
-                setErrorCode(err.repsonse.error_code)
-                setErrorMessage(err.repsonse.error_message)
+                setErrorCode(err.response.data.error_code)
+                setErrorMessage(err.response.data.error_message)
             }else if (err.request) {
                 setResponse(null)
                 setIsSuccess(err.response.success)
