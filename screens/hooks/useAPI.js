@@ -1,19 +1,32 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useComponentDidMount } from './useComponentDidMount'
 
-const useAPI = () => {
+const useAPI = (successCallback, errorCallback) => {
     const [response, setResponse] = useState()
     const [isLoading, setLoading] = useState(false)
     const [isSuccess, setIsSuccess] = useState()
     const [errorCode, setErrorCode] = useState()
     const [errorMessage, setErrorMessage] = useState()
 
+    const isComponentMounted = useComponentDidMount()
+
+    useEffect(() => {
+        if (isComponentMounted) {
+            if (isSuccess) {
+                successCallback()
+            }else {
+                errorCallback()
+            }
+        }
+    }, [isSuccess])
+
     const sendRequest = axios.create({
         baseURL: 'http://10.0.2.2:8080',
         timeout: 3000,
     })
 
-    const get = async (url, request, param, successCallback, errorCallback) => {
+    const get = async (url, request, param) => {
         await axios.get(
             url, 
             request,
@@ -27,7 +40,6 @@ const useAPI = () => {
             setLoading(false)
             setErrorCode(null)
             setErrorMessage(null)
-            successCallback()
         }).catch(err => {
             console.log(err)
             if (err.response) {
@@ -45,13 +57,12 @@ const useAPI = () => {
             } else {
                 console.log(`error ${err.message}`)
             }
-            errorCallback()
         }).finally(() => {
             
         })
     }
     
-    const post = async (url, request, param, successCallback, errorCallback) => {
+    const post = async (url, request, param) => {
         setLoading(true)
         await sendRequest.post(
             url, 
@@ -66,7 +77,6 @@ const useAPI = () => {
             setLoading(false)
             setErrorCode(null)
             setErrorMessage(null)
-            successCallback()
         }).catch((err) => {
             if (err.response) {
                 setResponse(null)
@@ -82,13 +92,13 @@ const useAPI = () => {
                 setErrorMessage("No response from the server!")
             } else {
                 console.error(`error: ${err.message}`)
+                console.log(`err: ${err.message}`)
             }
-            errorCallback()
         }).finally(() => {
         })
     }
 
-    const patch = async (url, request, param, successCallback, errorCallback) => {
+    const patch = async (url, request, param) => {
         await sendRequest.patch(
             url, 
             {
@@ -102,7 +112,6 @@ const useAPI = () => {
             setLoading(false)
             setErrorCode(null)
             setErrorMessage(null)
-            successCallback()
         }).catch(err => {
             if (err.response) {
                 setResponse(null)
@@ -119,22 +128,21 @@ const useAPI = () => {
             } else {
                 console.log(`error ${err.message}`)
             }
-            errorCallback()
         }).finally(() => {
 
         })
     }
 
-    const callAPI = (method, url, request, param, successCallback, errorCallback) => {
+    const callAPI = (method, url, request, param) => {
         switch (method) {
             case 'get':
-                get(url, request, param, successCallback, errorCallback)
+                get(url, request, param)
                 break;
             case 'post':
-                post(url, request, param, successCallback, errorCallback)
+                post(url, request, param)
                 break;
             case 'patch':
-                patch(url, request, param, successCallback, errorCallback)
+                patch(url, request, param)
                 break;
         
             default:
