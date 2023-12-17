@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, Image, Keyboard, View } from "react-native";
-import { Button, PaperProvider, Portal, Provider, Text, TextInput } from "react-native-paper";
+import { Pressable, StyleSheet, Image, Keyboard } from "react-native";
+import { Button, PaperProvider, Text, TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import useAPI from './hooks/useAPI';
 import Loader from './components/Loader';
