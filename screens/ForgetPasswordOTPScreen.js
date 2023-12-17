@@ -11,8 +11,7 @@ import DialogMessage from './components/DialogMessage';
 function ForgetPasswordOtpScreen({route}){
 
   const [code, setCode] = React.useState("")
-  const [email, setEmail] = React.useState()
-  const [message, setMessage] = React.useState()
+  const [message, setMessage] = React.useState("default message")
   const [errorCode, setErrorCode] = React.useState()
   const [errorMessage, setErrorMessage] = React.useState()
   const [pinReady, setPinReady] = React.useState(false)
@@ -26,7 +25,31 @@ function ForgetPasswordOtpScreen({route}){
 
   const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
 
-  const [resendOtpResponse, resendOtpIsLoading, resendOtpIsSuccess, resendOtErrorCode, resendOtpErrorMessage, resendOtpCallAPI] = useAPI();
+  const resendOtpSuccessCallback = () => {
+    console.log(`callback: otp resend success`)
+    start(30)
+    setMessage(resendOtpResponse.message)
+    dialogRef.current.showDialog('success')
+  }
+  const resendOtpErrorCallback = () => {
+    console.log(`callback: otp resend error`)
+    setErrorCode(resendOtpErrorCode)
+    setErrorMessage(resendOtpErrorMessage)
+    dialogRef.current.showDialog('error')
+  }
+  const validateOtpSuccessCallback = () => {
+    setCode("")
+    navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress})
+  }
+  const validateOtpErrorCallback = () => {
+    setCode("")
+    setErrorCode(validateOtpErrorCode)
+    setErrorMessage(validateOtpErrorMessage)
+    dialogRef.current.showDialog('error')
+  }
+
+  const [resendOtpResponse, resendOtpIsLoading, resendOtpIsSuccess, resendOtpErrorCode, resendOtpErrorMessage, resendOtpCallAPI] = useAPI(resendOtpSuccessCallback, resendOtpErrorCallback);
+  const [validateOtpResponse, validateOtpIsLoading, validateOtpIsSuccess, validateOtpErrorCode, validateOtpErrorMessage, validateOtpCallAPI] = useAPI(validateOtpSuccessCallback, validateOtpErrorCallback);
 
   React.useEffect(() => {
     if (screenLoading) {
@@ -37,32 +60,29 @@ function ForgetPasswordOtpScreen({route}){
   }, [screenLoading])
 
   React.useEffect(() => {
-    if (resendOtpIsLoading) {
+    if (resendOtpIsLoading | validateOtpIsLoading) {
       setScreenLoading(true)
     }else{
       setScreenLoading(false)
     }
-  }, [resendOtpIsLoading])
-
+  }, [resendOtpIsLoading, validateOtpIsLoading])
+  
   React.useEffect(() => {
-    setEmail(route.params.emailAddress)
-    start(30)
-    console.log(email)
+    start(60)
   }, [])
 
   const handleOnResendOtp = () => {
-    const reqBody ={emailAddress: email}
-    const successCallback = () => {
-      start(30)
-      setMessage(resendOtpResponse.message)
-      dialogRef.current.showDialog('success')
-    }
-    const errorCallback = () => {
-      setErrorCode(resendOtErrorCode)
-      setErrorMessage(resendOtpErrorMessage)
-      dialogRef.current.showDialog('error')
-    }
-    resendOtpCallAPI('post', '/auth/forgetpassword', reqBody, null, successCallback, errorCallback)
+    Keyboard.dismiss()
+    const reqBody ={emailAddress: route.params.emailAddress}
+    resendOtpCallAPI('post', '/auth/forgetpassword', reqBody, null)
+  }
+
+  const handleValidateOtp = () => {
+    Keyboard.dismiss()
+    const intCode = parseInt(code)
+    const reqBody = {emailAddress: route.params.emailAddress, otp: intCode}
+    console.log(`otpValue: ${JSON.stringify(reqBody)}`)
+    validateOtpCallAPI('post', '/auth/confirmotp', reqBody, null)
   }
 
   return (
@@ -80,7 +100,7 @@ function ForgetPasswordOtpScreen({route}){
           maxlength={MAX_CODE_LENGTH} 
         />
         <Pressable 
-          style={{marginTop: 15}}
+          style={{marginTop: 60}}
           disabled={timeLeft? true : false}
           onPress={handleOnResendOtp}
         >
@@ -94,7 +114,7 @@ function ForgetPasswordOtpScreen({route}){
             style={styles.button}
             contentStyle={styles.buttonContent} 
             buttonColor="#03913E"
-            onPress={() => navigation.navigate("ForgetPasswordNewPass", {email: email})}
+            onPress={handleValidateOtp}
             labelStyle={{
                 fontSize: 18, 
                 fontWeight: "bold"
