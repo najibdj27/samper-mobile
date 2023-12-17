@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, Keyboard, Image } from 'react-native'
+import { StyleSheet, Pressable, Keyboard, Image, BackHandler } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput, Text, Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -10,6 +10,10 @@ const ForgetPasswordNewPassScreen = ({route}) => {
     const navigation = useNavigation()
 
     const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
+
+    React.useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', () => true);
+    }, []);
 
     return (
         <Pressable style={styles.container} onPress={Keyboard.dismiss}>
