@@ -13,11 +13,12 @@ const useAPI = (successCallback, errorCallback) => {
 
     useEffect(() => {
         if (isComponentMounted) {
-            if (isSuccess) {
+            if (isSuccess === true) {
                 successCallback()
-            }else {
+            }else if (isSuccess === false) {
                 errorCallback()
             }
+            setIsSuccess()
         }
     }, [isSuccess])
 
@@ -36,18 +37,18 @@ const useAPI = (successCallback, errorCallback) => {
         ).then(response => {
             const data = response.data
             setResponse(data)
-            setIsSuccess(data.success)
             setLoading(false)
             setErrorCode(null)
             setErrorMessage(null)
+            setIsSuccess(true)
         }).catch(err => {
             console.log(err)
             if (err.response) {
                 setResponse(null)
-                setIsSuccess(err.response.data.success)
                 setLoading(false)
                 setErrorCode(err.response.data.error_code)
                 setErrorMessage(err.response.data.error_message)
+                setIsSuccess(err.response.data.success)
             }else if (err.request) {
                 setResponse(null)
                 setIsSuccess(err.response.success)
@@ -73,17 +74,17 @@ const useAPI = (successCallback, errorCallback) => {
         ).then(response => {
             const data = response.data
             setResponse(data)
-            setIsSuccess(response.data.success)
             setLoading(false)
             setErrorCode(null)
             setErrorMessage(null)
+            setIsSuccess(response.data.success)
         }).catch((err) => {
             if (err.response) {
                 setResponse(null)
-                setIsSuccess(err.response.data.success)
                 setLoading(false)
                 setErrorCode(err.response.data.error_code)
                 setErrorMessage(err.response.data.error_message)
+                setIsSuccess(err.response.data.success)
             }else if (err.request) {
                 setResponse(null)
                 setIsSuccess(false)
@@ -92,7 +93,6 @@ const useAPI = (successCallback, errorCallback) => {
                 setErrorMessage("No response from the server!")
             } else {
                 console.error(`error: ${err.message}`)
-                console.log(`err: ${err.message}`)
             }
         }).finally(() => {
         })
