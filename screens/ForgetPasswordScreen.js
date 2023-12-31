@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, Image, Keyboard } from "react-native";
+import { Pressable, StyleSheet, Image, Keyboard, View } from "react-native";
 import { Button, PaperProvider, Text, TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import useAPI from './hooks/useAPI';
 import Loader from './components/Loader';
 import DialogMessage from './components/DialogMessage';
+import InputForm from './components/InputForm';
 
 function ForgetPasswordScreen(){
     const [email, setEmail] = React.useState("");
     const [screenLoading, setScreenLoading] = React.useState();
-    const [message, setMessage] = React.useState()
     const reqBody ={emailAddress: email}
 
     const dialogRef = React.useRef()
@@ -56,17 +56,15 @@ function ForgetPasswordScreen(){
                 <Text variant="titleLarge" style={styles.titleText}>
                     We will send OTP code to your email!
                 </Text>
-                <TextInput
-                    label={<Text>Email</Text>}
-                    placeholder='Input your email here'
-                    value={email}
-                    mode='outlined'
-                    activeOutlineColor='#02a807'
-                    inputMode='email'
-                    keyboardType='email-address'
-                    style={styles.form}
-                    outlineStyle={{borderRadius:16}}
-                    onChangeText={text => setEmail(text)}
+                <InputForm 
+                    label="Email"
+                    input={email}
+                    setInput={setEmail}
+                    placeholder="Input your email here"
+                    inputMode="email"
+                    keyboardType="email-address"
+                    useValidation={true}
+                    validationMode="email"
                 />
                 <Button 
                     icon="login" 
@@ -84,7 +82,7 @@ function ForgetPasswordScreen(){
                 </Button>
             </Pressable>
             <Loader ref={loaderRef} />
-            <DialogMessage errorCode={errorCode} errorMessage={errorMessage} message={message} ref={dialogRef} />
+            <DialogMessage errorCode={errorCode} errorMessage={errorMessage} ref={dialogRef} />
         </PaperProvider>
 );
 }
