@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { HelperText, TextInput } from 'react-native-paper'
 import useTextValidation from '../hooks/useTextValidation'
 
-const InputForm = ({label, placeholder, inputMode, keyboardType, useValidation, validationMode}) => {
-    const [input, setInput] = useState()
+const InputForm = ({label, input, setInput, placeholder, inputMode, keyboardType, useValidation, validationMode}) => {
     const {isValid, message, validate} = useTextValidation()
 
     useEffect(() => {
