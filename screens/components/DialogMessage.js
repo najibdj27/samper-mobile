@@ -26,7 +26,7 @@ const DialogMessage = React.forwardRef((props, ref) => {
         <Text style={{textAlign: "center"}} variant="bodyMedium">{props.errorMessage}</Text>
       </Dialog.Content>
       <Dialog.Actions style={{justifyContent: "center"}}>
-        <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
+        <Button onPress={() => {props.confirmButtonCallback? confirmButtonCallback() : hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
       </Dialog.Actions>
     </Dialog>
   )
@@ -40,7 +40,7 @@ const DialogMessage = React.forwardRef((props, ref) => {
           <Text style={{textAlign: "center"}} variant="bodyMedium">{props.message}</Text>
         </Dialog.Content>
         <Dialog.Actions style={{justifyContent: "center"}}>
-          <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
+          <Button onPress={() => {props.confirmButtonCallback? confirmButtonCallback() : hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
@@ -54,7 +54,7 @@ const DialogMessage = React.forwardRef((props, ref) => {
           <Text style={{textAlign: "center"}} variant="bodyMedium">{props.message}</Text>
         </Dialog.Content>
         <Dialog.Actions style={{justifyContent: "center"}}>
-          <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
+          <Button onPress={() => {props.confirmButtonCallback? confirmButtonCallback() : hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
