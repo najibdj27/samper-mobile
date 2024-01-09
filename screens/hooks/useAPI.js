@@ -24,7 +24,7 @@ const useAPI = (successCallback, errorCallback) => {
 
     const sendRequest = axios.create({
         baseURL: 'http://10.0.2.2:8080',
-        timeout: 3000,
+        timeout: 3000
     })
 
     const get = async (url, request, param) => {
@@ -101,9 +101,9 @@ const useAPI = (successCallback, errorCallback) => {
     const patch = async (url, request, param) => {
         await sendRequest.patch(
             url, 
+            request,
             {
-                params: param,
-                data: request
+                params: param
             }
         ).then(response => {
             const data = response.data
