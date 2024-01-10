@@ -11,11 +11,11 @@ import DialogMessage from './components/DialogMessage';
 function ForgetPasswordOtpScreen({route}){
 
   const [code, setCode] = React.useState("")
-  const [message, setMessage] = React.useState("default message")
+  const [message, setMessage] = React.useState()
   const [errorCode, setErrorCode] = React.useState()
   const [errorMessage, setErrorMessage] = React.useState()
   const [pinReady, setPinReady] = React.useState(false)
-  const [screenLoading, setScreenLoading] = React.useState();
+  const [screenLoading, setScreenLoading] = React.useState()
   const MAX_CODE_LENGTH = 4;
 
   const dialogRef = React.useRef()
@@ -26,20 +26,18 @@ function ForgetPasswordOtpScreen({route}){
   const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
 
   const resendOtpSuccessCallback = () => {
-    console.log(`callback: otp resend success`)
     start(30)
     setMessage(resendOtpResponse.message)
     dialogRef.current.showDialog('success')
   }
   const resendOtpErrorCallback = () => {
-    console.log(`callback: otp resend error`)
     setErrorCode(resendOtpErrorCode)
     setErrorMessage(resendOtpErrorMessage)
     dialogRef.current.showDialog('error')
   }
   const validateOtpSuccessCallback = () => {
     setCode("")
-    navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress})
+    navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken})
   }
   const validateOtpErrorCallback = () => {
     setCode("")
@@ -81,7 +79,6 @@ function ForgetPasswordOtpScreen({route}){
     Keyboard.dismiss()
     const intCode = parseInt(code)
     const reqBody = {emailAddress: route.params.emailAddress, otp: intCode}
-    console.log(`otpValue: ${JSON.stringify(reqBody)}`)
     validateOtpCallAPI('post', '/auth/confirmotp', reqBody, null)
   }
 
