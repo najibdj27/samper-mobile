@@ -25,31 +25,35 @@ const InputForm = ({label, input, setInput, placeholder, inputMode, keyboardType
     }
 
     return (
-        <View>
-            <TextInput
-                label={<Text style={labelColor}>{label}</Text>}
-                placeholder={placeholder}
-                value={input}
-                mode='outlined'
-                activeOutlineColor={useValidation? isValid? "#03913E" : "#D8261D" : "#D8261D"}
-                inputMode={inputMode === 'password' || 'newPassword' ? null : inputMode}
-                keyboardType={keyboardType}
-                style={{
-                    marginVertical: 3,
-                    width:300
-                }}
-                outlineStyle={{borderRadius:16}}
-                onChangeText={text => setInput(text)}
-                secureTextEntry={inputMode === 'password' || 'newPassword'? true : false}
-            />
+        <View style={{maxWidth: 300, flexWrap: "wrap"}}>
+            <View>
+                <TextInput
+                    label={<Text style={labelColor}>{label}</Text>}
+                    placeholder={placeholder}
+                    value={input}
+                    mode='outlined'
+                    activeOutlineColor={useValidation? isValid? "#03913E" : "#D8261D" : "#D8261D"}
+                    inputMode={inputMode === 'password' || 'newPassword' ? null : inputMode}
+                    keyboardType={keyboardType}
+                    style={{
+                        marginVertical: 3,
+                        width:300
+                    }}
+                    outlineStyle={{borderRadius:16}}
+                    onChangeText={text => setInput(text)}
+                    secureTextEntry={inputMode === 'password' || 'newPassword'? true : false}
+                />
+            </View>
             {
                 useValidation?
                 isValid?
                 null : 
                 (
-                    <HelperText type="error" visible={true}>
-                        {message}
-                    </HelperText>
+                    <View>
+                        <HelperText type="error" visible={true}>
+                            {message}
+                        </HelperText>
+                    </View>
                 ) :
                 null
             }
