@@ -58,7 +58,7 @@ const ForgetPasswordNewPassScreen = ({route}) => {
         }else{
           setScreenLoading(false)
         }
-      }, [setNewPasswordIsLoading])
+    }, [setNewPasswordIsLoading])
 
     //handler
     const handleSetNewPassword = () => {
@@ -116,7 +116,7 @@ const ForgetPasswordNewPassScreen = ({route}) => {
                 </Button>
             </Pressable>
             <Loader ref={loaderRef} />
-        <DialogMessage ref={dialogRef} errorCode={errorCode} errorMessage={errorMessage} message={message} />
+            <DialogMessage ref={dialogRef} errorCode={errorCode} errorMessage={errorMessage} message={message} />
         </Provider>
     )
 }
