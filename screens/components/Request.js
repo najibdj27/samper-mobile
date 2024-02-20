@@ -8,13 +8,13 @@ const Request = ({item, isLoading, isEmpty}) => {
   // #03913E #D8261D #F8C301
   const statusColor = (status) => {
     switch (status) {
-      case 'P':
+      case 'PENDING':
         return {backgroundColor: '#F8C301'}
         break;
-      case 'A':
+      case 'APPROVED':
         return {backgroundColor: '#03913E'}
         break;
-      case 'R':
+      case 'REJECTED':
         return {backgroundColor: '#D8261D'}
         break;
 
@@ -25,13 +25,13 @@ const Request = ({item, isLoading, isEmpty}) => {
 
   const statusType = (type) => {
     switch (type) {
-      case 'C':
+      case 'LATE_RECORD':
           return "clock-edit-outline"
         break;
-      case 'P':
+      case 'PERMIT':
           return "calendar-sync"
         break;
-      case 'R':
+      case 'RESCHEDULE':
           return "calendar-clock"
         break;
         
@@ -51,7 +51,7 @@ const Request = ({item, isLoading, isEmpty}) => {
   const requestAvailable = () => {
     return (
       <Card style={{marginVertical: 10, marginHorizontal: 5, paddingEnd: 5}}>
-          <Card.Title title={item.subjectName} subtitle={`${moment(item.timestamp, "YYYY-MM-DD hh:mm").format("D MMMM YYYY | hh:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold"}} />
+          <Card.Title title={item.schedule.subject.name} subtitle={`${moment(item.requestTime, "YYYY-MM-DD hh:mm").format("D MMMM YYYY | hh:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold"}} />
           <Card.Content>
               <Text variant="titleMedium">Reason</Text>
               <Text variant="bodyMedium">{item.reason}</Text>
