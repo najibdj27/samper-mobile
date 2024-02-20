@@ -1,5 +1,6 @@
 import { View, SafeAreaView, useWindowDimensions, Image, StyleSheet } from "react-native";
 import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } from "react-native-paper";
+import moment from "moment";
 import Skeleton from "./Skeleton";
 
 const StudentScheduleCard = ({item, isEmpty, isLoading}) => {
@@ -12,13 +13,13 @@ const StudentScheduleCard = ({item, isEmpty, isLoading}) => {
                 <Surface style={styles.bannerView} elevation={item.isActive? 3 : 1} >
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
                         <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={{width: 180, height:40}} style={{width: 180, borderRadius: 8, padding: 0}} labelStyle={[styles.bannerLectureText, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
-                            {item.lectureName}
+                            {`${item.lecture.user.firstName} ${item.lecture.user.lastName}`}
                         </Button>
                         <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey"}]}>
-                            {item.subjectName}
+                            {item.subject.name}
                         </Text>
                         <Text style={[styles.bannerTimeText, {color: item.isActive? "black" : "grey"}]}>
-                            {item.date} | {item.timeStart} - {item.timeEnd}
+                            {moment(item.timeStart).format('D MMMM YYYY')} | {moment(item.timeStart).format('HH:mm')} - {moment(item.timeEnd).format('HH:mm')}
                         </Text>
                         <SafeAreaView style={{marginVertical: 7, alignSelf: "center"}}>
                             <SegmentedButtons

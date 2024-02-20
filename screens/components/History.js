@@ -1,9 +1,13 @@
-import { StyleSheet, View, Pressable } from 'react-native'
-import { List, Divider } from 'react-native-paper'
+import { StyleSheet, View, Pressable, Image } from 'react-native'
+import { List, Divider, Text } from 'react-native-paper'
 import React from 'react'
 import Skeleton from './Skeleton'
+import moment from 'moment'
 
-const History = ({item, index, isLoading}) => {
+
+const History = ({item, isEmpty, isLoading}) => {
+    const noHistoryImg = require("../../assets/16846110_41Z_2107.w009.n001.6A.p15.6.jpg");
+
     const loadingHistory = () =>{
         const element = [];
         const loopLength = 4;
@@ -35,9 +39,9 @@ const History = ({item, index, isLoading}) => {
             <View>
                 <Pressable onPress={() => {console.log('History button pressed')}}>
                     <List.Item
-                        title={item.subjectName}
-                        description={[item.date, " | ", item.time]}
-                        left={props => <List.Icon {...props} icon={item.status==0? "clock-in" : "clock-out"} color={item.status==0? "#03913E" : "#D8261D"} />}
+                        title={item.schedule?.subject.name}
+                        description={[moment(item.time, 'YYYY-MM-DD HH:mm').format('D MMM YYYY'), " | ", moment(item.time, 'YYYY-MM-DD HH:mm').format('HH:mm')]}
+                        left={props => <List.Icon {...props} icon={item.status=='I'? "clock-in" : "clock-out"} color={item.status=='I'? "#03913E" : "#D8261D"} />}
                     />
                 </Pressable>
                 <Divider />
@@ -47,23 +51,28 @@ const History = ({item, index, isLoading}) => {
     
     const historyUnvailable = () => {
         return (
-            <View>
-                <Pressable onPress={() => {console.log('History button pressed')}}>
-                    <List.Item
-                        title="Rekayasa Perangkat Lunak"
-                        description="29 November 2023 | 11:00"
-                        left={props => <List.Icon {...props} icon="clock-out" color="#D8261D" />}
-                    />
-                </Pressable>
-                <Divider />
+            <View style={{height: 180, justifyContent: 'center', alignItems: "center", backgroundColor: "white", borderRadius: 30}}>
+                <Image source={noHistoryImg} style={{height: 100, width: 240, alignSelf: "center"}} />
+                <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold"}}>
+                    No history yet!
+                </Text>
             </View>
         )
     }
   
-    return isLoading ? loadingHistory() : historyAvailable()
+    return isLoading ? loadingHistory() : isEmpty? historyUnvailable() : historyAvailable() 
   
 }
 
 export default History
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    emptyContainer : {
+        backgroundColor: "grey",
+        borderRadius: 50,
+        height: "100%",
+        alignSelf: "center", 
+        paddingTop: 10, 
+        width: "60%"
+    }
+})
