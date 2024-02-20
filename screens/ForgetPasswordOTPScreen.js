@@ -11,9 +11,6 @@ import DialogMessage from './components/DialogMessage';
 function ForgetPasswordOtpScreen({route}){
 
   const [code, setCode] = React.useState("")
-  const [message, setMessage] = React.useState()
-  const [errorCode, setErrorCode] = React.useState()
-  const [errorMessage, setErrorMessage] = React.useState()
   const [pinReady, setPinReady] = React.useState(false)
   const [screenLoading, setScreenLoading] = React.useState()
   const MAX_CODE_LENGTH = 4;
@@ -25,30 +22,6 @@ function ForgetPasswordOtpScreen({route}){
 
   const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
 
-  const resendOtpSuccessCallback = () => {
-    start(30)
-    setMessage(resendOtpResponse.message)
-    dialogRef.current.showDialog('success')
-  }
-  const resendOtpErrorCallback = () => {
-    setErrorCode(resendOtpErrorCode)
-    setErrorMessage(resendOtpErrorMessage)
-    dialogRef.current.showDialog('error')
-  }
-  const validateOtpSuccessCallback = () => {
-    setCode("")
-    navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken})
-  }
-  const validateOtpErrorCallback = () => {
-    setCode("")
-    setErrorCode(validateOtpErrorCode)
-    setErrorMessage(validateOtpErrorMessage)
-    dialogRef.current.showDialog('error')
-  }
-
-  const [resendOtpResponse, resendOtpIsLoading, resendOtpIsSuccess, resendOtpErrorCode, resendOtpErrorMessage, resendOtpCallAPI] = useAPI(resendOtpSuccessCallback, resendOtpErrorCallback);
-  const [validateOtpResponse, validateOtpIsLoading, validateOtpIsSuccess, validateOtpErrorCode, validateOtpErrorMessage, validateOtpCallAPI] = useAPI(validateOtpSuccessCallback, validateOtpErrorCallback);
-
   React.useEffect(() => {
     if (screenLoading) {
       loaderRef.current.showLoader()
@@ -56,14 +29,6 @@ function ForgetPasswordOtpScreen({route}){
       loaderRef.current.hideLoader()
     }
   }, [screenLoading])
-
-  React.useEffect(() => {
-    if (resendOtpIsLoading | validateOtpIsLoading) {
-      setScreenLoading(true)
-    }else{
-      setScreenLoading(false)
-    }
-  }, [resendOtpIsLoading, validateOtpIsLoading])
   
   React.useEffect(() => {
     start(60)
@@ -71,15 +36,57 @@ function ForgetPasswordOtpScreen({route}){
 
   const handleOnResendOtp = () => {
     Keyboard.dismiss()
+    console.log(`screenLoading: on`)
+    setScreenLoading(true)
     const reqBody ={emailAddress: route.params.emailAddress}
-    resendOtpCallAPI('post', '/auth/forgetpassword', reqBody, null)
+    console.log(`sendForgetPasswordOTP`)
+    useAPI('post', '/auth/forgetpassword', reqBody, null)
+    .then((response) => {
+      const sendForgetPasswordOTPResponse = response.data
+      console.log(`sendForgetPasswordOTP: success`)
+      console.log(`screenLoading: off`)
+      setScreenLoading(false)
+      console.log(`counter: start`)
+      start(30)
+      console.log(`counter: start`)
+      dialogRef.current.showDialog('success', '0000', sendForgetPasswordOTPResponse.message)
+    }).catch((err) => {
+      console.log(`sendForgetPasswordOTP: failed`)
+      console.log(`screenLoading: off`)
+      setScreenLoading(false)
+      if (err.response) {
+        dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+      } else if (err.request){
+        dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+      }
+    })
   }
 
   const handleValidateOtp = () => {
     Keyboard.dismiss()
+    console.log(`screenLoading: on`)
+    setScreenLoading(true)
     const intCode = parseInt(code)
     const reqBody = {emailAddress: route.params.emailAddress, otp: intCode}
-    validateOtpCallAPI('post', '/auth/confirmotp', reqBody, null)
+    console.log(`confirmOTP`)
+    useAPI('post', '/auth/confirmotp', reqBody, null)
+    .then((response) => {
+      const validateOtpResponse = response.data
+      console.log(`confirmOTP: success`)
+      console.log(`screenLoading: off`)
+      setScreenLoading(false)
+      setCode("")
+      navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken})
+    }).catch((err) => {
+      console.log(`confirmOTP: failed`)
+      console.log(`screenLoading: off`)
+      setScreenLoading(false)
+      if (err.response) {
+        dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+      } else if (err.request){
+        dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+      }
+    })
   }
 
   return (
@@ -122,7 +129,7 @@ function ForgetPasswordOtpScreen({route}){
         </Button>
       </Pressable>
       <Loader ref={loaderRef} />
-      <DialogMessage errorCode={errorCode} errorMessage={errorMessage} message={message} ref={dialogRef} />
+      <DialogMessage ref={dialogRef} />
     </Provider>
   );
 }

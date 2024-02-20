@@ -14,9 +14,6 @@ function LoginScreen(){
     const [password, setPassword] = React.useState("");
     const [isPasswordInvisible, setIsPasswordInvisible] = React.useState(true);
     const [iconEye, setIconEye] = React.useState("eye");
-    const [message, setMessage] = React.useState()
-    const [errorCode, setErrorCode] = React.useState()
-    const [errorMessage, setErrorMessage] = React.useState()
     const [screenLoading, setScreenLoading] = React.useState()
 
     //refs
@@ -29,22 +26,28 @@ function LoginScreen(){
 
     const topImg = require("../assets/0675bf6f-3740-4818-9af4-2fe15b1b565b.png")
 
-    const loginSuccessCallback = () => {
-        auth.login(responseLogin.data.accessToken, responseLogin.data.refreshToken, responseLogin.data.username, responseLogin.data.roles)
-        navigation.navigate("Main")
-    }
-
-    const loginFailedCallback = () => {
-        setErrorCode(errorCodeLogin)
-        setErrorMessage(errorMessageLogin)
-        dialogRef.current.showDialog('error')
-    }
-
-    const [responseLogin, isLoadingLogin, isSuccessLogin, errorCodeLogin, errorMessageLogin, callAPILogin] = useAPI(loginSuccessCallback, loginFailedCallback)
-
-    const handleLogin = () => {
+    const handleLogin = async () => {
         Keyboard.dismiss()
-        callAPILogin('post', '/auth/signin', {username: username, password: password}, null)
+        console.log(`screenLoading: on`)
+        setScreenLoading(true)
+        console.log(`login`)
+        await useAPI('post', '/auth/signin', {username: username, password: password}, null)
+        .then((response) => {
+            console.log(`login: success`)
+            console.log(`screenLoading: off`)
+            setScreenLoading(false)
+            const responseLogin = response.data
+            auth.login(responseLogin.data.accessToken, responseLogin.data.refreshToken, responseLogin.data.userId, responseLogin.data.roles)
+        }).catch((err) => {
+            console.log(`login: failed`)
+            console.log(`screenLoading: off`)
+            setScreenLoading(false)
+            if (err.response) {
+                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+            } else if (err.request) {
+                dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+            }
+        })
     }
 
     const handleEyePressed = () => {
@@ -64,14 +67,6 @@ function LoginScreen(){
             loaderRef.current.hideLoader()
         }
     }, [screenLoading])
-
-    React.useEffect(() => {
-        if (isLoadingLogin) {
-          setScreenLoading(true)
-        }else{
-          setScreenLoading(false)
-        }
-    }, [isLoadingLogin])
 
     return(
         <Provider>
@@ -130,9 +125,6 @@ function LoginScreen(){
             </Pressable>
             <DialogMessage 
                 ref={dialogRef} 
-                errorCode={errorCode} 
-                errorMessage={errorMessage} 
-                message={message}
             />
             <Loader ref={loaderRef} />
         </Provider>

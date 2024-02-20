@@ -14,30 +14,14 @@ const ForgetPasswordNewPassScreen = ({route}) => {
     //states
     const [newPassword, setNewPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
-    const [message, setMessage] = React.useState()
-    const [errorCode, setErrorCode] = React.useState()
-    const [errorMessage, setErrorMessage] = React.useState()
     const [screenLoading, setScreenLoading] = React.useState()
 
     //refs
     const dialogRef = React.useRef()
     const loaderRef = React.useRef()
 
-    //callback
-    const setNewPasswordSuccessCallback = () => {
-        setMessage(setNewPasswordResponse.message)
-        dialogRef.current.showDialog('success', () => {console.log("success")})
-    }
-
-    const setNewPasswordErrorCallback = () => {
-        setErrorCode(setNewPasswordErrorCode)
-        setErrorMessage(setNewPasswordErrorMessage)
-        dialogRef.current.showDialog('error')
-    }
-
     //hooks
     const navigation = useNavigation()
-    const [setNewPasswordResponse, setNewPasswordIsLoading, setNewPasswordIsSuccess, setNewPasswordErrorCode, setNewPasswordErrorMessage, setNewPasswordCallAPI] = useAPI(setNewPasswordSuccessCallback, setNewPasswordErrorCallback);
 
     //effect
     React.useEffect(() => {
@@ -52,24 +36,34 @@ const ForgetPasswordNewPassScreen = ({route}) => {
         }
     }, [screenLoading])
 
-    React.useEffect(() => {
-        if (setNewPasswordIsLoading) {
-          setScreenLoading(true)
-        }else{
-          setScreenLoading(false)
-        }
-    }, [setNewPasswordIsLoading])
-
     //handler
-    const handleSetNewPassword = () => {
-        console.log(route)
+    const handleSetNewPassword = async () => {
         Keyboard.dismiss()
+        console.log(`screenLoading: on`)
+        setScreenLoading(true)
         if (newPassword === confirmPassword) {
-            setNewPasswordCallAPI('patch', '/auth/reset_password', {newPassword: newPassword}, {token: route.params.token})
+            console.log(`resetPassword`)
+            await useAPI('patch', '/auth/reset_password', {newPassword: newPassword}, {token: route.params.token})
+            .then((response) => {
+                console.log(`resetPassword: success`)
+                console.log(`screenLoading: off`)
+                setScreenLoading(false)
+                const resetPasswordResponse = response.data
+                dialogRef.current.showDialog('success', '0000', resetPasswordResponse.message, 'Login')
+            }).catch((err) => {
+                console.log(`resetPassword: failed`)
+                console.log(`screenLoading: off`)
+                setScreenLoading(false)
+                if (err.response) {
+                    dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+                } else if (err.request){
+                    dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+                }
+            })
         } else {
-            setErrorCode('1104')
-            setErrorMessage(`Your new password doesn't match!`)
-            dialogRef.current.showDialog('error')
+            console.log(`screenLoading: off`)
+            setScreenLoading(false)
+            dialogRef.current.showDialog('error', '1104', `Your new password doesn't match!`)
         }
     }
 
@@ -116,7 +110,7 @@ const ForgetPasswordNewPassScreen = ({route}) => {
                 </Button>
             </Pressable>
             <Loader ref={loaderRef} />
-            <DialogMessage ref={dialogRef} errorCode={errorCode} errorMessage={errorMessage} message={message} />
+            <DialogMessage ref={dialogRef} />
         </Provider>
     )
 }

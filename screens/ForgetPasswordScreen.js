@@ -10,21 +10,10 @@ import InputForm from './components/InputForm';
 function ForgetPasswordScreen(){
     const [email, setEmail] = React.useState("");
     const [screenLoading, setScreenLoading] = React.useState();
-    const reqBody ={emailAddress: email}
 
     const dialogRef = React.useRef()
     const loaderRef = React.useRef()
     const navigation = useNavigation();
-
-    const successCallback = () => {
-        navigation.navigate('ForgetPasswordOtp', reqBody)
-        setEmail()
-    }
-    const errorCallback = () => {
-        dialogRef.current.showDialog('error')
-    }
-
-    const [response, isLoading, isSuccess, errorCode, errorMessage, callAPI] = useAPI(successCallback, errorCallback);
 
     React.useEffect(() => {
         if (screenLoading) {
@@ -34,17 +23,28 @@ function ForgetPasswordScreen(){
         }
     }, [screenLoading])
 
-    React.useEffect(() => {
-        if (isLoading) {
-            setScreenLoading(true)
-        }else{
-            setScreenLoading(false)
-        }
-    }, [isLoading])
-
     const handleSendOtp = async () => {
         Keyboard.dismiss()
-        await callAPI('post', '/auth/forgetpassword', reqBody, null)
+        console.log(`screenLoading: on`)
+        setScreenLoading(true)
+        console.log(`forgetPassword`)
+        await useAPI('post', '/auth/forgetpassword', {emailAddress: email}, null, null)
+        .then( (response) => {
+            console.log(`forgetPassword: success`)
+            console.log(`screenLoading: off`)
+            setScreenLoading(false)
+            navigation.navigate('ForgetPasswordOtp', {emailAddress: email})
+            setEmail()
+        }).catch( (err) => {
+            console.log(`forgetPassword: failed`)
+            console.log(`screenLoading: off`)
+            setScreenLoading(false)
+            if (err.response) {
+                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+            } else if (err.request) {
+                dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+            }
+        })
     }
 
     const topImg = require("../assets/76fa4704-6ac7-4e25-bf37-68479913878f.png")
@@ -82,7 +82,7 @@ function ForgetPasswordScreen(){
                 </Button>
             </Pressable>
             <Loader ref={loaderRef} />
-            <DialogMessage errorCode={errorCode} errorMessage={errorMessage} ref={dialogRef} />
+            <DialogMessage ref={dialogRef} />
         </PaperProvider>
 );
 }
