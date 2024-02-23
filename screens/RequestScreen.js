@@ -1,11 +1,10 @@
 import { FlatList, StyleSheet, View, useWindowDimensions, StatusBar } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
-import { Appbar, Icon } from 'react-native-paper'
+import { AnimatedFAB, Appbar, FAB, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
 import moment from 'moment/moment'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import Request from './components/Request'
-import request from '../data/request.json'
 import Tab from './components/Tab'
 import useAPI from './hooks/useAPI'
 import { AuthContext } from "./contexts/AuthContext"
@@ -15,7 +14,10 @@ const RequestScreen = () => {
     const [date, setDate] = useState(new Date());
     const [requestSentData, setRequestSentData] = useState({data: [], isLoading: true})
     const [requestReceivedData, setRequestReceivedData] = useState({data: [], isLoading: true})
-    
+    const [isExtended, setIsExtended] = React.useState(true);
+
+    const isIOS = Platform.OS === 'ios';
+
     const {height} = useWindowDimensions()
     const auth = useContext(AuthContext)
     moment.suppressDeprecationWarnings = true;
@@ -24,6 +26,13 @@ const RequestScreen = () => {
         loadRequestSent()
         loadRequestReceived()
     }, [])
+
+    const onScroll = ({ nativeEvent }) => {
+        const currentScrollPosition =
+        Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+        setIsExtended(currentScrollPosition <= 0);
+    };
 
     const loadRequestSent = async () => {
         console.log(`loading: on`)
@@ -154,6 +163,7 @@ const RequestScreen = () => {
                 data={requestSentData.data}
                 renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
                 showsVerticalScrollIndicator={false}
+                onScroll={onScroll}
                 ListEmptyComponent={() => {
                     if (requestSentData.isLoading) {
                         return <Request isLoading={true} isEmpty={false} />
@@ -184,6 +194,7 @@ const RequestScreen = () => {
                 data={requestReceivedData.data}
                 renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
                 showsVerticalScrollIndicator={false}
+                onScroll={onScroll}
                 ListEmptyComponent={() => {
                     if (requestReceivedData.isLoading) {
                         return <Request isLoading={true} isEmpty={false} />
@@ -204,11 +215,19 @@ const RequestScreen = () => {
                 <Icon source="clipboard-text-clock" size={30} color='#FFF' />
                 <Appbar.Content title="Request" titleStyle={{fontSize: 18, fontWeight: "bold"}} style={{marginStart: 5}} color='#fff' />
                 <Appbar.Action icon="calendar" size={30} color='#fff' onPress={() => showMode('date')} />
-                <Appbar.Action icon="sort-calendar-ascending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} />
-                <Appbar.Action icon="sort-calendar-descending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} />
+                {/* <Appbar.Action icon="sort-calendar-ascending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} /> */}
+                {/* <Appbar.Action icon="sort-calendar-descending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} /> */}
             </Appbar.Header>
             <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]} />
-            
+            <AnimatedFAB
+                icon="plus"
+                label='New Request'
+                extended={isExtended}
+                style={styles.fab}
+                color='#fff'
+                animateFrom={'right'}
+                iconMode={'static'}
+            />
         </View>
     )
 }
@@ -218,5 +237,12 @@ export default RequestScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "#D8261D"
     }
 })
