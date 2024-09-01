@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, Keyboard } from "react-native";
+import { Image, Keyboard, KeyboardAvoidingView } from "react-native";
 import { Button, Provider, Text, TextInput  } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Pressable } from 'react-native';
@@ -71,61 +71,61 @@ function LoginScreen(){
     return(
         <Provider>
             <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-                <Image source={topImg} style={{width: 320, height: 260}} />
-                <Text variant="titleLarge" style={styles.welcomeText}>
-                    Welcome to Samper!
-                </Text>
-                <TextInput
-                    label="Username"
-                    placeholder='Input your username here'
-                    value={username}
-                    mode='outlined'
-                    activeOutlineColor='#02a807'
-                    style={styles.form}
-                    outlineStyle={{borderRadius:16}}
-                    onChangeText={text => setUsername(text)}
-                    />
-                <TextInput
-                    label="Password"
-                    placeholder='Input your password here'
-                    value={password}
-                    mode='outlined'
-                    activeOutlineColor='#02a807'
-                    style={styles.form}
-                    right={<TextInput.Icon icon={iconEye} onPress={() => {handleEyePressed()}} />}
-                    outlineStyle={{borderRadius:16}}
-                    onChangeText={text => setPassword(text)}
-                    secureTextEntry={isPasswordInvisible}
-                />
-                <Pressable 
-                    style={{
-                        alignSelf: 'flex-end', 
-                        marginEnd: 70
-                    }}
-                    onPress={() => navigation.navigate("ForgetPassword")}
-                >
-                    <Text style={styles.forgetText}>
-                        Forget your password?
+                <KeyboardAvoidingView behavior='position'>     
+                    <Image source={topImg} style={{width: 320, height: 260}} />
+                    <Text variant="titleLarge" style={styles.welcomeText}>
+                        Welcome to Samper!
                     </Text>
-                </Pressable>
-                <Button 
-                    icon="login" 
-                    mode="contained" 
-                    style={styles.button} 
-                    contentStyle={styles.buttonContent} 
-                    buttonColor="#03913E"
-                    onPress={handleLogin}
-                    labelStyle={{
-                        fontSize: 18, 
-                        fontWeight: "bold"
-                    }}
-                >
-                    Login
-                </Button>
+                    <TextInput
+                        label="Username"
+                        placeholder='Input your username here'
+                        value={username}
+                        mode='outlined'
+                        activeOutlineColor='#02a807'
+                        style={styles.form}
+                        outlineStyle={{borderRadius:16}}
+                        onChangeText={text => setUsername(text)}
+                        />
+                    <TextInput
+                        label="Password"
+                        placeholder='Input your password here'
+                        value={password}
+                        mode='outlined'
+                        activeOutlineColor='#02a807'
+                        style={styles.form}
+                        right={<TextInput.Icon icon={iconEye} onPress={() => {handleEyePressed()}} />}
+                        outlineStyle={{borderRadius:16}}
+                        onChangeText={text => setPassword(text)}
+                        secureTextEntry={isPasswordInvisible}
+                    />
+                    <Pressable 
+                        style={{
+                            alignSelf: 'flex-end', 
+                            marginEnd: 20
+                        }}
+                        onPress={() => navigation.navigate("ForgetPassword")}
+                    >
+                        <Text style={styles.forgetText}>
+                            Forget your password?
+                        </Text>
+                    </Pressable>
+                    <Button 
+                        icon="login" 
+                        mode="contained" 
+                        style={styles.button} 
+                        contentStyle={styles.buttonContent} 
+                        buttonColor="#03913E"
+                        onPress={handleLogin}
+                        labelStyle={{
+                            fontSize: 18, 
+                            fontWeight: "bold"
+                        }}
+                    >
+                        Login
+                    </Button>
+                </KeyboardAvoidingView>
             </Pressable>
-            <DialogMessage 
-                ref={dialogRef} 
-            />
+            <DialogMessage ref={dialogRef} />
             <Loader ref={loaderRef} />
         </Provider>
     );
@@ -134,14 +134,17 @@ function LoginScreen(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center"
     },
     welcomeText: {
         fontWeight: "bold",
+        alignSelf: "center",
         marginBottom: 10
     },
     form: {
+        alignSelf: "center",
         marginVertical: 3,
         width:300
     },

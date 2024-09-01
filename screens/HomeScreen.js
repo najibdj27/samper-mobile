@@ -1,14 +1,15 @@
-import { Pressable, ScrollView, StyleSheet, View, StatusBar, FlatList, Animated } from "react-native";
-import { Text, Avatar, Icon } from "react-native-paper";
-import { useRef, useState, useEffect, useContext, useMemo } from "react";
+import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView } from "react-native";
+import { Text, Avatar, Icon, PaperProvider, Provider } from "react-native-paper";
+import { useRef, useState, useEffect, useContext } from "react";
 import StudentScheduleCard from "./components/StudentScheduleCard";
 import Paginator from "./components/Paginator";
 import History from "./components/History";
-import history from "../data/history"
 import { useNavigation } from "@react-navigation/native";
-import moment, { now } from "moment";
+import moment from "moment";
 import { AuthContext } from "./contexts/AuthContext";
 import useAPI from './hooks/useAPI';
+import DialogConfirmation from "./components/DialogConfirmation";
+import Loader from "./components/Loader";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -19,6 +20,7 @@ function HomeScreen() {
     const slidesRef = useRef(null);
     const auth = useContext(AuthContext)
     const navigation = useNavigation()
+    const dialogConfirmationRef = useRef()
     
     const viewableItemChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
@@ -51,6 +53,7 @@ function HomeScreen() {
                     isLoading: false
                 })
             } else if (err.request) {
+                console.error(err.request)
                 dialogRef.current.showDialog('error', "C0001", "Server timeout!")
             }
         })
@@ -86,6 +89,10 @@ function HomeScreen() {
         })
     }
 
+    const handleLogout = () => {
+        dialogConfirmationRef.current?.showDialog('logout', () => auth.logout(), null)
+    } 
+
     useEffect(() => {
         loadScheduleData();
         loadPresenceHistory();
@@ -94,11 +101,7 @@ function HomeScreen() {
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     return (
-        <ScrollView style={styles.navbarContainer} showsVerticalScrollIndicator={false}>
-            <StatusBar 
-                backgroundColor={'#D8261D'}
-                animated={true}
-            />
+        <SafeAreaView style={styles.navbarContainer} showsVerticalScrollIndicator={false}>
             {/* Welcome Header Section */}
             <View style={styles.welcomeView}>
                 <Text style={styles.welcomeText}>
@@ -107,6 +110,9 @@ function HomeScreen() {
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                     <Pressable onPress={() => {navigation.navigate('Setting')}} style={{marginHorizontal: 5}}>
                         <Icon source="cog" color="#fff" size={25} />
+                    </Pressable>
+                    <Pressable onPress={() => handleLogout()} style={{marginHorizontal: 5}}>
+                        <Icon source="logout" color="#fff" size={25} />
                     </Pressable>
                     <Pressable style={{marginHorizontal: 5}} onPress={() => {console.log("Profile pict pressed!")}}>
                         <Avatar.Icon size={42} icon="account" />
@@ -119,15 +125,15 @@ function HomeScreen() {
             </Text>
             <FlatList 
                 data={scheduleData.data}
-                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false}/>}
+                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} auth={auth} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
                 ListEmptyComponent={() => {
                     if (scheduleData.isLoading) {
-                        return <StudentScheduleCard isEmpty={false} isLoading={true} />
+                        return <StudentScheduleCard isEmpty={false} isLoading={true} auth={auth} />
                     }else{
-                        return <StudentScheduleCard isEmpty={true} />
+                        return <StudentScheduleCard isEmpty={true} auth={auth} />
                     }
                 }}
                 bounces={false}
@@ -156,25 +162,27 @@ function HomeScreen() {
                             console.log(`available`)
                 }
             </ScrollView>
-        </ScrollView>
+            <DialogConfirmation ref={dialogConfirmationRef} />
+            <Loader />
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     navbarContainer: {
         flex: 1,
-        
+        backgroundColor: "white"
     },
     welcomeView: {
         flexDirection: "row", 
         backgroundColor: "#D8261D", 
         borderBottomStartRadius: 20,
         borderBottomEndRadius: 20,
-        paddingHorizontal: 10,
+        paddingHorizontal: 20,
         alignItems: "center",
         justifyContent: "space-between",
         height: 120,
-        paddingVertical: 5,
+        paddingVertical: 10,
         marginBottom: 10
     },
     

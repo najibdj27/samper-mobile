@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { BottomNavigation } from 'react-native-paper';
+import { Platform, StatusBar } from 'react-native';
+import { BottomNavigation, Button, Icon, PaperProvider, Text } from 'react-native-paper';
 import HomeScreen from './HomeScreen';
 import MessageScreen from './MessageScreen';
 import ScheduleScreen from './ScheduleScreen';
 import RequestScreen from './RequestScreen';
 import NotificationScreen from './NotificationScreen';
 
-const MainScreen = () => {
-  const [index, setIndex] = React.useState(2);
+const MainScreen = ({route}) => {
+  const [index, setIndex] = React.useState(route.params?.index || 2);
+
   const [routes] = React.useState([
     { key: 'message', title: 'Message', focusedIcon: 'message-text', unfocusedIcon: 'message-text-outline'},
     { key: 'schedule', title: 'Schedule', focusedIcon: 'calendar-month', unfocusedIcon: 'calendar-month-outline'},
@@ -25,20 +27,39 @@ const MainScreen = () => {
   });
 
   return (
-    <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-      activeColor='#0A0B0C'
-      inactiveColor='white'
-      sceneAnimationType='shifting'
-      barStyle={{
-        backgroundColor: '#D8261D',
-      }}
-      style={{
-        
-      }}
-    />
+    <PaperProvider>
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+        activeColor='#ffff'
+        inactiveColor='white'
+        sceneAnimationType='opacity'
+        renderIcon={({route, focused, color}) => {
+          if (focused) {
+            return (
+              <Icon size={24} color="#000" source={route.focusedIcon} />
+            )
+          }
+          else {
+            return (
+              <Icon size={20} color="#fff" source={route.unfocusedIcon} />
+            )
+          }
+        }}
+        barStyle={{
+          backgroundColor: '#D8261D',
+        }}
+        style={{
+          // paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0
+        }}
+        activeIndicatorStyle={{
+          backgroundColor: "#D8261D"
+        }}
+        sceneAnimationEnabled
+        compact
+      />
+    </PaperProvider>
   );
 };
 

@@ -1,9 +1,6 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useAPI from '../hooks/useAPI';
-import { Alert } from 'react-native';
-import { Dialog, Provider } from 'react-native-paper';
-import DialogMessage from '../components/DialogMessage';
 import { useComponentDidMount } from '../hooks/useComponentDidMount';
 
 export const AuthContext = createContext();
@@ -14,7 +11,8 @@ export const AuthProvider = ({children}) => {
         refreshToken: null,
         profile: {},
         roles: [],
-        isAuthenticated: null
+        isAuthenticated: null,
+        isLoading: true
     })
 
     const isComponentMounted = useComponentDidMount()
@@ -33,18 +31,25 @@ export const AuthProvider = ({children}) => {
                 roles: JSON.parse(getRoles)
             })
         } catch (error) {
+            console.log(`getStorage: failed`)
+            console.log(JSON.stringify(error))
             setAuthState({
                 accessToken: null,
                 refreshToken: null,
                 username: null,
                 roles: null,
-                isAuthenticated: null
+                isAuthenticated: null,
+                isLoading: false
             })
         }
-    }, [])
+    }, [AsyncStorage])
 
     const initialized =  useCallback( async () => {
         console.log(`accessToken: ${JSON.stringify(authState.accessToken)}`)
+        setAuthState(prevState => ({
+            ...prevState,
+            isLoading: true
+        }))
         if (authState.accessToken) {
             console.log(`checkToken`)
             await useAPI('get', '/auth/checktoken', null, {token: authState.accessToken})
@@ -54,30 +59,52 @@ export const AuthProvider = ({children}) => {
                 if (!responseCheckToken.data?.isActive) {
                     console.log(`refreshToken`)
                     await useAPI('post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
-                    .then((response) => {
+                    .then( async (response) => {
                         console.log(`refreshToken: success`)
                         const responseRefreshToken = response.data
+                        await AsyncStorage.setItem('accessToken', responseRefreshToken.data.accessToken)
                         setAuthState(prevState => ({
                             ...prevState,
                             accessToken: responseRefreshToken.data.accessToken,
-                            isAuthenticated: true
+                            isAuthenticated: true,
+                            isLoading: false
                         }))
                     }).catch(() => {
+                        setAuthState(prevState => ({
+                            ...prevState,
+                            isLoading: false
+                        }))
                         console.log(`refreshToken: failed`)
                     })
                 }else{
                     console.log(`token active`)
                     setAuthState(prevState => ({
                         ...prevState,
-                        isAuthenticated: true
+                        isAuthenticated: true,
+                        isLoading: false
                     }))
                 }
             }).catch(() => {
                 console.log(`checkToken: failed`)
             })
-        } else if (authState.refreshToken) {
-            console.log(`refreshToken`)
-            refreshToken
+        } else {
+            console.log(`getTokenAsync`)
+            try {
+                const getAccessToken = await AsyncStorage.getItem('accessToken')
+                setAuthState(prevState => ({
+                    ...prevState,
+                    accessToken: getAccessToken,
+                    isLoading: false
+                }))
+                console.log(`getTokenAsync: success`)
+            } catch(error) {
+                console.log(`getTokenAsync: failed`)
+                setAuthState(prevState => ({
+                    ...prevState,
+                    accessToken: null,
+                    isLoading: false
+                }))
+            }
         }
     }, [authState.accessToken])
 
@@ -91,14 +118,11 @@ export const AuthProvider = ({children}) => {
         }
     }, [initialized])
 
-    // useEffect(() => {
-    //     logout()
-    // }, [])
-
     const login = async (accessToken, refreshToken, userId, roles) => {
         const accessTokenPair = ['accessToken', accessToken]
         const refreshTokenPair = ['refreshToken', refreshToken]
         const rolesPair = ['roles', JSON.stringify(roles)]
+        console.log(`accessToken: ${accessToken}`)
         
         try {
             await AsyncStorage.multiSet([accessTokenPair, refreshTokenPair, rolesPair])
@@ -111,8 +135,11 @@ export const AuthProvider = ({children}) => {
                 console.log(JSON.stringify(responseProfileSummary.data))
                 setAuthState(prevState => ({
                     ...prevState,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
                     profile: responseProfileSummary.data,
-                    isAuthenticated: true
+                    isAuthenticated: true,
+                    isLoading: false
                 }))
             }).catch((err) => {
                 console.log(`getProfileSummary: failed`)
@@ -125,18 +152,37 @@ export const AuthProvider = ({children}) => {
 
     const logout = async () => {
         const keys = ['accessToken', 'refreshToken', 'profile', 'roles']
+        await AsyncStorage.multiRemove(keys)
         setAuthState({
             accessToken: null,
             refreshToken: null,
             username: null,
             roles: [],
-            isAuthenticated: null
+            isAuthenticated: null,
+            isLoading: false
         })
-        await AsyncStorage.multiRemove(keys)
     }
 
     const refreshToken = async () => {
-        await callAPIRefreshToken('post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
+        console.log('refreshToken')
+        await useAPI('post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
+        .then( async (response) => {
+            console.log(`refreshToken: success`)
+            const responseRefreshToken = response.data
+            await AsyncStorage.setItem('accessToken', responseRefreshToken.data.accessToken)
+            setAuthState(prevState => ({
+                ...prevState,
+                accessToken: responseRefreshToken.data.accessToken,
+                isAuthenticated: true,
+                isLoading: false
+            }))
+        }).catch(() => {
+            setAuthState(prevState => ({
+                ...prevState,
+                isLoading: false
+            }))
+            console.log(`refreshToken: failed`)
+        })
     }
 
     return (

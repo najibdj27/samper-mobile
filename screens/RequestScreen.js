@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, View, useWindowDimensions, StatusBar } from 'react-native'
-import React, { useEffect, useState, useContext } from 'react'
+import { FlatList, StyleSheet, View, useWindowDimensions, StatusBar, RefreshControl } from 'react-native'
+import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import { AnimatedFAB, Appbar, FAB, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
 import moment from 'moment/moment'
@@ -8,6 +8,7 @@ import Request from './components/Request'
 import Tab from './components/Tab'
 import useAPI from './hooks/useAPI'
 import { AuthContext } from "./contexts/AuthContext"
+import { useNavigation } from '@react-navigation/native'
 
 const RequestScreen = () => {
     const [chip, setChip] = useState([]);
@@ -16,11 +17,10 @@ const RequestScreen = () => {
     const [requestReceivedData, setRequestReceivedData] = useState({data: [], isLoading: true})
     const [isExtended, setIsExtended] = React.useState(true);
 
-    const isIOS = Platform.OS === 'ios';
-
     const {height} = useWindowDimensions()
     const auth = useContext(AuthContext)
     moment.suppressDeprecationWarnings = true;
+    const navigation = useNavigation()
 
     useEffect(() => {
         loadRequestSent()
@@ -28,8 +28,7 @@ const RequestScreen = () => {
     }, [])
 
     const onScroll = ({ nativeEvent }) => {
-        const currentScrollPosition =
-        Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+        const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
 
         setIsExtended(currentScrollPosition <= 0);
     };
@@ -41,9 +40,14 @@ const RequestScreen = () => {
             isLoading: true
         }))
         console.log(`getRequestSentd`)
-        await useAPI('get', '/request/all', {}, {
-            senderId: auth.authState?.profile.user.id
-        }, auth.authState?.accessToken)
+        await useAPI(
+            'get', 
+            '/request/all', 
+            {}, 
+            {
+                senderId: auth.authState?.profile.user.id
+            }, 
+            auth.authState?.accessToken)
         .then((response) => {
             console.log(`getRequestSent: success`)
             console.log(`loading: off`)
@@ -55,11 +59,13 @@ const RequestScreen = () => {
         }).catch((err) => {
             console.log(`getRequestSent: failed`)
             if (err.response) {
+                console.log(`${JSON.stringify(err.response)}`)
                 setRequestSentData({
                     data: [],
                     isLoading: false
                 })
             } else if (err.request) {
+                console.log(`${JSON.stringify(err.request)}`)
 
             }
         })
@@ -109,7 +115,7 @@ const RequestScreen = () => {
         }else{
             setShowChip('date', 'calendar', chipDate)
         }
-      };
+    };
 
     const showMode = (currentMode) => {
         DateTimePickerAndroid.open({
@@ -120,7 +126,7 @@ const RequestScreen = () => {
           is24Hour: true,
           accentColor: '#D8261D',
         });
-      };
+    };
 
     const setShowChip = (key, icon, label, prevState) => {
         const newElement = {key: key, icon: icon, label: label}
@@ -147,7 +153,7 @@ const RequestScreen = () => {
         return updatedChip
     }
 
-    const requestSent = () => (
+    const requestSent = useCallback(() => (
         <View>
             <View style={{flexDirection: "row"}}>
                 {
@@ -160,6 +166,10 @@ const RequestScreen = () => {
                 }          
             </View>
             <FlatList 
+                refreshControl={
+                    <RefreshControl onRefresh={loadRequestSent} refreshing={requestSentData.isLoading} />
+                }
+                refreshing={requestSentData.isLoading}
                 data={requestSentData.data}
                 renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
                 showsVerticalScrollIndicator={false}
@@ -176,9 +186,9 @@ const RequestScreen = () => {
                 }}
             />
         </View>
-    )
+    ), [requestSentData])
 
-    const requestReceived = () => (
+    const requestReceived = useCallback(() => (
         <View>
             <View style={{flexDirection: "row"}}>
                 {
@@ -191,6 +201,10 @@ const RequestScreen = () => {
                 }          
             </View>
             <FlatList 
+                refreshControl={
+                    <RefreshControl onRefresh={loadRequestReceived} refreshing={requestReceivedData.isLoading} />
+                }
+                refreshing={requestReceivedData.isLoading}
                 data={requestReceivedData.data}
                 renderItem={({item}) => <Request item={item} isLoading={false} isEmpty={false} />}
                 showsVerticalScrollIndicator={false}
@@ -207,17 +221,10 @@ const RequestScreen = () => {
                 }}
             />
         </View>
-    )
+    ), [requestReceivedData])
 
     return (
         <View style={styles.container}>
-            <Appbar.Header mode='small' style={{backgroundColor: "#D8261D"}}>
-                <Icon source="clipboard-text-clock" size={30} color='#FFF' />
-                <Appbar.Content title="Request" titleStyle={{fontSize: 18, fontWeight: "bold"}} style={{marginStart: 5}} color='#fff' />
-                <Appbar.Action icon="calendar" size={30} color='#fff' onPress={() => showMode('date')} />
-                {/* <Appbar.Action icon="sort-calendar-ascending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-ascending', 'Time Ascending', closeChipArray('sortbytime'))}} /> */}
-                {/* <Appbar.Action icon="sort-calendar-descending" color='#fff' onPress={() => {setShowChip('sortbytime', 'sort-calendar-descending', 'Time Descending', closeChipArray('sortbytime'))}} /> */}
-            </Appbar.Header>
             <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]} />
             <AnimatedFAB
                 icon="plus"
@@ -226,7 +233,7 @@ const RequestScreen = () => {
                 style={styles.fab}
                 color='#fff'
                 animateFrom={'right'}
-                iconMode={'static'}
+                onPress={() => {navigation.navigate("AddNewRequest")}}
             />
         </View>
     )
@@ -237,6 +244,7 @@ export default RequestScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white"
     },
     fab: {
         position: 'absolute',

@@ -1,0 +1,7 @@
+{
+    "logout" : {
+        "content": "Are you sure you want to log out?",
+        "positiveText": "Yes",
+        "negativeText": "No"
+    }
+}

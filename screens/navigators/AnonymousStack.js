@@ -1,5 +1,6 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import RedirectScreen from '../RedirectScreen';
 import StartScreen from '../StartScreen';
 import LoginScreen from '../LoginScreen';
 import ForgetPasswordScreen from '../ForgetPasswordScreen';
@@ -10,7 +11,19 @@ const Stack = createNativeStackNavigator();
 
 const AnonymousStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Start">
+    <Stack.Navigator screenOptions={{
+        navigationBarColor: "white",
+        statusBarColor: "white",
+        statusBarStyle: "dark",
+        animation: "fade_from_bottom",
+    }} initialRouteName="Start">
+        <Stack.Screen 
+            name="Redirect" 
+            component={RedirectScreen}
+            options={{
+                headerShown: false
+            }} 
+        />
         <Stack.Screen 
             name="Start" 
             component={StartScreen}

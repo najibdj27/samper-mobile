@@ -3,16 +3,42 @@ import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } f
 import moment from "moment";
 import Skeleton from "./Skeleton";
 
-const StudentScheduleCard = ({item, isEmpty, isLoading}) => {
+const StudentScheduleCard = ({item, isEmpty, isLoading, auth}) => {
     const { width } = useWindowDimensions();
     const freeClassImg = require("../../assets/students_09.jpg");
+
+    const actionButton = () => {
+        if (auth.authState.profile?.user.roles.includes('STUDENT')) {
+            return (
+                <>
+                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                        Clock In
+                    </Button>
+                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockOut == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                        Clock Out
+                    </Button>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                        Open 
+                    </Button>
+                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockOut == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                        Close
+                    </Button>
+                </>
+            )
+        }
+    }
 
     const todayClassAvailable = () => {
         return (
             <View style={[styles.container, {width}]}>
                 <Surface style={styles.bannerView} elevation={item.isActive? 3 : 1} >
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
-                        <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={{width: 180, height:40}} style={{width: 180, borderRadius: 8, padding: 0}} labelStyle={[styles.bannerLectureText, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
+                        <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={styles.bannerLectureContent} style={{width: 180, borderRadius: 8}} labelStyle={[styles.bannerLectureLabel, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
                             {`${item.lecture.user.firstName} ${item.lecture.user.lastName}`}
                         </Button>
                         <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey"}]}>
@@ -40,12 +66,9 @@ const StudentScheduleCard = ({item, isEmpty, isLoading}) => {
                         </SafeAreaView>
                     </View>
                     <View style={{position: "absolute", bottom: 0, flexDirection: "row", marginVertical: 5}}>
-                        <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
-                            Clock In
-                        </Button>
-                        <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockOut == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
-                            Clock Out
-                        </Button>
+                        {
+                            actionButton()
+                        }
                     </View>
                 </Surface>
             </View>
@@ -76,9 +99,7 @@ const StudentScheduleCard = ({item, isEmpty, isLoading}) => {
             <View style={[styles.container, {width}]}>
                 <Surface style={[styles.bannerView, {justifyContent: "center", alignItems: "center"}]} elevation={1}>
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%" }}>
-                        <Image source={freeClassImg} style={{height: 150, width: 200, alignSelf: "center"}}>
-
-                        </Image>
+                        <Image source={freeClassImg} style={{height: 150, width: 200, alignSelf: "center"}} />
                         <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold"}}>
                             No class today!
                         </Text>
@@ -125,11 +146,18 @@ const styles = StyleSheet.create({
     bannerTimeText:{
         fontSize: 16
     },
-    bannerLectureText:{
-        // alignSelf: "flex-end",
+    bannerLectureContent: {
+        width: 180,
+        height:30,
+        justifyContent: "flex-start", 
+        alignItems: "center"
+    },
+    bannerLectureLabel:{
         color: 'black',
+        lineHeight: 12,
         fontSize:12,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        textTransform: "capitalize"
     },
 })
 

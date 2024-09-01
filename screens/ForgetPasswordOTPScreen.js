@@ -1,5 +1,5 @@
-import { Image, Keyboard, Pressable, StyleSheet, View } from "react-native";
-import { Text, Button, Provider } from "react-native-paper";
+import { Image, Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, View } from "react-native";
+import { Text, Button, Provider, PaperProvider } from "react-native-paper";
 import OtpForm from "./components/OtpForm";
 import * as React from "react";
 import useCountDown from "./hooks/useCountDown"
@@ -90,47 +90,49 @@ function ForgetPasswordOtpScreen({route}){
   }
 
   return (
-    <Provider>
+    <PaperProvider>
       <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-        <Image source={topImg} style={{width: 320, height: 260}} />
-        <Text style={styles.headerText}>Enter your OTP</Text>
-        <Text style={styles.informationText}>
-          Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
-        </Text>
-        <OtpForm 
-          setPinReady={setPinReady}
-          code={code}
-          setCode={setCode}
-          maxlength={MAX_CODE_LENGTH} 
-        />
-        <Pressable 
-          style={{marginTop: 60}}
-          disabled={timeLeft? true : false}
-          onPress={handleOnResendOtp}
-        >
-            <Text style={[styles.resendOtpText, {color: `${timeLeft? "#c6c6c6" : "#02a807"}`}]}>
-                Resend OTP {timeLeft? `(${timeLeft})` : ""}
-            </Text>
-        </Pressable>
-        <Button 
-            icon="login" 
-            mode="contained" 
-            style={styles.button}
-            contentStyle={styles.buttonContent} 
-            buttonColor="#03913E"
-            onPress={handleValidateOtp}
-            labelStyle={{
-                fontSize: 18, 
-                fontWeight: "bold"
-            }}
-            disabled={!pinReady}
-        >
-            Send OTP
-        </Button>
+        <KeyboardAvoidingView behavior="position">
+          <Image source={topImg} style={{width: 320, height: 260, alignSelf: "center"}} />
+          <Text style={styles.headerText}>Enter your OTP</Text>
+          <Text style={styles.informationText}>
+            Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
+          </Text>
+          <OtpForm 
+            setPinReady={setPinReady}
+            code={code}
+            setCode={setCode}
+            maxlength={MAX_CODE_LENGTH} 
+          />
+          <Pressable 
+            style={{marginTop: 60}}
+            disabled={timeLeft? true : false}
+            onPress={handleOnResendOtp}
+          >
+              <Text style={[styles.resendOtpText, {color: `${timeLeft? "#c6c6c6" : "#02a807"}`}]}>
+                  Resend OTP {timeLeft? `(${timeLeft})` : ""}
+              </Text>
+          </Pressable>
+          <Button 
+              icon="login" 
+              mode="contained" 
+              style={styles.button}
+              contentStyle={styles.buttonContent} 
+              buttonColor="#03913E"
+              onPress={handleValidateOtp}
+              labelStyle={{
+                  fontSize: 18, 
+                  fontWeight: "bold"
+              }}
+              disabled={!pinReady}
+          >
+              Send OTP
+          </Button>
+        </KeyboardAvoidingView>
       </Pressable>
       <Loader ref={loaderRef} />
       <DialogMessage ref={dialogRef} />
-    </Provider>
+    </PaperProvider>
   );
 }
 
@@ -141,18 +143,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 30
+    backgroundColor: 'white'
   },
   headerText : {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10
+    marginBottom: 10,
+    alignSelf: "center"
   },
   informationText: {
     textAlign: "center",
-    width: "70%",
     fontSize: 14,
-    marginVertical: 15
+    marginVertical: 15,
+    paddingHorizontal: 30
   },
   button: {
     alignSelf: "center",
@@ -163,6 +166,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   resendOtpText : {
+    alignSelf: "center",
     fontSize: 16,
     fontWeight:"bold",
     marginBottom: 20

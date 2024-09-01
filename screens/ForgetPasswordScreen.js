@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, Image, Keyboard, View } from "react-native";
+import { Pressable, StyleSheet, Image, Keyboard, View, KeyboardAvoidingView } from "react-native";
 import { Button, PaperProvider, Text, TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import useAPI from './hooks/useAPI';
@@ -52,44 +52,50 @@ function ForgetPasswordScreen(){
     return(
         <PaperProvider>
             <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-                <Image source={topImg} style={{width: 320, height: 260}} />
-                <Text variant="titleLarge" style={styles.titleText}>
-                    We will send OTP code to your email!
-                </Text>
-                <InputForm 
-                    label="Email"
-                    input={email}
-                    setInput={setEmail}
-                    placeholder="Input your email here"
-                    inputMode="email"
-                    keyboardType="email-address"
-                    useValidation={true}
-                    validationMode="email"
-                />
-                <Button 
-                    icon="login" 
-                    mode="contained" 
-                    style={styles.button} 
-                    contentStyle={styles.buttonContent} 
-                    buttonColor="#03913E"
-                    onPress={handleSendOtp}
-                    labelStyle={{
-                        fontSize: 18, 
-                        fontWeight: "bold"
-                    }}
-                >
-                    Send OTP
-                </Button>
+                <KeyboardAvoidingView behavior='position' style={{justifyContent: "center", alignItems: "center"}}>
+                    <Image source={topImg} style={{width: 320, height: 260}} />
+                    <Text variant="titleLarge" style={styles.titleText}>
+                        We will send OTP code to your email!
+                    </Text>
+                    <InputForm 
+                        label="Email"
+                        mode="outlined"
+                        input={email}
+                        setInput={setEmail}
+                        placeholder="Input your email here"
+                        inputMode="email"
+                        keyboardType="email-address"
+                        useValidation={true}
+                        validationMode="email"
+                        centered={true}
+                        style={styles.form}
+                    />
+                    <Button 
+                        icon="login" 
+                        mode="contained" 
+                        style={styles.button} 
+                        contentStyle={styles.buttonContent} 
+                        buttonColor="#03913E"
+                        onPress={handleSendOtp}
+                        labelStyle={{
+                            fontSize: 18, 
+                            fontWeight: "bold"
+                        }}
+                    >
+                        Send OTP
+                    </Button>
+                </KeyboardAvoidingView>
             </Pressable>
             <Loader ref={loaderRef} />
             <DialogMessage ref={dialogRef} />
         </PaperProvider>
-);
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center"
     },
@@ -100,8 +106,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     form: {
-        marginVertical: 3,
-        width:300
+        alignSelf: "center"
     },
     button: {
         alignSelf: "center",
