@@ -33,10 +33,10 @@ function HomeScreen() {
             ...prevData,
             isLoading: true
         }))
-        await useAPI('get', '/schedule/allbycurrentuserclass', {}, { 
-            dateFrom: moment(now, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'),
-            dateTo: moment(now, 'YYYY-MM-DD HH:mm:ss').add(1, "days").format('YYYY-MM-DD'),
-            userId: JSON.parse(auth.authState.profile.user.id)
+        await useAPI('get', '/schedule/allbystudent', {}, { 
+            dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+            dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
+            classId: JSON.parse(auth.authState.profile.kelas.id)
         }, auth.authState?.accessToken)
         .then((response) => {
             console.log(`todaySchedule: success`)
@@ -52,6 +52,7 @@ function HomeScreen() {
                     data: [],
                     isLoading: false
                 })
+                console.log(`err_dscp: ${JSON.stringify(err.response)}`)
             } else if (err.request) {
                 console.error(err.request)
                 dialogRef.current.showDialog('error', "C0001", "Server timeout!")
