@@ -103,10 +103,9 @@ const AddNewRequestScreen = () => {
       ...prevState,
       isLoading: true
     }))
-    await useAPI('get', '/schedule/allbystudent', {}, {
+    await useAPI('get', loadScheduleURI, {}, {
       dateFrom: moment(dateForm, "yyyy-MM-DD").format('yyyy-MM-DD'),
-      dateTo: moment(dateForm, "yyyy-MM-DD").add(1, "days").format('yyyy-MM-DD'),
-      classId: JSON.parse(auth.authState.profile.kelas.id)
+      dateTo: moment(dateForm, "yyyy-MM-DD").add(1, "days").format('yyyy-MM-DD')
     }, auth.authState?.accessToken)
     .then((response) => {
       console.log(`schedule: success`)
@@ -118,6 +117,7 @@ const AddNewRequestScreen = () => {
     }).catch((err) => {
       console.log(`schedule: failed`)
       if (err.response) {
+        console.log(`${JSON.stringify(err.response)}`)
         setSchedule({
           data: [],
           isLoading: false
@@ -220,9 +220,7 @@ const AddNewRequestScreen = () => {
   const requestTypeData = useMemo(() => {
   if (auth.authState.profile?.user.roles.includes('LECTURE')) {
     return [
-      { label: 'Reschedule', value: 'RESCHEDULE' },
-      { label: 'Late Record', value: 'LATE_RECORD' },
-      { label: 'Permit', value: 'PERMIT' }
+      { label: 'Reschedule', value: 'RESCHEDULE' }
     ]
   } else {
     if (auth.authState.profile?.isLeader) {
@@ -237,6 +235,16 @@ const AddNewRequestScreen = () => {
         { label: 'Permit', value: 'PERMIT' }
       ]
     }
+  }
+  },
+  []
+  );
+
+  const loadScheduleURI = useMemo(() => {
+  if (auth.authState.profile?.user.roles.includes('LECTURE')) {
+    return '/schedule/allbylecture'
+  } else {
+    return '/schedule/allbystudent'
   }
   },
   []
