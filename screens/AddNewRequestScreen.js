@@ -146,7 +146,7 @@ const AddNewRequestScreen = () => {
       loaderRef.current?.showLoader()
       console.log(`addRequest: failed`)
       if (err.response) {
-        dialogMessageRef.current?.showDialog('error', err.response.data.error_code, err.response.data.error_message)
+        dialogMessageRef.current?.showDialog('error', err.response.data.error_code, err.response.data.error_message, loaderRef.current?.hideLoader())
         console.log(`err: ${JSON.stringify(err.response)}`)
       } else if (err.request) {
         if (err.request.status_code === '500') {
