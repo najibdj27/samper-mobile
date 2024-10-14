@@ -33,31 +33,58 @@ function HomeScreen() {
             ...prevData,
             isLoading: true
         }))
-        await useAPI('get', '/schedule/allbystudent', {}, { 
-            dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-            dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
-            classId: JSON.parse(auth.authState.profile.kelas.id)
-        }, auth.authState?.accessToken)
-        .then((response) => {
-            console.log(`todaySchedule: success`)
-            const responseTodaySchedule = response.data
-            setScheduleData({
-                data: responseTodaySchedule?.data,
-                isLoading: false
-            })
-        }).catch((err) => {
-            console.log(`todaySchedule: failed`)
-            if (err.response) {
+        if (auth.authState.profile.user.roles.includes("LECTURE")) {
+            await useAPI('get', '/schedule/allbylecture', {}, { 
+                dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD')
+            }, auth.authState?.accessToken)
+            .then((response) => {
+                console.log(`todaySchedule: success`)
+                const responseTodaySchedule = response.data
                 setScheduleData({
-                    data: [],
+                    data: responseTodaySchedule?.data,
                     isLoading: false
                 })
-                console.log(`err_dscp: ${JSON.stringify(err.response)}`)
-            } else if (err.request) {
-                console.error(err.request)
-                dialogRef.current.showDialog('error', "C0001", "Server timeout!")
-            }
-        })
+            }).catch((err) => {
+                console.log(`todaySchedule: failed`)
+                if (err.response) {
+                    setScheduleData({
+                        data: [],
+                        isLoading: false
+                    })
+                    // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
+                } else if (err.request) {
+                    console.error(err.request)
+                    dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+                }
+            })
+        } else {
+            await useAPI('get', '/schedule/allbystudent', {}, { 
+                dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
+                classId: JSON.parse(auth.authState.profile.kelas.id)
+            }, auth.authState?.accessToken)
+            .then((response) => {
+                console.log(`todaySchedule: success`)
+                const responseTodaySchedule = response.data
+                setScheduleData({
+                    data: responseTodaySchedule?.data,
+                    isLoading: false
+                })
+            }).catch((err) => {
+                console.log(`todaySchedule: failed`)
+                if (err.response) {
+                    setScheduleData({
+                        data: [],
+                        isLoading: false
+                    })
+                    // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
+                } else if (err.request) {
+                    console.error(err.request)
+                    dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+                }
+            })
+        }
     }
 
     const loadPresenceHistory = async () => {
