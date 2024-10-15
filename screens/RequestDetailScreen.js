@@ -148,6 +148,18 @@ const RequestDetailScreen = ({route}) => {
                             }}
                             editable={false}
                         />
+                        <TextInput 
+                            left={(
+                                <TextInput.Icon icon="list-status" disabled/>
+                            )}
+                            label="Status"
+                            value={requestDetail.data.status}
+                            style={{
+                                width: width*0.8,
+                                backgroundColor: 'white'
+                            }}
+                            editable={false}
+                        />
                         <View style={styles.ticketContentGroup}>
                             <Text variant="labelLarge" style={{fontWeight: "bold"}}>
                                 Schedule
@@ -190,6 +202,18 @@ const RequestDetailScreen = ({route}) => {
                                     editable={false}
                                 />
                             </View>
+                            <TextInput 
+                                left={(
+                                    <TextInput.Icon icon="google-classroom" disabled/>
+                                )}
+                                label="Class"
+                                value={`${requestDetail.data.schedule?.kelas.name}`}
+                                style={{
+                                    width: width*0.8,
+                                    backgroundColor: 'white'
+                                }}
+                                editable={false}
+                            />
                         </View>
                         <View style={styles.ticketContentGroup}>
                             <Text variant="labelLarge" style={{fontWeight: "bold"}}>
