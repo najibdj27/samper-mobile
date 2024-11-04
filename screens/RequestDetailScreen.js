@@ -1,11 +1,13 @@
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import useAPI from './hooks/useAPI'
 import { Avatar, Divider, Provider, Surface, Text, TextInput } from 'react-native-paper'
+import StickyButton from './components/StickyButton'
 import { AuthContext } from './contexts/AuthContext'
 import moment from 'moment/moment'
 import Loader from './components/Loader'
 import DialogMessage from './components/DialogMessage'
+import DialogConfirmation from './components/DialogConfirmation'
 
 const RequestDetailScreen = ({route}) => {
     const [requestDetail, setRequestDetail] = useState({data: {}, isLoading: false})
@@ -14,6 +16,40 @@ const RequestDetailScreen = ({route}) => {
     const {width} = useWindowDimensions()
     const loaderRef = useRef()
     const dialogRef = useRef()
+    const dialogConfirmationRef = useRef()
+
+    const handleApprove = async () => {
+        console.log('handleApprove')
+        console.log('loader: on')
+        loaderRef.current.showLoader()
+        await useAPI(
+            'patch',
+            `/request/approve`,
+            '',
+            {
+                requestId: route.params.requestId
+            },
+            auth.authState?.accessToken
+        ).then(response => {
+            console.log('handleApprove: success')
+            console.log('loading: off')
+            loaderRef.current.hideLoader()
+            dialogRef.current.showDialog('success', '0000', 'Request have been approved!')
+        }).catch(err => {
+            console.log('handleApprove: failed')
+            console.log('loading: off')
+            loaderRef.current.showLoader()
+            if (err.response) {
+                if (err.response.data.status === 401) {
+                    console.log('refreshToken')
+                    auth.refreshToken()
+                }
+                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+            } else if (err.request) {
+                dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
+            } 
+        })
+    }
 
     const loadRequestDetail = async () => {
         console.log('requestDetail')
@@ -83,6 +119,20 @@ const RequestDetailScreen = ({route}) => {
             break;
         }
     }
+
+    // const submitButton = useMemo(() => {
+    //     if (auth.authState.profile.user.id == requestDetail.data?.receiver.id) {
+    //         return (
+    //             <StickyButton 
+    //             label="Approve"
+    //             buttonColor="#D8261D"
+    //             onPress={() => {}}
+    //         />
+    //         )
+    //     } else {
+    //         return null
+    //     }
+    // })
 
     return (
         <Provider>
@@ -249,8 +299,22 @@ const RequestDetailScreen = ({route}) => {
                     </View>
                 </Surface>
             </ScrollView>
+            {
+                auth.authState.profile.user?.id === requestDetail.data.receiver?.id ?
+                    (
+                        <StickyButton 
+                            label="Approve"
+                            buttonColor="#D8261D"
+                            disabled={requestDetail.data?.status === 'APPROVED' ? true : false}
+                            onPress={() => {dialogConfirmationRef.current?.showDialog('checkbox-marked', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
+                        />
+                    )
+                    :
+                    null
+            }
             <Loader ref={loaderRef} />
             <DialogMessage ref={dialogRef} />
+            <DialogConfirmation ref={dialogConfirmationRef} />
         </Provider>
     )
 }
