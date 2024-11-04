@@ -8,8 +8,9 @@ const DialogConfirmation = forwardRef((props, ref) => {
     const [visible, setVisible] = useState(false);
     const [positiveFunc, setPositiveFunc] = useState(() => () => {})
     const [negativeFunc, setNegativeFunc] = useState(() => () => {})
-    const [data, setData] = useState({})
-    const [type, setType] = useState()
+    const [icon, setIcon] = useState('')
+    const [tittle, setTittle] = useState('')
+    const [text, setText] = useState()
 
     useEffect(() => {
         
@@ -19,10 +20,12 @@ const DialogConfirmation = forwardRef((props, ref) => {
         showDialog,
     }))
 
-    const showDialog = (type, positiveFunc, negativeFunc) => {
+    const showDialog = (icon, tittle, text, positiveFunc, negativeFunc) => {
         console.log('showDialogConfirmation')
         Keyboard.dismiss()
-        setType(type)
+        setIcon(icon)
+        setText(text)
+        setTittle(tittle)
         setPositiveFunc(() => positiveFunc)
         setNegativeFunc(() => negativeFunc)
         setVisible(true)
@@ -31,8 +34,10 @@ const DialogConfirmation = forwardRef((props, ref) => {
     const hideDialog = (isConfirmed) => {
         console.log('hideDialogConfirmation')
         if (isConfirmed) {
+            console.log('confirmed')
             positiveFunc? positiveFunc() : null
         } else {
+            console.log('canceled')
             negativeFunc? negativeFunc() : null
         }
         setVisible(false)
@@ -44,14 +49,14 @@ const DialogConfirmation = forwardRef((props, ref) => {
             <Portal>
                 <BlurView intensity={10} tint="dark" style={{flex: 1,justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
                     <Dialog visible={visible} onDismiss={hideDialog} style={{backgroundColor: "#fff"}}>
-                        <Dialog.Icon icon="alert-rhombus" size={75} color='#F8C301' />
-                        <Dialog.Title style={{textAlign: "center"}}>Logout</Dialog.Title>
+                        <Dialog.Icon icon={icon} size={75} color='#D8261D' />
+                        <Dialog.Title style={{textAlign: "center"}}>{tittle}</Dialog.Title>
                         <Dialog.Content>
-                            <Text style={{textAlign: "center"}} variant="titleMedium">{confirmationPageData[type]?.content || ''}</Text>
+                            <Text style={{textAlign: "center"}} variant="titleMedium">{text}</Text>
                         </Dialog.Content>
                         <Dialog.Actions style={{justifyContent: "center"}}>
-                            <Button onPress={() => {hideDialog(true)}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 18, fontWeight: "bold"}}>{confirmationPageData[type]?.positiveText || ''}</Button>
-                            <Button onPress={() => {hideDialog(false)}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#D8261D" ,fontSize: 18, fontWeight: "bold"}}>{confirmationPageData[type]?.negativeText || ''}</Button>
+                            <Button onPress={() => {hideDialog(true)}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 18, fontWeight: "bold"}}>Yes</Button>
+                            <Button onPress={() => {hideDialog(false)}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#D8261D" ,fontSize: 18, fontWeight: "bold"}}>No</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </BlurView>

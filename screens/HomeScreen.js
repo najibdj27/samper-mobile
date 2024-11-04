@@ -118,7 +118,7 @@ function HomeScreen() {
     }
 
     const handleLogout = () => {
-        dialogConfirmationRef.current?.showDialog('logout', () => auth.logout(), null)
+        dialogConfirmationRef.current?.showDialog('logout' , 'Logout', 'Are you sure you want to logout?', () => auth.logout(), null)
     } 
 
     useEffect(() => {
