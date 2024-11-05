@@ -176,7 +176,6 @@ const CalendarAgenda = ({items, isRefreshing, loadItems}) => {
         agendaKnobColor: "#D8261D",
 
       }}
-      progressViewOffset={1000}
     />
   );
 };
