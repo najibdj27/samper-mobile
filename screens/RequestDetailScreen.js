@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import useAPI from './hooks/useAPI'
 import { Avatar, Divider, Provider, Surface, Text, TextInput } from 'react-native-paper'
+import { Button } from 'react-native-paper'
 import StickyButton from './components/StickyButton'
 import { AuthContext } from './contexts/AuthContext'
 import moment from 'moment/moment'
@@ -13,7 +14,7 @@ const RequestDetailScreen = ({route}) => {
     const [requestDetail, setRequestDetail] = useState({data: {}, isLoading: false})
 
     const auth = useContext(AuthContext)
-    const {width} = useWindowDimensions()
+    const {width, height} = useWindowDimensions()
     const loaderRef = useRef()
     const dialogRef = useRef()
     const dialogConfirmationRef = useRef()
@@ -34,7 +35,7 @@ const RequestDetailScreen = ({route}) => {
             console.log('handleApprove: success')
             console.log('loading: off')
             loaderRef.current.hideLoader()
-            dialogRef.current.showDialog('success', '0000', 'Request have been approved!')
+            dialogRef.current.showDialog('success', '0000', 'Request have been approved!', () => loadRequestDetail())
         }).catch(err => {
             console.log('handleApprove: failed')
             console.log('loading: off')
@@ -43,8 +44,43 @@ const RequestDetailScreen = ({route}) => {
                 if (err.response.data.status === 401) {
                     console.log('refreshToken')
                     auth.refreshToken()
+                    handleApprove()
                 }
-                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
+            } else if (err.request) {
+                dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
+            } 
+        })
+    }
+    
+    const handleReject = async () => {
+        console.log('handleReject')
+        console.log('loader: on')
+        loaderRef.current.showLoader()
+        await useAPI(
+            'patch',
+            `/request/reject`,
+            '',
+            {
+                requestId: route.params.requestId
+            },
+            auth.authState?.accessToken
+        ).then(response => {
+            console.log('handleApprove: success')
+            console.log('loading: off')
+            loaderRef.current.hideLoader()
+            dialogRef.current.showDialog('success', '0000', 'Request have been approved!', () => loadRequestDetail())
+        }).catch(err => {
+            console.log('handleApprove: failed')
+            console.log('loading: off')
+            loaderRef.current.showLoader()
+            if (err.response) {
+                if (err.response.data.status === 401) {
+                    console.log('refreshToken')
+                    auth.refreshToken()
+                    handleReject()
+                }
+                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
             } else if (err.request) {
                 dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
             } 
@@ -83,6 +119,7 @@ const RequestDetailScreen = ({route}) => {
                 if (err.response.data.status === 401) {
                     console.log('refreshToken')
                     auth.refreshToken()
+                    loadRequestDetail()
                 }
                 console.log(JSON.stringify(err.response))
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
@@ -299,19 +336,44 @@ const RequestDetailScreen = ({route}) => {
                     </View>
                 </Surface>
             </ScrollView>
-            {
-                auth.authState.profile.user?.id === requestDetail.data.receiver?.id ?
+            <View style={{flexDirection: 'row', justifyContent: 'center', marginVertical: 24}}>
+                {
+                    auth.authState.profile.user?.id === requestDetail.data.receiver?.id ?
+                        (
+                            <Button 
+                                // label="Approve"]
+                                style={styles.button}
+                                labelStyle={styles.buttonLabel}
+                                mode="contained"
+                                buttonColor="#212121"
+                                disabled={requestDetail.data?.status === 'PENDING' ? false : true}
+                                onPress={() => {dialogConfirmationRef.current?.showDialog('note-check', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
+                                >
+                                    Approve
+                                </Button>
+                        )
+                        :
+                        null
+                    }
+                {
+                    auth.authState.profile.user?.id === requestDetail.data.receiver?.id ?
                     (
-                        <StickyButton 
-                            label="Approve"
-                            buttonColor="#D8261D"
-                            disabled={requestDetail.data?.status === 'APPROVED' ? true : false}
-                            onPress={() => {dialogConfirmationRef.current?.showDialog('checkbox-marked', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
-                        />
-                    )
-                    :
-                    null
-            }
+                            <Button 
+                                // label="Approve"   
+                                style={styles.button} 
+                                labelStyle={styles.buttonLabel}
+                                mode="contained"                            
+                                buttonColor="#212121"
+                                disabled={requestDetail.data?.status === 'PENDING' ? false : true}
+                                onPress={() => {dialogConfirmationRef.current?.showDialog('note-remove', 'Reject', 'Are you sure you want to reject this request?', () => handleReject(), null)}}  
+                            >
+                                Reject
+                            </Button>
+                        )
+                        :
+                        null
+                }
+            </View>
             <Loader ref={loaderRef} />
             <DialogMessage ref={dialogRef} />
             <DialogConfirmation ref={dialogConfirmationRef} />
@@ -322,8 +384,21 @@ const RequestDetailScreen = ({route}) => {
 export default RequestDetailScreen
 
 const styles = StyleSheet.create({
+    button: {
+        width: 160,
+        height: 40,
+        marginHorizontal: 10,
+        borderRadius: 6,
+        justifyContent: 'center'
+    },
+    buttonLabel: {
+        fontSize: 18,
+        fontWeight: "bold",
+        lineHeight: 20
+    },
     container: {
-        flex: 1,
+        flexGrow: 1,
+        paddingBottom: 10,
         alignItems: "center"
     },
     ticket: {
