@@ -154,10 +154,9 @@ const CalendarAgenda = ({items, isRefreshing, loadItems}) => {
       refreshing={isRefreshing}
       extraData={isRefreshing}
       windowSize={3}
-      updateCellsBatchingPeriod={10}
+      selected={currentDate.dateString}
       initialNumToRender={5}
       indicatorStyle="black"
-      contentContainerStyle={{paddingVertical: 20}}
       markedDates={markedDate}
       onDayPress={day => {
         console.log('dayPressed')
@@ -171,6 +170,13 @@ const CalendarAgenda = ({items, isRefreshing, loadItems}) => {
         loadDateMarked()
       }}
       onRefresh={onRefresh}
+      theme={{
+        indicatorColor: "#D8261D",
+        monthTextColor:"black",
+        agendaKnobColor: "#D8261D",
+
+      }}
+      progressViewOffset={1000}
     />
   );
 };
