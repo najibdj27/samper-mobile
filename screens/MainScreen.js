@@ -48,13 +48,13 @@ const MainScreen = ({route}) => {
           }
         }}
         barStyle={{
-          backgroundColor: '#D8261D',
+          backgroundColor: '#D8261D'
         }}
         style={{
           // paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0
         }}
         activeIndicatorStyle={{
-          backgroundColor: "#D8261D"
+          backgroundColor: "#F5F5F5"
         }}
         sceneAnimationEnabled
         compact
