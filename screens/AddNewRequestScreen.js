@@ -103,7 +103,7 @@ const AddNewRequestScreen = () => {
       ...prevState,
       isLoading: true
     }))
-    await useAPI('get', loadScheduleURI, {}, {
+    await useAPI(auth, 'get', loadScheduleURI, {}, {
       dateFrom: moment(dateForm, "yyyy-MM-DD").format('yyyy-MM-DD'),
       dateTo: moment(dateForm, "yyyy-MM-DD").add(1, "days").format('yyyy-MM-DD')
     }, auth.authState?.accessToken)
@@ -137,7 +137,7 @@ const AddNewRequestScreen = () => {
       requestData: Object.entries(additionalDataForm).length > 0? JSON.stringify(additionalDataForm) : undefined
     }
     console.log(`addRequest: ${JSON.stringify(reqBody)}`)
-    await useAPI('post', '/request/add', reqBody, {}, auth.authState.accessToken)
+    await useAPI(auth, 'post', '/request/add', reqBody, {}, auth.authState.accessToken)
     .then((response) => {
       loaderRef.current?.showLoader()
       console.log(`addRequest: success`)

@@ -43,7 +43,7 @@ const ForgetPasswordNewPassScreen = ({route}) => {
         setScreenLoading(true)
         if (newPassword === confirmPassword) {
             console.log(`resetPassword`)
-            await useAPI('patch', '/auth/reset_password', {newPassword: newPassword}, {token: route.params.token})
+            await useAPI(null, 'patch', '/auth/reset_password', {newPassword: newPassword}, {token: route.params.token})
             .then((response) => {
                 console.log(`resetPassword: success`)
                 console.log(`screenLoading: off`)

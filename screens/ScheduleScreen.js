@@ -17,7 +17,7 @@ const ScheduleScreen = () => {
     const loadItems = async (month) => {
         console.log(`getSchedule: ${JSON.stringify(month)}`)
         setIsRefreshing(true)
-        await useAPI('get', '/schedule/getmonthlyschedule', {}, {
+        await useAPI(auth, 'get', '/schedule/getmonthlyschedule', {}, {
             date: month.dateString,
             userId: auth.authState.profile.user.id
         }, auth.authState?.accessToken)

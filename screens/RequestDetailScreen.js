@@ -24,6 +24,7 @@ const RequestDetailScreen = ({route}) => {
         console.log('loader: on')
         loaderRef.current.showLoader()
         await useAPI(
+            auth,
             'patch',
             `/request/approve`,
             '',
@@ -41,11 +42,6 @@ const RequestDetailScreen = ({route}) => {
             console.log('loading: off')
             loaderRef.current.showLoader()
             if (err.response) {
-                if (err.response.data.status === 401) {
-                    console.log('refreshToken')
-                    auth.refreshToken()
-                    handleApprove()
-                }
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
             } else if (err.request) {
                 dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
@@ -58,6 +54,7 @@ const RequestDetailScreen = ({route}) => {
         console.log('loader: on')
         loaderRef.current.showLoader()
         await useAPI(
+            auth,
             'patch',
             `/request/reject`,
             '',
@@ -75,11 +72,6 @@ const RequestDetailScreen = ({route}) => {
             console.log('loading: off')
             loaderRef.current.showLoader()
             if (err.response) {
-                if (err.response.data.status === 401) {
-                    console.log('refreshToken')
-                    auth.refreshToken()
-                    handleReject()
-                }
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
             } else if (err.request) {
                 dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
@@ -95,6 +87,7 @@ const RequestDetailScreen = ({route}) => {
             isLoading: true
         }))
         await useAPI(
+            auth,
             'get',
             `/request/${route.params.requestId}`,
             null,
@@ -117,8 +110,6 @@ const RequestDetailScreen = ({route}) => {
             }))
             if (err.response) {
                 if (err.response.data.status === 401) {
-                    console.log('refreshToken')
-                    auth.refreshToken()
                     loadRequestDetail()
                 }
                 console.log(JSON.stringify(err.response))

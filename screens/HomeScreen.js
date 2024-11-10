@@ -34,7 +34,7 @@ function HomeScreen() {
             isLoading: true
         }))
         if (auth.authState.profile.user.roles.includes("LECTURE")) {
-            await useAPI('get', '/schedule/allbylecture', {}, { 
+            await useAPI(auth, 'get', '/schedule/allbylecture', {}, { 
                 dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
                 dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD')
             }, auth.authState?.accessToken)
@@ -59,7 +59,7 @@ function HomeScreen() {
                 }
             })
         } else {
-            await useAPI('get', '/schedule/allbystudent', {}, { 
+            await useAPI(auth, 'get', '/schedule/allbystudent', {}, { 
                 dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
                 dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
                 classId: JSON.parse(auth.authState.profile.kelas.id)
@@ -93,7 +93,7 @@ function HomeScreen() {
             ...prevData,
             isLoading: false
         }))      
-        await useAPI('get', '/presence/getallbystudent', {}, {
+        await useAPI(auth, 'get', '/presence/getallbystudent', {}, {
             studentId: auth.authState.profile.id,
             limit: 10
         }, auth.authState?.accessToken)

@@ -25,6 +25,7 @@ const ScheduleDetailScreen = ({route}) => {
 			isLoading: true
 		})
 		await useAPI(
+			auth,
 			'get',
 			`/schedule/${route.params.scheduleId}`,
 			'',

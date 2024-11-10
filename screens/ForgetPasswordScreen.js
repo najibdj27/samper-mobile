@@ -28,7 +28,7 @@ function ForgetPasswordScreen(){
         console.log(`screenLoading: on`)
         setScreenLoading(true)
         console.log(`forgetPassword`)
-        await useAPI('post', '/auth/forgetpassword', {emailAddress: email}, null, null)
+        await useAPI(null, 'post', '/auth/forgetpassword', {emailAddress: email}, null, null)
         .then( (response) => {
             console.log(`forgetPassword: success`)
             console.log(`screenLoading: off`)

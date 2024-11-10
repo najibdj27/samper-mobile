@@ -52,7 +52,7 @@ export const AuthProvider = ({children}) => {
         }))
         if (authState.accessToken) {
             console.log(`checkToken`)
-            await useAPI('get', '/auth/checktoken', null, {token: authState.accessToken})
+            await useAPI(null ,'get', '/auth/checktoken', null, {token: authState.accessToken})
             .then( async (response) => {
                 console.log(`checkToken: success`)
                 const responseCheckToken = response.data
@@ -127,7 +127,7 @@ export const AuthProvider = ({children}) => {
         try {
             await AsyncStorage.multiSet([accessTokenPair, refreshTokenPair, rolesPair])
             console.log(`getProfileSummary`)
-            await useAPI('get', '/user/profilesummary', {}, {userId: userId}, accessToken)
+            await useAPI(null, 'get', '/user/profilesummary', {}, {userId: userId}, accessToken)
             .then( async (response) => {
                 console.log(`getProfileSummary: success`)
                 const responseProfileSummary = response.data
@@ -165,7 +165,7 @@ export const AuthProvider = ({children}) => {
 
     const refreshToken = async () => {
         console.log('refreshToken')
-        await useAPI('post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
+        await useAPI(null, 'post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
         .then( async (response) => {
             console.log(`refreshToken: success`)
             const responseRefreshToken = response.data

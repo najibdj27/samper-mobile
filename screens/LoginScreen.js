@@ -31,7 +31,7 @@ function LoginScreen(){
         console.log(`screenLoading: on`)
         setScreenLoading(true)
         console.log(`login`)
-        await useAPI('post', '/auth/signin', {username: username, password: password}, null)
+        await useAPI(auth, 'post', '/auth/signin', {username: username, password: password}, null)
         .then((response) => {
             console.log(`login: success`)
             console.log(`screenLoading: off`)
@@ -43,6 +43,7 @@ function LoginScreen(){
             console.log(`screenLoading: off`)
             setScreenLoading(false)
             if (err.response) {
+                console.log(`err response: ${JSON.stringify(err.response)}`)
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
             } else if (err.request) {
                 dialogRef.current.showDialog('error', "C0001", "Server timeout!")

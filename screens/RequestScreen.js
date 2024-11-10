@@ -41,6 +41,7 @@ const RequestScreen = () => {
         }))
         console.log(`getRequestSentd`)
         await useAPI(
+            auth,
             'get', 
             '/request/all', 
             {}, 
@@ -78,7 +79,7 @@ const RequestScreen = () => {
             isLoading: true
         }))
         console.log(`getRequestReceived`)
-        await useAPI('get', '/request/all', {}, {
+        await useAPI(auth, 'get', '/request/all', {}, {
             receiverId: auth.authState?.profile.user.id
         }, auth.authState?.accessToken)
         .then((response) => {
