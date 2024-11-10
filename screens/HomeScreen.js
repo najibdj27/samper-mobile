@@ -20,7 +20,7 @@ function HomeScreen() {
     const slidesRef = useRef(null);
     const auth = useContext(AuthContext)
     const navigation = useNavigation()
-    const dialogConfirmationRef = useRef()
+    
     
     const viewableItemChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
@@ -117,9 +117,7 @@ function HomeScreen() {
         })
     }
 
-    const handleLogout = () => {
-        dialogConfirmationRef.current?.showDialog('logout' , 'Logout', 'Are you sure you want to logout?', () => auth.logout(), null)
-    } 
+    
 
     useEffect(() => {
         loadScheduleData();
@@ -136,11 +134,11 @@ function HomeScreen() {
                     {`Welcome back, ${auth.authState.profile.user.firstName}!`} 
                 </Text>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <Pressable onPress={() => console.log('notification')} style={{marginHorizontal: 5}}>
+                        <Icon source="bell" color="#fff" size={25} />
+                    </Pressable>
                     <Pressable onPress={() => {navigation.navigate('Setting')}} style={{marginHorizontal: 5}}>
                         <Icon source="cog" color="#fff" size={25} />
-                    </Pressable>
-                    <Pressable onPress={() => handleLogout()} style={{marginHorizontal: 5}}>
-                        <Icon source="logout" color="#fff" size={25} />
                     </Pressable>
                     <Pressable style={{marginHorizontal: 5}} onPress={() => {console.log("Profile pict pressed!")}}>
                         <Avatar.Icon size={42} icon="account" />
@@ -190,7 +188,6 @@ function HomeScreen() {
                             console.log(`available`)
                 }
             </ScrollView>
-            <DialogConfirmation ref={dialogConfirmationRef} />
             <Loader />
         </SafeAreaView>
     );
