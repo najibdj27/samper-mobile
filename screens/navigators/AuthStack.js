@@ -5,6 +5,7 @@ import SettingScreen from '../SettingScreen';
 import AddNewRequestScreen from '../AddNewRequestScreen';
 import RequestDetailScreen from '../RequestDetailScreen';
 import AccountDetailScreen from '../AccountDetailScreen';
+import ScheduleDetailScreen from '../ScheduleDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -79,6 +80,23 @@ const AuthStack = () => {
                 headerShown: true,
                 headerTitleAlign: "left",
                 headerTitle: "Account Detail",
+                headerStyle: {
+                    backgroundColor: "#D8261D"
+                },
+                headerTitleStyle:{
+                    fontWeight: "bold",
+                    color: "#fff"
+                },
+                headerTintColor: "#fff"
+            }} 
+        />
+        <Stack.Screen 
+            name="ScheduleDetail" 
+            component={ScheduleDetailScreen}
+            options={{
+                headerShown: true,
+                headerTitleAlign: "left",
+                headerTitle: "Schedule Detail",
                 headerStyle: {
                     backgroundColor: "#D8261D"
                 },
