@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Platform, StatusBar } from 'react-native';
-import { BottomNavigation, Button, Icon, PaperProvider, Text } from 'react-native-paper';
+import { Platform, StatusBar, Touchable } from 'react-native';
+import { BottomNavigation, Button, Icon, PaperProvider, Text, TouchableRipple } from 'react-native-paper';
 import HomeScreen from './HomeScreen';
 import MessageScreen from './MessageScreen';
 import ScheduleScreen from './ScheduleScreen';
@@ -56,6 +56,7 @@ const MainScreen = ({route}) => {
         activeIndicatorStyle={{
           backgroundColor: "#F5F5F5"
         }}
+        renderTouchable={({key, ...props}) => (<TouchableRipple key={key} {...props} />)}
         sceneAnimationEnabled
         compact
       />
