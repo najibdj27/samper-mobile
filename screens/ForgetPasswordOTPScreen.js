@@ -1,12 +1,12 @@
 import { Image, Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, View } from "react-native";
-import { Text, Button, Provider, PaperProvider } from "react-native-paper";
+import { Text, Button, PaperProvider } from "react-native-paper";
 import OtpForm from "./components/OtpForm";
 import * as React from "react";
 import useCountDown from "./hooks/useCountDown"
 import { useNavigation } from "@react-navigation/native";
-import useAPI from './hooks/useAPI';
 import Loader from './components/Loader';
 import DialogMessage from './components/DialogMessage';
+import usePublicCall from "./hooks/usePublicCall";
 
 function ForgetPasswordOtpScreen({route}){
 
@@ -15,12 +15,58 @@ function ForgetPasswordOtpScreen({route}){
   const [screenLoading, setScreenLoading] = React.useState()
   const MAX_CODE_LENGTH = 4;
 
+  const axiosPublic = usePublicCall()
   const dialogRef = React.useRef()
   const loaderRef = React.useRef()
   const navigation = useNavigation()
   const {timeLeft, start} = useCountDown()
 
   const topImg = require("../assets/a2747e8a-9096-4f61-bc36-5ec9df024264.png")
+
+  const handleOnResendOtp = async () => {
+    Keyboard.dismiss()
+    setScreenLoading(true)
+    const reqBody ={emailAddress: route.params.emailAddress}
+    console.log(`sendForgetPasswordOTP`)
+    await axiosPublic.post('/auth/forgetpassword', reqBody)
+    .then((response) => {
+      const sendForgetPasswordOTPResponse = response.data
+      console.log(`sendForgetPasswordOTP: success`)
+      console.log(`screenLoading: off`)
+      setScreenLoading(false)
+      start(30)
+      console.log(`counter: start`)
+      dialogRef.current.showDialog('success', '0000', sendForgetPasswordOTPResponse.message)
+    }).catch((err) => {
+      console.log(`sendForgetPasswordOTP: failed`)
+      setScreenLoading(false)
+      if (err.response) {
+        dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+      } 
+    })
+  }
+
+  const handleValidateOtp = async () => {
+    Keyboard.dismiss()
+    setScreenLoading(true)
+    const intCode = parseInt(code)
+    const reqBody = {emailAddress: route.params.emailAddress, otp: intCode}
+    console.log(`confirmOTP`)
+    await axiosPublic.post('/auth/confirmotp', reqBody)
+    .then((response) => {
+      const validateOtpResponse = response.data
+      console.log(`confirmOTP: success`)
+      setScreenLoading(false)
+      setCode("")
+      navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken})
+    }).catch((err) => {
+      console.log(`confirmOTP: failed`)
+      setScreenLoading(false)
+      if (err.response) {
+        dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+      }
+    })
+  }
 
   React.useEffect(() => {
     if (screenLoading) {
@@ -33,61 +79,6 @@ function ForgetPasswordOtpScreen({route}){
   React.useEffect(() => {
     start(60)
   }, [])
-
-  const handleOnResendOtp = () => {
-    Keyboard.dismiss()
-    console.log(`screenLoading: on`)
-    setScreenLoading(true)
-    const reqBody ={emailAddress: route.params.emailAddress}
-    console.log(`sendForgetPasswordOTP`)
-    useAPI('post', '/auth/forgetpassword', reqBody, null)
-    .then((response) => {
-      const sendForgetPasswordOTPResponse = response.data
-      console.log(`sendForgetPasswordOTP: success`)
-      console.log(`screenLoading: off`)
-      setScreenLoading(false)
-      console.log(`counter: start`)
-      start(30)
-      console.log(`counter: start`)
-      dialogRef.current.showDialog('success', '0000', sendForgetPasswordOTPResponse.message)
-    }).catch((err) => {
-      console.log(`sendForgetPasswordOTP: failed`)
-      console.log(`screenLoading: off`)
-      setScreenLoading(false)
-      if (err.response) {
-        dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
-      } else if (err.request){
-        dialogRef.current.showDialog('error', "C0001", "Server timeout!")
-      }
-    })
-  }
-
-  const handleValidateOtp = () => {
-    Keyboard.dismiss()
-    console.log(`screenLoading: on`)
-    setScreenLoading(true)
-    const intCode = parseInt(code)
-    const reqBody = {emailAddress: route.params.emailAddress, otp: intCode}
-    console.log(`confirmOTP`)
-    useAPI('post', '/auth/confirmotp', reqBody, null)
-    .then((response) => {
-      const validateOtpResponse = response.data
-      console.log(`confirmOTP: success`)
-      console.log(`screenLoading: off`)
-      setScreenLoading(false)
-      setCode("")
-      navigation.navigate('ForgetPasswordNewPass', {emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken})
-    }).catch((err) => {
-      console.log(`confirmOTP: failed`)
-      console.log(`screenLoading: off`)
-      setScreenLoading(false)
-      if (err.response) {
-        dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
-      } else if (err.request){
-        dialogRef.current.showDialog('error', "C0001", "Server timeout!")
-      }
-    })
-  }
 
   return (
     <PaperProvider>

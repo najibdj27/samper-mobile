@@ -1,18 +1,18 @@
 import { ScrollView, StyleSheet, View } from 'react-native'
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
-import useAPI from './hooks/useAPI'
-import { AuthContext } from './contexts/AuthContext'
 import DialogMessage from './components/DialogMessage'
 import Loader from './components/Loader'
 import { List, Text } from 'react-native-paper'
 import moment from 'moment'
 import useOrdinalNumber from './hooks/useOrdinalNumber'
+import usePrivateCall from './hooks/usePrivateCall'
+
 
 const ScheduleDetailScreen = ({route}) => {
 
-	const auth = useContext(AuthContext)
 	const [scheduleDetailData, setScheduleDetailData] = useState({data: {}, isLoading: false})
+	const axiosPrivate = usePrivateCall()
 	const loaderRef = useRef()
     const dialogRef = useRef()
 	const {format} = useOrdinalNumber()
@@ -24,14 +24,8 @@ const ScheduleDetailScreen = ({route}) => {
 			...scheduleDetailData,
 			isLoading: true
 		})
-		await useAPI(
-			auth,
-			'get',
-			`/schedule/${route.params.scheduleId}`,
-			'',
-			'',
-			auth.authState?.accessToken
-		).then(response => {
+		await axiosPrivate.get(`/schedule/${route.params.scheduleId}`)
+		.then(response => {
 			console.log('loadScheduleDetail: success')
 			const scheduleDetailData = response.data
 			setScheduleDetailData({
@@ -41,7 +35,6 @@ const ScheduleDetailScreen = ({route}) => {
 		}).catch(err => {
 			console.log('loadScheduleDetail: failed')
 			if (err.response) {
-				// console.log(`error_response: ${JSON.stringify(err.response)}`)
 				if (err.response.data.status === 401) {
 					console.log('refreshToken')
                     auth.refreshToken()
@@ -52,7 +45,6 @@ const ScheduleDetailScreen = ({route}) => {
 					isLoading: false
 				})
 			} else {
-				// console.log(`error_response: ${JSON.stringify(err.request)}`)
 				setScheduleDetailData({
 					...scheduleDetailData,
 					isLoading: false
@@ -68,10 +60,8 @@ const ScheduleDetailScreen = ({route}) => {
 
 	useEffect(() => {
         if (scheduleDetailData.isLoading) {
-            console.log('loader: on')
             loaderRef.current.showLoader()
         }else{
-            console.log('loader: off')
             loaderRef.current.hideLoader()
         }
     }, [scheduleDetailData.isLoading])
@@ -79,8 +69,8 @@ const ScheduleDetailScreen = ({route}) => {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={{alignSelf: "start", marginStart: 20}}>
-				<Text variant="headlineLarge" style={{fontWeight: "bold", marginTop: 20}}>{scheduleDetailData.data.subject?.name}</Text>
-				<Text variant="titleLarge" style={{fontWeight: "bold", marginTop: 5}}>{`${format(scheduleDetailData.data?.meetingOrder)} Meeting`}</Text>
+				<Text variant="titleLarge" style={{fontWeight: "bold", marginTop: 20}}>{scheduleDetailData.data.subject?.name}</Text>
+				<Text variant="titleMedium" style={{fontWeight: "bold", marginTop: 5}}>{`${format(scheduleDetailData.data?.meetingOrder)} Meeting`}</Text>
 			</View>
 			<List.Section style={styles.section}>
 				{/* <List.Subheader style={{fontSize:24, fontWeight: "bold"}}>Time</List.Subheader> */}
@@ -115,7 +105,7 @@ const ScheduleDetailScreen = ({route}) => {
 					titleStyle={styles.itemTitle}
 				/>
 			</List.Section>
-			<List.Section style={styles.section} title='Lecture' titleStyle={{fontSize: 22, fontWeight: 'bold'}}>
+			<List.Section style={styles.section} title='Lecture' titleStyle={{fontSize: 18, fontWeight: 'bold'}}>
 				<List.Item
 					title="Name"
 					left={() => <List.Icon icon="account-tie" />}
@@ -152,13 +142,14 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 20,
 		marginHorizontal: 10,
+		fontSize: 18
 	},
 	itemTitle: {
 		fontWeight: "bold", 
-		fontSize: 18
+		fontSize: 16
 	},
 	rightItemText: {
-		fontSize: 18,
+		fontSize: 14,
 		fontWeight: "bold", 
 		alignSelf:"center"
 	}

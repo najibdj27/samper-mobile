@@ -1,46 +1,41 @@
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import useAPI from './hooks/useAPI'
 import { Avatar, Divider, Provider, Surface, Text, TextInput } from 'react-native-paper'
 import { Button } from 'react-native-paper'
-import StickyButton from './components/StickyButton'
 import { AuthContext } from './contexts/AuthContext'
 import moment from 'moment/moment'
 import Loader from './components/Loader'
 import DialogMessage from './components/DialogMessage'
 import DialogConfirmation from './components/DialogConfirmation'
+import useAuth from './hooks/useAuth'
+import usePrivateCall from './hooks/usePrivateCall'
 
 const RequestDetailScreen = ({route}) => {
     const [requestDetail, setRequestDetail] = useState({data: {}, isLoading: false})
 
-    const auth = useContext(AuthContext)
+    const {authState} = useAuth()
+    const axiosPrivate = usePrivateCall()
     const {width, height} = useWindowDimensions()
     const loaderRef = useRef()
     const dialogRef = useRef()
     const dialogConfirmationRef = useRef()
 
+
     const handleApprove = async () => {
         console.log('handleApprove')
         console.log('loader: on')
         loaderRef.current.showLoader()
-        await useAPI(
-            auth,
-            'patch',
-            `/request/approve`,
-            '',
+        await axiosPrivate.patch(`/request/approve`,
             {
                 requestId: route.params.requestId
-            },
-            auth.authState?.accessToken
-        ).then(response => {
+            }
+        ).then(() => {
             console.log('handleApprove: success')
-            console.log('loading: off')
             loaderRef.current.hideLoader()
             dialogRef.current.showDialog('success', '0000', 'Request have been approved!', () => loadRequestDetail())
         }).catch(err => {
             console.log('handleApprove: failed')
-            console.log('loading: off')
-            loaderRef.current.showLoader()
+            loaderRef.current.hideLoader()
             if (err.response) {
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
             } else if (err.request) {
@@ -53,24 +48,17 @@ const RequestDetailScreen = ({route}) => {
         console.log('handleReject')
         console.log('loader: on')
         loaderRef.current.showLoader()
-        await useAPI(
-            auth,
-            'patch',
-            `/request/reject`,
-            '',
+        await axiosPrivate.patch(`/request/reject`,
             {
                 requestId: route.params.requestId
-            },
-            auth.authState?.accessToken
-        ).then(response => {
+            }
+        ).then(() => {
             console.log('handleApprove: success')
-            console.log('loading: off')
             loaderRef.current.hideLoader()
             dialogRef.current.showDialog('success', '0000', 'Request have been approved!', () => loadRequestDetail())
         }).catch(err => {
             console.log('handleApprove: failed')
-            console.log('loading: off')
-            loaderRef.current.showLoader()
+            loaderRef.current.hideLoader()
             if (err.response) {
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
             } else if (err.request) {
@@ -81,21 +69,13 @@ const RequestDetailScreen = ({route}) => {
 
     const loadRequestDetail = async () => {
         console.log('requestDetail')
-        console.log('loading: on')
         setRequestDetail(prevData => ({
             ...prevData,
             isLoading: true
         }))
-        await useAPI(
-            auth,
-            'get',
-            `/request/${route.params.requestId}`,
-            null,
-            null,
-            auth.authState?.accessToken
-        ).then( response => {
+        await axiosPrivate.get( `/request/${route.params.requestId}`)
+        .then( response => {
             console.log('requestDetail: success')
-            console.log('loading: off')
             const requestDetailData = response.data
             setRequestDetail({
                 data: requestDetailData.data,
@@ -103,7 +83,6 @@ const RequestDetailScreen = ({route}) => {
             })
         }).catch( err => {
             console.log('requestDetail: failed')
-            console.log('loading: off')
             setRequestDetail(prevData => ({
                 ...prevData,
                 isLoading: false
@@ -112,7 +91,6 @@ const RequestDetailScreen = ({route}) => {
                 if (err.response.data.status === 401) {
                     loadRequestDetail()
                 }
-                console.log(JSON.stringify(err.response))
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
             } else if (err.request) {
                 dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
@@ -329,7 +307,7 @@ const RequestDetailScreen = ({route}) => {
             </ScrollView>
             <View style={{flexDirection: 'row', justifyContent: 'center', marginVertical: 24}}>
                 {
-                    auth.authState.profile.user?.id === requestDetail.data.receiver?.id ?
+                    authState.profile.user?.id === requestDetail.data.receiver?.id ?
                         (
                             <Button 
                                 // label="Approve"]
@@ -347,7 +325,7 @@ const RequestDetailScreen = ({route}) => {
                         null
                     }
                 {
-                    auth.authState.profile.user?.id === requestDetail.data.receiver?.id ?
+                    authState.profile.user?.id === requestDetail.data.receiver?.id ?
                     (
                             <Button 
                                 // label="Approve"   

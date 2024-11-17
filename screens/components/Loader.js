@@ -6,8 +6,14 @@ const Loader = React.forwardRef((props, ref) => {
     const [visible, setVisible] = React.useState(false);
     
     React.useImperativeHandle(ref, () => ({
-        showLoader(){setVisible(true)},
-        hideLoader(){setVisible(false)}
+        showLoader(){
+            console.log('loader: on')
+            setVisible(true)
+        },
+        hideLoader(){
+            console.log('loader: off')
+            setVisible(false)
+        }
     }))
 
     if (visible) {

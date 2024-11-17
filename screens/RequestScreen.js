@@ -6,9 +6,9 @@ import moment from 'moment/moment'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import Request from './components/Request'
 import Tab from './components/Tab'
-import useAPI from './hooks/useAPI'
 import { AuthContext } from "./contexts/AuthContext"
 import { useNavigation } from '@react-navigation/native'
+import usePrivateCall from './hooks/usePrivateCall'
 
 const RequestScreen = () => {
     const [chip, setChip] = useState([]);
@@ -21,11 +21,7 @@ const RequestScreen = () => {
     const auth = useContext(AuthContext)
     moment.suppressDeprecationWarnings = true;
     const navigation = useNavigation()
-
-    useEffect(() => {
-        loadRequestSent()
-        loadRequestReceived()
-    }, [])
+    const axiosPrivate = usePrivateCall()
 
     const onScroll = ({ nativeEvent }) => {
         const currentScrollPosition = Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
@@ -40,18 +36,15 @@ const RequestScreen = () => {
             isLoading: true
         }))
         console.log(`getRequestSentd`)
-        await useAPI(
-            auth,
-            'get', 
-            '/request/all', 
-            {}, 
+        await axiosPrivate.get('/request/all', 
             {
-                senderId: auth.authState?.profile.user.id
-            }, 
-            auth.authState?.accessToken)
+                params: {
+                    senderId: auth.authState?.profile.user.id
+                }
+            }
+        )
         .then((response) => {
             console.log(`getRequestSent: success`)
-            console.log(`loading: off`)
             const requestSentData = response.data
             setRequestSentData({
                 data: requestSentData.data,
@@ -60,14 +53,10 @@ const RequestScreen = () => {
         }).catch((err) => {
             console.log(`getRequestSent: failed`)
             if (err.response) {
-                console.log(`${JSON.stringify(err.response)}`)
                 setRequestSentData({
                     data: [],
                     isLoading: false
                 })
-            } else if (err.request) {
-                console.log(`${JSON.stringify(err.request)}`)
-
             }
         })
     }
@@ -79,12 +68,15 @@ const RequestScreen = () => {
             isLoading: true
         }))
         console.log(`getRequestReceived`)
-        await useAPI(auth, 'get', '/request/all', {}, {
-            receiverId: auth.authState?.profile.user.id
-        }, auth.authState?.accessToken)
+        await axiosPrivate.get('/request/all', 
+            {
+                params: {
+                    receiverId: auth.authState?.profile.user.id
+                }
+            }
+        )
         .then((response) => {
             console.log(`getRequestReceived: success`)
-            console.log(`loading: off`)
             const requestReceivedData = response.data
             setRequestReceivedData({
                 data: requestReceivedData.data,
@@ -97,8 +89,6 @@ const RequestScreen = () => {
                     data: [],
                     isLoading: false
                 })
-            } else if (err.request) {
-
             }
         })
     }
@@ -153,6 +143,11 @@ const RequestScreen = () => {
         })
         return updatedChip
     }
+
+    useEffect(() => {
+        loadRequestSent()
+        loadRequestReceived()
+    }, [])
 
     const requestSent = useCallback(() => (
         <View>

@@ -4,10 +4,11 @@ import { Button, Provider, Text, TextInput  } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Pressable } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import useAPI from './hooks/useAPI';
 import { AuthContext } from './contexts/AuthContext';
 import DialogMessage from './components/DialogMessage';
 import Loader from './components/Loader';
+import usePrivateCall from './hooks/usePrivateCall';
+import usePublicCall from './hooks/usePublicCall';
 
 function LoginScreen(){
     const [username, setUsername] = React.useState("");
@@ -19,6 +20,7 @@ function LoginScreen(){
     //refs
     const dialogRef = React.useRef()
     const loaderRef = React.useRef()
+    const axiosPublic =  usePublicCall()
 
     const auth = React.useContext(AuthContext)
 
@@ -28,19 +30,24 @@ function LoginScreen(){
 
     const handleLogin = async () => {
         Keyboard.dismiss()
-        console.log(`screenLoading: on`)
         setScreenLoading(true)
         console.log(`login`)
-        await useAPI(auth, 'post', '/auth/signin', {username: username, password: password}, null)
+        await axiosPublic.post('/auth/signin', 
+            {
+                username: username, 
+                password: password
+            },
+            {
+                withCredentials: true
+            }
+        )
         .then((response) => {
             console.log(`login: success`)
-            console.log(`screenLoading: off`)
             setScreenLoading(false)
             const responseLogin = response.data
             auth.login(responseLogin.data.accessToken, responseLogin.data.refreshToken, responseLogin.data.userId, responseLogin.data.roles)
         }).catch((err) => {
             console.log(`login: failed`)
-            console.log(`screenLoading: off`)
             setScreenLoading(false)
             if (err.response) {
                 console.log(`err response: ${JSON.stringify(err.response)}`)

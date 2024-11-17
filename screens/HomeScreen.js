@@ -7,9 +7,8 @@ import History from "./components/History";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import { AuthContext } from "./contexts/AuthContext";
-import useAPI from './hooks/useAPI';
-import DialogConfirmation from "./components/DialogConfirmation";
 import Loader from "./components/Loader";
+import usePrivateCall from "./hooks/usePrivateCall";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,6 +19,7 @@ function HomeScreen() {
     const slidesRef = useRef(null);
     const auth = useContext(AuthContext)
     const navigation = useNavigation()
+    const axiosPrivate = usePrivateCall()
     
     
     const viewableItemChanged = useRef(({ viewableItems }) => {
@@ -34,10 +34,14 @@ function HomeScreen() {
             isLoading: true
         }))
         if (auth.authState.profile.user.roles.includes("LECTURE")) {
-            await useAPI(auth, 'get', '/schedule/allbylecture', {}, { 
-                dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-                dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD')
-            }, auth.authState?.accessToken)
+            await axiosPrivate.get('/schedule/allbylecture', 
+                { 
+                    params: {
+                        dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                        dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD')
+                    }
+                }
+            )
             .then((response) => {
                 console.log(`todaySchedule: success`)
                 const responseTodaySchedule = response.data
@@ -52,18 +56,20 @@ function HomeScreen() {
                         data: [],
                         isLoading: false
                     })
-                    // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
                 } else if (err.request) {
-                    console.error(err.request)
                     dialogRef.current.showDialog('error', "C0001", "Server timeout!")
                 }
             })
         } else {
-            await useAPI(auth, 'get', '/schedule/allbystudent', {}, { 
-                dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-                dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
-                classId: JSON.parse(auth.authState.profile.kelas.id)
-            }, auth.authState?.accessToken)
+            await axiosPrivate.get('/schedule/allbystudent', 
+                { 
+                    params: {
+                        dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                        dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
+                        classId: JSON.parse(auth.authState.profile.kelas.id)
+                    }
+                }
+            )
             .then((response) => {
                 console.log(`todaySchedule: success`)
                 const responseTodaySchedule = response.data
@@ -80,7 +86,6 @@ function HomeScreen() {
                     })
                     // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
                 } else if (err.request) {
-                    console.error(err.request)
                     dialogRef.current.showDialog('error', "C0001", "Server timeout!")
                 }
             })
@@ -93,10 +98,14 @@ function HomeScreen() {
             ...prevData,
             isLoading: false
         }))      
-        await useAPI(auth, 'get', '/presence/getallbystudent', {}, {
-            studentId: auth.authState.profile.id,
-            limit: 10
-        }, auth.authState?.accessToken)
+        await axiosPrivate.get('/presence/getallbystudent',
+            {
+                params: {
+                    studentId: auth.authState.profile.id,
+                    limit: 10
+                }
+            }
+        )
         .then((response) => {
             console.log(`presenceHistory: success`)
             const responsePresenceHistory = response.data

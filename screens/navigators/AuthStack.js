@@ -13,7 +13,7 @@ const AuthStack = () => {
   return (
     <Stack.Navigator screenOptions={{
         navigationBarColor: "#D8261D",
-        statusBarColor: "#D8261D",
+        statusBarBackgroundColor: "#D8261D",
         animation: "fade_from_bottom",
     }} initialRouteName='Main'>
         <Stack.Screen 
