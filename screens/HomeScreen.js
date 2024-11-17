@@ -1,14 +1,14 @@
 import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView } from "react-native";
-import { Text, Avatar, Icon, PaperProvider, Provider } from "react-native-paper";
-import { useRef, useState, useEffect, useContext } from "react";
+import { Text, Avatar, Icon } from "react-native-paper";
+import { useRef, useState, useEffect } from "react";
 import StudentScheduleCard from "./components/StudentScheduleCard";
 import Paginator from "./components/Paginator";
 import History from "./components/History";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import { AuthContext } from "./contexts/AuthContext";
 import Loader from "./components/Loader";
 import usePrivateCall from "./hooks/usePrivateCall";
+import useAuth from "./hooks/useAuth";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -17,7 +17,7 @@ function HomeScreen() {
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
-    const auth = useContext(AuthContext)
+    const {authState} = useAuth()
     const navigation = useNavigation()
     const axiosPrivate = usePrivateCall()
     
@@ -33,7 +33,7 @@ function HomeScreen() {
             ...prevData,
             isLoading: true
         }))
-        if (auth.authState.profile.user.roles.includes("LECTURE")) {
+        if (authState.profile.user.roles.includes("LECTURE")) {
             await axiosPrivate.get('/schedule/allbylecture', 
                 { 
                     params: {
@@ -66,7 +66,7 @@ function HomeScreen() {
                     params: {
                         dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
                         dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
-                        classId: JSON.parse(auth.authState.profile.kelas.id)
+                        classId: JSON.parse(authState.profile.kelas.id)
                     }
                 }
             )
@@ -84,7 +84,6 @@ function HomeScreen() {
                         data: [],
                         isLoading: false
                     })
-                    // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
                 } else if (err.request) {
                     dialogRef.current.showDialog('error', "C0001", "Server timeout!")
                 }
@@ -101,7 +100,7 @@ function HomeScreen() {
         await axiosPrivate.get('/presence/getallbystudent',
             {
                 params: {
-                    studentId: auth.authState.profile.id,
+                    studentId: authState.profile?.id,
                     limit: 10
                 }
             }
@@ -140,7 +139,7 @@ function HomeScreen() {
             {/* Welcome Header Section */}
             <View style={styles.welcomeView}>
                 <Text style={styles.welcomeText}>
-                    {`Welcome back, ${auth.authState.profile.user.firstName}!`} 
+                    {`Welcome back, ${authState.profile?.user?.firstName}!`} 
                 </Text>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                     <Pressable onPress={() => console.log('notification')} style={{marginHorizontal: 5}}>
@@ -160,15 +159,15 @@ function HomeScreen() {
             </Text>
             <FlatList 
                 data={scheduleData.data}
-                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} auth={auth} />}
+                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} auth={authState} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
                 ListEmptyComponent={() => {
                     if (scheduleData.isLoading) {
-                        return <StudentScheduleCard isEmpty={false} isLoading={true} auth={auth} />
+                        return <StudentScheduleCard isEmpty={false} isLoading={true} auth={authState} />
                     }else{
-                        return <StudentScheduleCard isEmpty={true} auth={auth} />
+                        return <StudentScheduleCard isEmpty={true} auth={authState} />
                     }
                 }}
                 bounces={false}

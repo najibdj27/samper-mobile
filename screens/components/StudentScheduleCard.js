@@ -3,12 +3,12 @@ import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } f
 import moment from "moment";
 import Skeleton from "./Skeleton";
 
-const StudentScheduleCard = ({item, isEmpty, isLoading, auth}) => {
+const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
     const { width } = useWindowDimensions();
     const freeClassImg = require("../../assets/students_09.jpg");
 
     const actionButton = () => {
-        if (auth.authState.profile?.user.roles.includes('STUDENT')) {
+        if (authState.profile?.user.roles.includes('STUDENT')) {
             return (
                 <>
                     <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
