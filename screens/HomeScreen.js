@@ -159,15 +159,15 @@ function HomeScreen() {
             </Text>
             <FlatList 
                 data={scheduleData.data}
-                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} auth={authState} />}
+                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} authState={authState} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
                 ListEmptyComponent={() => {
                     if (scheduleData.isLoading) {
-                        return <StudentScheduleCard isEmpty={false} isLoading={true} auth={authState} />
+                        return <StudentScheduleCard isEmpty={false} isLoading={true} authState={authState} />
                     }else{
-                        return <StudentScheduleCard isEmpty={true} auth={authState} />
+                        return <StudentScheduleCard isEmpty={true} authState={authState} />
                     }
                 }}
                 bounces={false}
