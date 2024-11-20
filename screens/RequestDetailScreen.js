@@ -23,7 +23,6 @@ const RequestDetailScreen = ({route}) => {
 
     const handleApprove = async () => {
         console.log('handleApprove')
-        console.log('loader: on')
         loaderRef.current.showLoader()
         await axiosPrivate.patch(`/request/approve`,
             {
