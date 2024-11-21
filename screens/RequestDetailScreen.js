@@ -24,9 +24,11 @@ const RequestDetailScreen = ({route}) => {
     const handleApprove = async () => {
         console.log('handleApprove')
         loaderRef.current.showLoader()
-        await axiosPrivate.patch(`/request/approve`,
+        await axiosPrivate.patch(`/request/approve`, {},
             {
-                requestId: route.params.requestId
+                params: {
+                    requestId: route.params.requestId
+                }
             }
         ).then(() => {
             console.log('handleApprove: success')
@@ -47,9 +49,11 @@ const RequestDetailScreen = ({route}) => {
         console.log('handleReject')
         console.log('loader: on')
         loaderRef.current.showLoader()
-        await axiosPrivate.patch(`/request/reject`,
+        await axiosPrivate.patch(`/request/reject`, {},
             {
-                requestId: route.params.requestId
+                params: {
+                    requestId: route.params.requestId
+                }
             }
         ).then(() => {
             console.log('handleApprove: success')
