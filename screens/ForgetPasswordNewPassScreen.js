@@ -1,32 +1,67 @@
-import { StyleSheet, Pressable, Keyboard, Image, BackHandler } from 'react-native'
+import { StyleSheet, Pressable, Keyboard, Image, BackHandler, KeyboardAvoidingView, View } from 'react-native'
 import React, { useState } from 'react'
-import { TextInput, Text, Button, Provider } from 'react-native-paper'
+import { Text, Button, Provider } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import InputForm from './components/InputForm'
 import Loader from './components/Loader'
 import DialogMessage from './components/DialogMessage'
-import useAPI from './hooks/useAPI'
+import usePublicCall from './hooks/usePublicCall'
 
 const ForgetPasswordNewPassScreen = ({route}) => {
-    //source
-    const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
-
     //states
     const [newPassword, setNewPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
     const [screenLoading, setScreenLoading] = React.useState()
 
+    //hooks
+    const axiosPublic = usePublicCall()
+
     //refs
-    const dialogRef = React.useRef()
+    const dialogMessageRef = React.useRef()
     const loaderRef = React.useRef()
 
     //hooks
     const navigation = useNavigation()
 
+    //handler
+    const handleSetNewPassword = async () => {
+        Keyboard.dismiss()
+        console.log(`screenLoading: on`)
+        setScreenLoading(true)
+        if (newPassword === confirmPassword) {
+            console.log(`resetPassword`)
+            await axiosPublic.patch('/auth/reset_password', 
+                {
+                    newPassword: newPassword
+                }, 
+                {
+                    params: {
+                        token: route.params.token
+                    }
+                }
+            )
+            .then((response) => {
+                console.log(`resetPassword: success`)
+                setScreenLoading(false)
+                const resetPasswordResponse = response.data
+                dialogMessageRef.current.showDialog('success', '0000', resetPasswordResponse.message, () => {navigation.navigate('Login')})
+            }).catch((err) => {
+                console.log(`resetPassword: failed`)
+                setScreenLoading(false)
+                if (err.response) {
+                    dialogMessageRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+                }
+            })
+        } else {
+            setScreenLoading(false)
+            dialogMessageRef.current.showDialog('error', '1104', `Your new password doesn't match!`)
+        }
+    }
+
     //effect
     React.useEffect(() => {
-        BackHandler.addEventListener('hardwareBackPress', () => true);
-    }, []);
+        BackHandler.addEventListener('hardwareBackPress', () => true)
+    }, [])
 
     React.useEffect(() => {
         if (screenLoading) {
@@ -36,81 +71,60 @@ const ForgetPasswordNewPassScreen = ({route}) => {
         }
     }, [screenLoading])
 
-    //handler
-    const handleSetNewPassword = async () => {
-        Keyboard.dismiss()
-        console.log(`screenLoading: on`)
-        setScreenLoading(true)
-        if (newPassword === confirmPassword) {
-            console.log(`resetPassword`)
-            await useAPI('patch', '/auth/reset_password', {newPassword: newPassword}, {token: route.params.token})
-            .then((response) => {
-                console.log(`resetPassword: success`)
-                console.log(`screenLoading: off`)
-                setScreenLoading(false)
-                const resetPasswordResponse = response.data
-                dialogRef.current.showDialog('success', '0000', resetPasswordResponse.message, 'Login')
-            }).catch((err) => {
-                console.log(`resetPassword: failed`)
-                console.log(`screenLoading: off`)
-                setScreenLoading(false)
-                if (err.response) {
-                    dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
-                } else if (err.request){
-                    dialogRef.current.showDialog('error', "C0001", "Server timeout!")
-                }
-            })
-        } else {
-            console.log(`screenLoading: off`)
-            setScreenLoading(false)
-            dialogRef.current.showDialog('error', '1104', `Your new password doesn't match!`)
-        }
-    }
+    //source
+    const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
 
     return (
         <Provider>
             <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-                <Image source={topImg} style={{width: 350, height: 260}} />
-                <Text style={styles.titleText}>
-                    Set your new password!
-                </Text>
-                <InputForm 
-                    label="New Password"
-                    input={newPassword}
-                    setInput={setNewPassword}
-                    placeholder="Input your new password"
-                    inputMode="password"
-                    useValidation={true}
-                    validationMode="newPassword"
-                />
-                <TextInput
-                    label="Confirm Password"
-                    placeholder='Confirm your new password'
-                    value={confirmPassword}
-                    mode='outlined'
-                    activeOutlineColor='#02a807'
-                    style={styles.form}
-                    outlineStyle={{borderRadius:16}}
-                    onChangeText={text => setConfirmPassword(text)}
-                    secureTextEntry
-                />
-                <Button 
-                    icon="lock-reset" 
-                    mode="contained" 
-                    style={styles.button} 
-                    contentStyle={styles.buttonContent} 
-                    buttonColor="#03913E"
-                    onPress={handleSetNewPassword}
-                    labelStyle={{
-                        fontSize: 18, 
-                        fontWeight: "bold"
-                    }}
-                >
-                    Reset
-                </Button>
+                <KeyboardAvoidingView behavior='position'>
+                    <Image source={topImg} style={{width: 350, height: 260}} />
+                    <Text style={styles.titleText}>
+                        Set your new password!
+                    </Text>
+                    <InputForm 
+                        mode="outlined"
+                        label="New Password"
+                        input={newPassword}
+                        setInput={setNewPassword}
+                        placeholder="Input your new password"
+                        inputMode="password"
+                        useValidation={true}
+                        validationMode="newPassword"
+                        centered={true}
+                        style={styles.form}
+                        secureTextEntry={true}
+                    />
+                    <InputForm 
+                        mode="outlined"
+                        label="Confirm New Password"
+                        input={confirmPassword}
+                        setInput={setConfirmPassword}
+                        placeholder="Confirm your new password"
+                        inputMode="password"
+                        useValidation={false}
+                        style={styles.form}
+                        centered={true}
+                        secureTextEntry={true}
+                    />
+                    <Button 
+                        icon="lock-reset" 
+                        mode="contained" 
+                        style={styles.button} 
+                        contentStyle={styles.buttonContent} 
+                        buttonColor="#03913E"
+                        onPress={handleSetNewPassword}
+                        labelStyle={{
+                            fontSize: 18, 
+                            fontWeight: "bold"
+                        }}
+                    >
+                        Reset
+                    </Button>
+                </KeyboardAvoidingView>
             </Pressable>
             <Loader ref={loaderRef} />
-            <DialogMessage ref={dialogRef} />
+            <DialogMessage ref={dialogMessageRef} />
         </Provider>
     )
 }
@@ -121,16 +135,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor: 'white'
     },
     form: {
-        marginVertical: 3,
-        width:300
+        alignSelf: "center",
     },
     titleText: {
         fontSize: 18,
         fontWeight: "bold",
         marginBottom: 20,
+        alignSelf: "center",
         marginTop: 20
     },
     button: {

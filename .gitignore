@@ -5,8 +5,10 @@ node_modules/
 
 # Expo
 .expo/
+.vscode/
 dist/
 web-build/
+android/
 
 # Native
 *.orig.*

@@ -1,39 +1,36 @@
-import { Image, StyleSheet, View, useWindowDimensions } from 'react-native'
+import { Image, StyleSheet, Touchable, View, useWindowDimensions } from 'react-native'
 import React from 'react'
-import { Avatar, Badge, Button, Card, Text } from 'react-native-paper';
+import { Avatar, Badge, Button, Card, Text, TouchableRipple } from 'react-native-paper';
 import Skeleton from './Skeleton';
 import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 
 const Request = ({item, isLoading, isEmpty}) => {
+  const navigation = useNavigation()
+
   // #03913E #D8261D #F8C301
   const statusColor = (status) => {
     switch (status) {
-      case 'P':
+      case 'PENDING':
         return {backgroundColor: '#F8C301'}
-        break;
-      case 'A':
+      case 'APPROVED':
         return {backgroundColor: '#03913E'}
-        break;
-      case 'R':
+      case 'REJECTED':
         return {backgroundColor: '#D8261D'}
-        break;
 
       default:
         break;
     }
   }
 
-  const statusType = (type) => {
+  const typeIcon = (type) => {
     switch (type) {
-      case 'C':
+      case 'LATE_RECORD':
           return "clock-edit-outline"
-        break;
-      case 'P':
-          return "calendar-sync"
-        break;
-      case 'R':
+      case 'PERMIT':
           return "calendar-clock"
-        break;
+      case 'RESCHEDULE':
+          return "calendar-sync"
         
       default:
         break;
@@ -42,21 +39,29 @@ const Request = ({item, isLoading, isEmpty}) => {
 
   const LeftContent = props => <Avatar.Icon {...props} icon="clipboard-text-clock" color='#fff' style={statusColor(item.status)}></Avatar.Icon>
   // 
-  const RightContent = props => <Avatar.Icon {...props} icon={statusType(item.type)} color='#000' size={40} style={{backgroundColor: "rgba(0,0,0,0)"}} />
+  const RightContent = props => <Avatar.Icon {...props} icon={typeIcon(item.type)} color='#000' size={40} style={{backgroundColor: "rgba(0,0,0,0)"}} />
 
   const {width} = useWindowDimensions()
 
   const emptyImg = require('../../assets/7732624_5251.jpg')
 
   const requestAvailable = () => {
+    const params = {
+      requestId: item.id
+    }
     return (
-      <Card style={{marginVertical: 10, marginHorizontal: 5, paddingEnd: 5}}>
-          <Card.Title title={item.subjectName} subtitle={`${moment(item.timestamp, "YYYY-MM-DD hh:mm").format("D MMMM YYYY | hh:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold"}} />
-          <Card.Content>
-              <Text variant="titleMedium">Reason</Text>
-              <Text variant="bodyMedium">{item.reason}</Text>
-          </Card.Content>
-      </Card>
+      <TouchableRipple
+        onPress={() => {navigation.navigate('RequestDetail', params)}} 
+        rippleColor="rgba(0, 0, 0, .32)"
+      >
+        <Card style={{marginVertical: 10, marginHorizontal: 5, paddingEnd: 5, backgroundColor: 'white'}}>
+            <Card.Title title={item.schedule.subject.name} subtitle={`${moment(item.requestTime).format("D MMMM YYYY | HH:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold"}} />
+            <Card.Content>
+                <Text variant="titleMedium">Reason</Text>
+                <Text variant="bodyMedium">{item.reason}</Text>
+            </Card.Content>
+        </Card>
+      </TouchableRipple>
     )
   }
 

@@ -4,6 +4,7 @@ import { PaperProvider } from 'react-native-paper';
 import { AuthContext } from '../contexts/AuthContext';
 import AuthStack from './AuthStack';
 import AnonymousStack from './AnonymousStack';
+import InitialLoadingScreen from '../InitialLoadingScreen';
 
 const AppNav = () => {
     const auth = useContext(AuthContext);
@@ -12,9 +13,11 @@ const AppNav = () => {
         <PaperProvider>
             <NavigationContainer>
                 {
-                    auth.authState.isAuthenticated ? 
-                    <AuthStack /> : 
-                    <AnonymousStack />
+                    auth.authState.isLoading?
+                    <InitialLoadingScreen /> :
+                        auth.authState.isAuthenticated ? 
+                        <AuthStack /> : 
+                        <AnonymousStack />
                 }
             </NavigationContainer>
         </PaperProvider>

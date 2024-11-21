@@ -1,10 +1,6 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import useAPI from '../hooks/useAPI';
-import { Alert } from 'react-native';
-import { Dialog, Provider } from 'react-native-paper';
-import DialogMessage from '../components/DialogMessage';
-import { useComponentDidMount } from '../hooks/useComponentDidMount';
+import usePublicCall from '../hooks/usePublicCall'
 
 export const AuthContext = createContext();
 
@@ -14,13 +10,20 @@ export const AuthProvider = ({children}) => {
         refreshToken: null,
         profile: {},
         roles: [],
-        isAuthenticated: null
+        isAuthenticated: null,
+        isLoading: false
     })
-
-    const isComponentMounted = useComponentDidMount()
+    
+    const axiosPublic = usePublicCall()
 
     const getAsyncStorage = useCallback(async () => {
+        console.log(`getStorage`)
+        setAuthState(prevState => ({
+            ...prevState,
+            isLoading: true
+        }))
         try {
+            console.log(`getStorage: succcess`)
             const getAccessToken = await AsyncStorage.getItem('accessToken')
             const getRefreshToken = await AsyncStorage.getItem('refreshToken')
             const getProfile = await AsyncStorage.getItem('profile')
@@ -33,67 +36,76 @@ export const AuthProvider = ({children}) => {
                 roles: JSON.parse(getRoles)
             })
         } catch (error) {
+            console.log(`getStorage: failed`)
+            console.log(JSON.stringify(error))
             setAuthState({
                 accessToken: null,
                 refreshToken: null,
                 username: null,
                 roles: null,
-                isAuthenticated: null
+                isAuthenticated: null,
+                isLoading: false
             })
         }
-    }, [])
+    }, [AsyncStorage])
 
-    const initialized =  useCallback( async () => {
-        console.log(`accessToken: ${JSON.stringify(authState.accessToken)}`)
-        if (authState.accessToken) {
-            console.log(`checkToken`)
-            await useAPI('get', '/auth/checktoken', null, {token: authState.accessToken})
+    const initialized = async () => {
+        console.log('initializing...')
+        setAuthState(prevState => ({
+            ...prevState,
+            isLoading: true
+        }))
+        const getAccessToken = await AsyncStorage.getItem('accessToken')
+        console.log(`accessToken: ${JSON.stringify(getAccessToken)}`)
+        if (getAccessToken) {
+            await axiosPublic.get('/auth/checktoken', 
+                {
+                    withCredentials: true,
+                    params: {
+                        token: getAccessToken
+                    }
+                }
+            )
             .then( async (response) => {
                 console.log(`checkToken: success`)
                 const responseCheckToken = response.data
-                if (!responseCheckToken.data?.isActive) {
-                    console.log(`refreshToken`)
-                    await useAPI('post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
-                    .then((response) => {
-                        console.log(`refreshToken: success`)
-                        const responseRefreshToken = response.data
-                        setAuthState(prevState => ({
-                            ...prevState,
-                            accessToken: responseRefreshToken.data.accessToken,
-                            isAuthenticated: true
-                        }))
-                    }).catch(() => {
-                        console.log(`refreshToken: failed`)
-                    })
-                }else{
-                    console.log(`token active`)
+                if (responseCheckToken.data?.isActive) {
+                    console.log(`token: active`)
+                    console.log('logging in...')
                     setAuthState(prevState => ({
                         ...prevState,
-                        isAuthenticated: true
+                        isTokenActive: true,
+                        isAuthenticated: true,
+                        isLoading: false
+                    }))
+                }else{
+                    console.log(`token: inactive`)
+                    console.log(`refreshToken: ${authState.refreshToken}`)
+                    await refreshToken()
+                    setAuthState(prevState => ({
+                        ...prevState,
+                        isTokenActive: true,
+                        isAuthenticated: true,
+                        isLoading: false
                     }))
                 }
-            }).catch(() => {
+            }).catch((error) => {
                 console.log(`checkToken: failed`)
             })
-        } else if (authState.refreshToken) {
-            console.log(`refreshToken`)
-            refreshToken
+        } else {
+            console.log('logging out...')
+            await logout()
         }
-    }, [authState.accessToken])
+    }
 
     useEffect(() => {
-        getAsyncStorage() 
-    }, [getAsyncStorage])
-
-    useEffect(() => {
-        if (isComponentMounted) {
-            initialized()
+        const fetchData = async () => {
+            await getAsyncStorage().then(
+                initialized()
+            )
         }
-    }, [initialized])
-
-    // useEffect(() => {
-    //     logout()
-    // }, [])
+        fetchData()
+    }, [])
 
     const login = async (accessToken, refreshToken, userId, roles) => {
         const accessTokenPair = ['accessToken', accessToken]
@@ -103,47 +115,85 @@ export const AuthProvider = ({children}) => {
         try {
             await AsyncStorage.multiSet([accessTokenPair, refreshTokenPair, rolesPair])
             console.log(`getProfileSummary`)
-            await useAPI('get', '/user/profilesummary', {}, {userId: userId}, accessToken)
+            await axiosPublic.get('/user/profilesummary', 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    params: {
+                        userId: userId
+                    }
+                }
+            )
             .then( async (response) => {
                 console.log(`getProfileSummary: success`)
                 const responseProfileSummary = response.data
                 await AsyncStorage.setItem('profile', JSON.stringify(responseProfileSummary.data))
-                console.log(JSON.stringify(responseProfileSummary.data))
                 setAuthState(prevState => ({
                     ...prevState,
+                    accessToken: accessToken,
+                    isTokenActive: true,
+                    refreshToken: refreshToken,
                     profile: responseProfileSummary.data,
-                    isAuthenticated: true
+                    isAuthenticated: true,
+                    isLoading: false
                 }))
             }).catch((err) => {
                 console.log(`getProfileSummary: failed`)
-                console.log(JSON.stringify(err))
             })
         } catch (error) {
             console.log(error)
         }
     }
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
+        console.log('logout')
         const keys = ['accessToken', 'refreshToken', 'profile', 'roles']
+        await AsyncStorage.multiRemove(keys)
         setAuthState({
             accessToken: null,
             refreshToken: null,
             username: null,
             roles: [],
-            isAuthenticated: null
+            isAuthenticated: null,
+            isLoading: false
         })
-        await AsyncStorage.multiRemove(keys)
-    }
+    })
 
     const refreshToken = async () => {
-        await callAPIRefreshToken('post', '/auth/refreshtoken', {refreshToken: authState.refreshToken}, null)
+        const getRefreshToken = await AsyncStorage.getItem('refreshToken')
+        console.log(`refreshToken: ${getRefreshToken}`)
+        await axiosPublic.post('/auth/refreshtoken', 
+            {
+                refreshToken: getRefreshToken
+            },
+            {
+                withCredentials: true
+            }
+        )
+        .then( async (response) => {
+            console.log(`refreshToken: success`) 
+            const responseRefreshToken = response.data
+            console.log(`newToken: ${responseRefreshToken.data.accessToken}`)
+            await AsyncStorage.setItem('accessToken', responseRefreshToken.data.accessToken)
+            setAuthState(prevState => ({
+                ...prevState,
+                accessToken: responseRefreshToken.data.accessToken,
+                isTokenActive: true
+            }))
+        }).catch((error) => {
+            console.log(`refreshToken: failed`)
+            if (error.response){
+                logout()
+            }
+        })
     }
 
     return (
         <AuthContext.Provider value={{
             login, 
             logout, 
-            refreshToken,
+            setAuthState,
             authState
         }}>
             {children}
