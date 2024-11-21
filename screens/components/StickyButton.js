@@ -1,26 +1,57 @@
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native'
-import React from 'react'
-import { Button, FAB } from 'react-native-paper'
+import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native'
+import React, { useMemo } from 'react'
+import { Button, Text } from 'react-native-paper'
 
 const StickyButton = ({label, onPress, disabled, buttonColor}) => {
 
     const {width} = useWindowDimensions()
+
+    // React Native Paper
+    // const disabledButton = useMemo(() => (
+    //         <Button 
+    //             labelStyle={styles.buttonLabel}
+    //             style={styles.button}
+    //             mode="contained"
+    //             buttonColor={buttonColor || '#03913E'}
+    //             contentStyle={{
+    //                 paddingVertical: 3
+    //             }}
+    //             onPress={onPress}
+    //             disabled={true}
+    //         >
+    //             {label}
+    //         </Button>
+    // ), [label, onPress, buttonColor])
+
+    // const enabledButton = useMemo(() => (
+    //     <Button 
+    //         labelStyle={styles.buttonLabel}
+    //         style={styles.button}
+    //         mode="contained"
+    //         buttonColor={buttonColor || '#03913E'}
+    //         contentStyle={{
+    //             paddingVertical: 3
+    //         }}
+    //         onPress={onPress}
+    //     >
+    //         {label}
+    //     </Button>
+    // ), [label, onPress, buttonColor])
+    
     
     return (
         <View style={[styles.container, {width: width}]}>
-            <Button 
-                labelStyle={styles.buttonLabel}
-                style={styles.button}
-                mode="contained"
-                buttonColor={buttonColor || '#03913E'}
-                contentStyle={{
-                    paddingVertical: 3
-                }}
+            <TouchableOpacity 
                 onPress={onPress}
+                style={[styles.button, !disabled? {backgroundColor: buttonColor} : {backgroundColor: '#EEEEEE'}]}
                 disabled={disabled}
             >
-                {label}
-            </Button>
+                <Text style={[styles.buttonLabel, !disabled? {color: '#FFFFFF'}: {color: '#BDBDBD'}]}>
+
+                    {label}
+
+                </Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -38,7 +69,10 @@ const styles = StyleSheet.create({
     },
     button: {
         width: "100%",
-        borderRadius: 6
+        borderRadius: 6,
+        // 
+        alignItems: 'center',
+        padding: 10,
     },
     buttonLabel: {
         fontSize: 18,

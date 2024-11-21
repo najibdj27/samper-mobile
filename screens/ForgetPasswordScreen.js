@@ -2,42 +2,38 @@ import * as React from 'react';
 import { Pressable, StyleSheet, Image, Keyboard, View, KeyboardAvoidingView } from "react-native";
 import { Button, PaperProvider, Text, TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import useAPI from './hooks/useAPI';
 import Loader from './components/Loader';
 import DialogMessage from './components/DialogMessage';
 import InputForm from './components/InputForm';
+import usePublicCall from './hooks/usePublicCall';
 
 function ForgetPasswordScreen(){
     const [email, setEmail] = React.useState("");
     const [screenLoading, setScreenLoading] = React.useState();
 
+    const axiosPublic = usePublicCall()
     const dialogRef = React.useRef()
     const loaderRef = React.useRef()
     const navigation = useNavigation();
 
-    React.useEffect(() => {
-        if (screenLoading) {
-            loaderRef.current.showLoader()
-        }else{
-            loaderRef.current.hideLoader()
-        }
-    }, [screenLoading])
+
 
     const handleSendOtp = async () => {
         Keyboard.dismiss()
-        console.log(`screenLoading: on`)
         setScreenLoading(true)
         console.log(`forgetPassword`)
-        await useAPI('post', '/auth/forgetpassword', {emailAddress: email}, null, null)
-        .then( (response) => {
+        await axiosPublic.post('/auth/forgetpassword', 
+            {
+                emailAddress: email
+            }
+        )
+        .then( () => {
             console.log(`forgetPassword: success`)
-            console.log(`screenLoading: off`)
             setScreenLoading(false)
             navigation.navigate('ForgetPasswordOtp', {emailAddress: email})
             setEmail()
         }).catch( (err) => {
             console.log(`forgetPassword: failed`)
-            console.log(`screenLoading: off`)
             setScreenLoading(false)
             if (err.response) {
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
@@ -46,6 +42,14 @@ function ForgetPasswordScreen(){
             }
         })
     }
+
+    React.useEffect(() => {
+        if (screenLoading) {
+            loaderRef.current.showLoader()
+        }else{
+            loaderRef.current.hideLoader()
+        }
+    }, [screenLoading])
 
     const topImg = require("../assets/76fa4704-6ac7-4e25-bf37-68479913878f.png")
 

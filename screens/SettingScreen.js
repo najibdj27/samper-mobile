@@ -1,13 +1,15 @@
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Appbar, Avatar, Text, List } from "react-native-paper";
 import { AuthContext } from "./contexts/AuthContext";
+import DialogConfirmation from "./components/DialogConfirmation";
 
 
 function SettingScreen() {
     const auth = useContext(AuthContext)
     const navigation = useNavigation()
+    const dialogConfirmationRef = useRef()
 
     const nomorInduk = useMemo(() => {
         if (auth.authState.profile?.user.roles.includes('LECTURE')) {
@@ -16,6 +18,10 @@ function SettingScreen() {
             return auth.authState.profile?.nim
         }
     }, [auth.authState.profile])
+
+    const handleLogout = () => {
+        dialogConfirmationRef.current?.showDialog('logout' , 'Logout', 'Are you sure you want to logout?', () => auth.logout(), null)
+    } 
 
     return (
         <View style={{flex: 1, justifyContent: "space-between"}}>
@@ -61,15 +67,15 @@ function SettingScreen() {
                     </Pressable>
                     <Pressable>
                         <List.Item
-                            title="Notification"
-                            left={props => <List.Icon {...props} icon="bell" />}
+                            title="Help"
+                            left={props => <List.Icon {...props} icon="alert-circle-outline" />}
                             right={props => <List.Icon {...props} icon="chevron-right" />}
                         />
                     </Pressable>
-                    <Pressable>
+                    <Pressable onPress={() => handleLogout()}>
                         <List.Item
-                            title="Help"
-                            left={props => <List.Icon {...props} icon="alert-circle-outline" />}
+                            title="Logout"
+                            left={props => <List.Icon {...props} icon="logout" />}
                             right={props => <List.Icon {...props} icon="chevron-right" />}
                         />
                     </Pressable>
@@ -80,6 +86,7 @@ function SettingScreen() {
                     2024 © Samper Mobile
                 </Text>
             </View>
+            <DialogConfirmation ref={dialogConfirmationRef} />
         </View>
     );
 }

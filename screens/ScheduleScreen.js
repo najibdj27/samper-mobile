@@ -1,26 +1,31 @@
 import CalendarAgenda from "./components/CalendarAgenda";
 import DialogMessage from "./components/DialogMessage";
-import { useState, useContext, useMemo, useRef } from "react";
-import { AuthContext } from "./contexts/AuthContext";
-import useAPI from "./hooks/useAPI";
+import { useState, useRef, useCallback } from "react";
 import { Provider } from "react-native-paper";
 import { SafeAreaView } from "react-native";
-import Agenda from "./components/Agenda";
+import usePrivateCall from "./hooks/usePrivateCall";
+import useAuth from "./hooks/useAuth";
 
 const ScheduleScreen = () => {
     const [items, setItems] = useState({});
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [markedDate, setMarkedDate] = useState({})
 
-    const auth = useContext(AuthContext)
+    const { authState } = useAuth() 
+    const axiosPrivate = usePrivateCall()
     const dialogRef = useRef()
 
     const loadItems = async (month) => {
         console.log(`getSchedule: ${JSON.stringify(month)}`)
         setIsRefreshing(true)
-        await useAPI('get', '/schedule/getmonthlyschedule', {}, {
-            date: month.dateString,
-            userId: auth.authState.profile.user.id
-        }, auth.authState?.accessToken)
+        await axiosPrivate.get('/schedule/getmonthlyschedule', 
+            {
+                params: {
+                    date: month.dateString,
+                    userId: authState.profile.user.id
+                }
+            }
+        )
         .then((response) => {
             console.log(`getSchedule: success`)
             const responseMonthlySchedule = response.data
@@ -28,38 +33,38 @@ const ScheduleScreen = () => {
             Object.entries(responseMonthlySchedule?.data).map(([k, v]) => {
                 newObj[k] = v
             })
+            loadMarkedDate()
             setItems(newObj)
             setIsRefreshing(false)
         }).catch((err) => {
-            setIsRefreshing(false)
             console.log(`getSchedule: failed`)
-            if (err.response) {
-                if (err.response.data.status === 401) {
-                    console.log('refreshToken')
-                    auth.refreshToken()
-                }
-                dialogRef.current?.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
-            } else if (err.request) {
-                dialogRef.current?.showDialog('error', "RCA0001", "Server timeout!")
-            }
+            setIsRefreshing(false)
         })
     }
 
-    const renderAgenda = useMemo(() => (
-        <CalendarAgenda
-            items={items}
-            setItems={setItems}
-            isRefreshing={isRefreshing}
-            setIsRefreshing={setIsRefreshing}
-            loadItems={loadItems}
-        />
-    ), [items, isRefreshing])
+    const loadMarkedDate = useCallback(() => {
+		console.log(`memoize: markedDate`)
+		const newObj = {}
+		Object.entries(items).map(([k, v]) => {
+			if (Object.keys(v).length > 0) {
+                newObj[k] = {
+                    marked: true
+                }
+			} else {
+				newObj[k] = {
+					marked: false
+				}
+			}
+		})
+		setMarkedDate(newObj)
+	}, [items])
 
     return (
         <Provider>
             <SafeAreaView style={{flex: 1}}>
                 <CalendarAgenda 
                     items={items}
+                    markedDate={markedDate}
                     isRefreshing={isRefreshing}
                     loadItems={loadItems}
                 />

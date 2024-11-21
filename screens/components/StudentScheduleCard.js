@@ -1,14 +1,15 @@
 import { View, SafeAreaView, useWindowDimensions, Image, StyleSheet } from "react-native";
-import { Surface, Button, SegmentedButtons, Text, Divider, ActivityIndicator } from "react-native-paper";
+import { Surface, Button, SegmentedButtons, Text} from "react-native-paper";
 import moment from "moment";
 import Skeleton from "./Skeleton";
+import { useMemo } from "react";
 
-const StudentScheduleCard = ({item, isEmpty, isLoading, auth}) => {
+const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
     const { width } = useWindowDimensions();
     const freeClassImg = require("../../assets/students_09.jpg");
 
     const actionButton = () => {
-        if (auth.authState.profile?.user.roles.includes('STUDENT')) {
+        if (authState.profile?.user?.roles.includes('STUDENT')) {
             return (
                 <>
                     <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
@@ -39,10 +40,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, auth}) => {
                 <Surface style={styles.bannerView} elevation={item.isActive? 3 : 1} >
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%"}}>
                         <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={styles.bannerLectureContent} style={{width: 180, borderRadius: 8}} labelStyle={[styles.bannerLectureLabel, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
-                            {`${item.lecture.user.firstName} ${item.lecture.user.lastName}`}
+                            {`${item.lecture?.user?.firstName} ${item.lecture?.user?.lastName}`}
                         </Button>
                         <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey"}]}>
-                            {item.subject.name}
+                            {item.subject?.name}
                         </Text>
                         <Text style={[styles.bannerTimeText, {color: item.isActive? "black" : "grey"}]}>
                             {moment(item.timeStart).format('D MMMM YYYY')} | {moment(item.timeStart).format('HH:mm')} - {moment(item.timeEnd).format('HH:mm')}

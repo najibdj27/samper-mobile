@@ -4,7 +4,7 @@ import RedirectScreen from '../RedirectScreen';
 import StartScreen from '../StartScreen';
 import LoginScreen from '../LoginScreen';
 import ForgetPasswordScreen from '../ForgetPasswordScreen';
-import ForgetPasswordOtpScreen from '../ForgetPasswordOtpScreen';
+import ForgetPasswordOtpScreen from '../ForgetPasswordOTPScreen';
 import ForgetPasswordNewPassScreen from '../ForgetPasswordNewPassScreen';
 
 const Stack = createNativeStackNavigator();

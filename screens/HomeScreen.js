@@ -1,15 +1,14 @@
 import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView } from "react-native";
-import { Text, Avatar, Icon, PaperProvider, Provider } from "react-native-paper";
-import { useRef, useState, useEffect, useContext } from "react";
+import { Text, Avatar, Icon } from "react-native-paper";
+import { useRef, useState, useEffect } from "react";
 import StudentScheduleCard from "./components/StudentScheduleCard";
 import Paginator from "./components/Paginator";
 import History from "./components/History";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import { AuthContext } from "./contexts/AuthContext";
-import useAPI from './hooks/useAPI';
-import DialogConfirmation from "./components/DialogConfirmation";
 import Loader from "./components/Loader";
+import usePrivateCall from "./hooks/usePrivateCall";
+import useAuth from "./hooks/useAuth";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -18,9 +17,10 @@ function HomeScreen() {
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
-    const auth = useContext(AuthContext)
+    const {authState} = useAuth()
     const navigation = useNavigation()
-    const dialogConfirmationRef = useRef()
+    const axiosPrivate = usePrivateCall()
+    
     
     const viewableItemChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
@@ -33,11 +33,15 @@ function HomeScreen() {
             ...prevData,
             isLoading: true
         }))
-        if (auth.authState.profile.user.roles.includes("LECTURE")) {
-            await useAPI('get', '/schedule/allbylecture', {}, { 
-                dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-                dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD')
-            }, auth.authState?.accessToken)
+        if (authState.profile.user.roles.includes("LECTURE")) {
+            await axiosPrivate.get('/schedule/allbylecture', 
+                { 
+                    params: {
+                        dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                        dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD')
+                    }
+                }
+            )
             .then((response) => {
                 console.log(`todaySchedule: success`)
                 const responseTodaySchedule = response.data
@@ -52,18 +56,20 @@ function HomeScreen() {
                         data: [],
                         isLoading: false
                     })
-                    // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
                 } else if (err.request) {
-                    console.error(err.request)
                     dialogRef.current.showDialog('error', "C0001", "Server timeout!")
                 }
             })
         } else {
-            await useAPI('get', '/schedule/allbystudent', {}, { 
-                dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-                dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
-                classId: JSON.parse(auth.authState.profile.kelas.id)
-            }, auth.authState?.accessToken)
+            await axiosPrivate.get('/schedule/allbystudent', 
+                { 
+                    params: {
+                        dateFrom: moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                        dateTo: moment(now, 'YYYY-MM-DD').add(1, "days").format('YYYY-MM-DD'),
+                        classId: JSON.parse(authState.profile.kelas.id)
+                    }
+                }
+            )
             .then((response) => {
                 console.log(`todaySchedule: success`)
                 const responseTodaySchedule = response.data
@@ -78,9 +84,7 @@ function HomeScreen() {
                         data: [],
                         isLoading: false
                     })
-                    // console.log(`err_dscp: ${JSON.stringify(err.response)}`)
                 } else if (err.request) {
-                    console.error(err.request)
                     dialogRef.current.showDialog('error', "C0001", "Server timeout!")
                 }
             })
@@ -93,10 +97,14 @@ function HomeScreen() {
             ...prevData,
             isLoading: false
         }))      
-        await useAPI('get', '/presence/getallbystudent', {}, {
-            studentId: auth.authState.profile.id,
-            limit: 10
-        }, auth.authState?.accessToken)
+        await axiosPrivate.get('/presence/getallbystudent',
+            {
+                params: {
+                    studentId: authState.profile?.id,
+                    limit: 10
+                }
+            }
+        )
         .then((response) => {
             console.log(`presenceHistory: success`)
             const responsePresenceHistory = response.data
@@ -117,9 +125,7 @@ function HomeScreen() {
         })
     }
 
-    const handleLogout = () => {
-        dialogConfirmationRef.current?.showDialog('logout', () => auth.logout(), null)
-    } 
+    
 
     useEffect(() => {
         loadScheduleData();
@@ -133,14 +139,14 @@ function HomeScreen() {
             {/* Welcome Header Section */}
             <View style={styles.welcomeView}>
                 <Text style={styles.welcomeText}>
-                    {`Welcome back, ${auth.authState.profile.user.firstName}!`} 
+                    {`Welcome back, ${authState.profile?.user?.firstName}!`} 
                 </Text>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <Pressable onPress={() => console.log('notification')} style={{marginHorizontal: 5}}>
+                        <Icon source="bell" color="#fff" size={25} />
+                    </Pressable>
                     <Pressable onPress={() => {navigation.navigate('Setting')}} style={{marginHorizontal: 5}}>
                         <Icon source="cog" color="#fff" size={25} />
-                    </Pressable>
-                    <Pressable onPress={() => handleLogout()} style={{marginHorizontal: 5}}>
-                        <Icon source="logout" color="#fff" size={25} />
                     </Pressable>
                     <Pressable style={{marginHorizontal: 5}} onPress={() => {console.log("Profile pict pressed!")}}>
                         <Avatar.Icon size={42} icon="account" />
@@ -153,15 +159,15 @@ function HomeScreen() {
             </Text>
             <FlatList 
                 data={scheduleData.data}
-                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} auth={auth} />}
+                renderItem={({item}) => <StudentScheduleCard item={item} isEmpty={false} isLoading={false} authState={authState} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled
                 ListEmptyComponent={() => {
                     if (scheduleData.isLoading) {
-                        return <StudentScheduleCard isEmpty={false} isLoading={true} auth={auth} />
+                        return <StudentScheduleCard isEmpty={false} isLoading={true} authState={authState} />
                     }else{
-                        return <StudentScheduleCard isEmpty={true} auth={auth} />
+                        return <StudentScheduleCard isEmpty={true} authState={authState} />
                     }
                 }}
                 bounces={false}
@@ -190,7 +196,6 @@ function HomeScreen() {
                             console.log(`available`)
                 }
             </ScrollView>
-            <DialogConfirmation ref={dialogConfirmationRef} />
             <Loader />
         </SafeAreaView>
     );
