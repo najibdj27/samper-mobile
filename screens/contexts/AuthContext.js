@@ -185,8 +185,6 @@ export const AuthProvider = ({children}) => {
             console.log(`refreshToken: failed`)
             if (error.response){
                 logout()
-            } else if (error.request) {
-
             }
         })
     }
@@ -195,7 +193,6 @@ export const AuthProvider = ({children}) => {
         <AuthContext.Provider value={{
             login, 
             logout, 
-            refreshToken,
             setAuthState,
             authState
         }}>

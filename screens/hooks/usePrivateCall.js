@@ -1,12 +1,11 @@
 import { useEffect } from "react"
 import { axiosPrivate } from "../api/axios"
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import useAuth from "./useAuth";
 import useRefreshToken from "./useRefreshToken";
 
 const usePrivateCall = () => {
 
-    const {authState} = useAuth()
+    const {authState, logout} = useAuth()
     const refresh = useRefreshToken()
 
     useEffect(() => {        
@@ -33,9 +32,13 @@ const usePrivateCall = () => {
                 if (error?.response?.status === 401 && !prevRequest?.sent) {
                     prevRequest.sent = true
                     const newToken = await refresh()
-                    console.log(`new generated token: ${newToken}`)
-                    prevRequest.headers['Authorization'] = `Bearer ${newToken}`
-                    return axiosPrivate(prevRequest)
+                    if (newToken === undefined) {
+                        return logout()
+                    } else {
+                        console.log(`new generated token: ${newToken}`)
+                        prevRequest.headers['Authorization'] = `Bearer ${newToken}`
+                        return axiosPrivate(prevRequest)
+                    }
                 } else {
                     console.log(`error response: ${JSON.stringify(error.response)}`)
                 }
