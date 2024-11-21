@@ -1,16 +1,17 @@
 import CalendarAgenda from "./components/CalendarAgenda";
 import DialogMessage from "./components/DialogMessage";
-import { useState, useContext, useRef } from "react";
-import { AuthContext } from "./contexts/AuthContext";
+import { useState, useRef, useCallback } from "react";
 import { Provider } from "react-native-paper";
 import { SafeAreaView } from "react-native";
 import usePrivateCall from "./hooks/usePrivateCall";
+import useAuth from "./hooks/useAuth";
 
 const ScheduleScreen = () => {
     const [items, setItems] = useState({});
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [markedDate, setMarkedDate] = useState({})
 
-    const auth = useContext(AuthContext)
+    const { authState } = useAuth() 
     const axiosPrivate = usePrivateCall()
     const dialogRef = useRef()
 
@@ -21,7 +22,7 @@ const ScheduleScreen = () => {
             {
                 params: {
                     date: month.dateString,
-                    userId: auth.authState.profile.user.id
+                    userId: authState.profile.user.id
                 }
             }
         )
@@ -32,22 +33,38 @@ const ScheduleScreen = () => {
             Object.entries(responseMonthlySchedule?.data).map(([k, v]) => {
                 newObj[k] = v
             })
+            loadMarkedDate()
             setItems(newObj)
             setIsRefreshing(false)
         }).catch((err) => {
-            setIsRefreshing(false)
             console.log(`getSchedule: failed`)
-            if (err.response) {
-                dialogRef.current?.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
-            }
+            setIsRefreshing(false)
         })
     }
+
+    const loadMarkedDate = useCallback(() => {
+		console.log(`memoize: markedDate`)
+		const newObj = {}
+		Object.entries(items).map(([k, v]) => {
+			if (Object.keys(v).length > 0) {
+                newObj[k] = {
+                    marked: true
+                }
+			} else {
+				newObj[k] = {
+					marked: false
+				}
+			}
+		})
+		setMarkedDate(newObj)
+	}, [items])
 
     return (
         <Provider>
             <SafeAreaView style={{flex: 1}}>
                 <CalendarAgenda 
                     items={items}
+                    markedDate={markedDate}
                     isRefreshing={isRefreshing}
                     loadItems={loadItems}
                 />
