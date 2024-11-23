@@ -1,15 +1,18 @@
 import { useEffect } from "react"
-import { axiosPrivate } from "../api/axios"
+import axiosCall from "../api/axios";
 import useAuth from "./useAuth";
 import useRefreshToken from "./useRefreshToken";
+import useModal from './useModal'
 
 const usePrivateCall = () => {
 
+    const { loaderOn, loaderOff } = useModal()
     const {authState, logout} = useAuth()
     const refresh = useRefreshToken()
 
     useEffect(() => {        
-        const requestLogger = axiosPrivate.interceptors.request.use(
+        loaderOn()
+        const requestIntercenptor = axiosCall.interceptors.request.use(
             async (config) => {
                 if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = `Bearer ${authState.accessToken}`
@@ -17,14 +20,14 @@ const usePrivateCall = () => {
                 return config
             },
             (error) => {
-                console.error(`error request: ${JSON.stringify(error.request)}`)
+                loaderOff()
                 return Promise.reject(error)
             }
         )
         
-        const responseLogger = axiosPrivate.interceptors.response.use(
+        const responseIntercenptor = axiosCall.interceptors.response.use(
             response => {
-                console.log(`success response: ${JSON.stringify(response)}`)
+                loaderOff()
                 return response
             },
             async (error) => {
@@ -37,22 +40,22 @@ const usePrivateCall = () => {
                     } else {
                         console.log(`new generated token: ${newToken}`)
                         prevRequest.headers['Authorization'] = `Bearer ${newToken}`
-                        return axiosPrivate(prevRequest)
+                        return axiosCall(prevRequest)
                     }
                 } else {
-                    console.log(`error response: ${JSON.stringify(error.response)}`)
                 }
+                loaderOff()
                 return Promise.reject(error)
             }
         )
 
         return () => {
-            axiosPrivate.interceptors.request.eject(requestLogger)
-            axiosPrivate.interceptors.response.eject(responseLogger)
+            axiosCall.interceptors.request.eject(requestIntercenptor)
+            axiosCall.interceptors.response.eject(responseIntercenptor)
         }
     }, [authState, refresh])
 
-    return axiosPrivate
+    return axiosCall
 }
 
 export default usePrivateCall
