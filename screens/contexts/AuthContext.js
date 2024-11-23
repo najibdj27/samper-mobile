@@ -100,9 +100,7 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await getAsyncStorage().then(
-                initialized()
-            )
+            await getAsyncStorage()
         }
         fetchData()
     }, [])
@@ -191,6 +189,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         <AuthContext.Provider value={{
+            initialized,
             login, 
             logout, 
             setAuthState,
