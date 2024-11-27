@@ -1,28 +1,28 @@
 import * as React from 'react';
 import { Image, Keyboard, KeyboardAvoidingView } from "react-native";
-import { Button, Provider, Text, TextInput  } from "react-native-paper";
+import { Button, Provider, Text, TextInput } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Pressable } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from './contexts/AuthContext';
 import DialogMessage from './components/DialogMessage';
 import Loader from './components/Loader';
-import usePrivateCall from './hooks/usePrivateCall';
 import usePublicCall from './hooks/usePublicCall';
+import useAuth from './hooks/useAuth';
+import useModal from './hooks/useModal';
 
-function LoginScreen(){
+function LoginScreen() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [isPasswordInvisible, setIsPasswordInvisible] = React.useState(true);
     const [iconEye, setIconEye] = React.useState("eye");
-    const [screenLoading, setScreenLoading] = React.useState()
 
+    const axiosPublic = usePublicCall()
+    const { setAuthState, setProfile, setRoles, setAccessToken, setRefreshToken } = useAuth()
+    const { loaderOn, loaderOff } = useModal()
+    
     //refs
     const dialogRef = React.useRef()
     const loaderRef = React.useRef()
-    const axiosPublic =  usePublicCall()
-
-    const auth = React.useContext(AuthContext)
 
     const navigation = useNavigation();
 
@@ -30,25 +30,56 @@ function LoginScreen(){
 
     const handleLogin = async () => {
         Keyboard.dismiss()
-        setScreenLoading(true)
         console.log(`login`)
-        await axiosPublic.post('/auth/signin', 
+        loaderOn()
+        await axiosPublic.post('/auth/signin',
             {
-                username: username, 
+                username: username,
                 password: password
             },
             {
                 withCredentials: true
             }
         )
-        .then((response) => {
+        .then(async (response) => {
             console.log(`login: success`)
-            setScreenLoading(false)
             const responseLogin = response.data
-            auth.login(responseLogin.data.accessToken, responseLogin.data.refreshToken, responseLogin.data.userId, responseLogin.data.roles)
+            try {
+                console.log(`getProfileSummary`)
+                await axiosPublic.get('/user/profilesummary',
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${responseLogin.data?.accessToken}`
+                        },
+                        params: {
+                            userId: responseLogin.data?.userId
+                        }
+                    }
+                )
+                    .then(async (response) => {
+                        console.log(`getProfileSummary: success`)
+                        const responseProfileSummary = response?.data
+                        await setProfile(responseProfileSummary.data)
+                        await setRoles(responseLogin.data?.roles)
+                        await setAccessToken(responseLogin.data?.accessToken)
+                        await setRefreshToken(responseLogin.data?.refreshToken)
+                        setAuthState(prevState => ({
+                            ...prevState,
+                            accessToken: responseLogin.data?.accessToken,
+                            refreshToken: responseLogin.data?.refreshToken,
+                            profile: responseProfileSummary.data,
+                            roles: responseLogin.data?.roles,
+                            isAuthenticated: true
+                        }))
+                    }).catch((error) => {
+                        console.log(`getProfileSummary: failed`)
+                        console.log(error)
+                    })
+            } catch (error) {
+                console.log(error)
+            }
         }).catch((err) => {
             console.log(`login: failed`)
-            setScreenLoading(false)
             if (err.response) {
                 console.log(`err response: ${JSON.stringify(err.response)}`)
                 dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
@@ -56,31 +87,24 @@ function LoginScreen(){
                 dialogRef.current.showDialog('error', "C0001", "Server timeout!")
             }
         })
+        loaderOff()
     }
 
     const handleEyePressed = () => {
         if (isPasswordInvisible == true && iconEye === "eye") {
             setIconEye("eye-off");
             setIsPasswordInvisible(false);
-        }else{
+        } else {
             setIconEye("eye");
             setIsPasswordInvisible(true);
         }
     }
 
-    React.useEffect(() => {
-        if (screenLoading) {
-            loaderRef.current.showLoader()
-        }else{
-            loaderRef.current.hideLoader()
-        }
-    }, [screenLoading])
-
-    return(
+    return (
         <Provider>
             <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView behavior='position'>     
-                    <Image source={topImg} style={{width: 320, height: 260}} />
+                <KeyboardAvoidingView behavior='position'>
+                    <Image source={topImg} style={{ width: 320, height: 260 }} />
                     <Text variant="titleLarge" style={styles.welcomeText}>
                         Welcome to Samper!
                     </Text>
@@ -91,9 +115,9 @@ function LoginScreen(){
                         mode='outlined'
                         activeOutlineColor='#02a807'
                         style={styles.form}
-                        outlineStyle={{borderRadius:16}}
+                        outlineStyle={{ borderRadius: 16 }}
                         onChangeText={text => setUsername(text)}
-                        />
+                    />
                     <TextInput
                         label="Password"
                         placeholder='Input your password here'
@@ -101,14 +125,14 @@ function LoginScreen(){
                         mode='outlined'
                         activeOutlineColor='#02a807'
                         style={styles.form}
-                        right={<TextInput.Icon icon={iconEye} onPress={() => {handleEyePressed()}} />}
-                        outlineStyle={{borderRadius:16}}
+                        right={<TextInput.Icon icon={iconEye} onPress={() => { handleEyePressed() }} />}
+                        outlineStyle={{ borderRadius: 16 }}
                         onChangeText={text => setPassword(text)}
                         secureTextEntry={isPasswordInvisible}
                     />
-                    <Pressable 
+                    <Pressable
                         style={{
-                            alignSelf: 'flex-end', 
+                            alignSelf: 'flex-end',
                             marginEnd: 20
                         }}
                         onPress={() => navigation.navigate("ForgetPassword")}
@@ -117,15 +141,15 @@ function LoginScreen(){
                             Forget your password?
                         </Text>
                     </Pressable>
-                    <Button 
-                        icon="login" 
-                        mode="contained" 
-                        style={styles.button} 
-                        contentStyle={styles.buttonContent} 
+                    <Button
+                        icon="login"
+                        mode="contained"
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
                         buttonColor="#03913E"
                         onPress={handleLogin}
                         labelStyle={{
-                            fontSize: 18, 
+                            fontSize: 18,
                             fontWeight: "bold"
                         }}
                     >
@@ -154,7 +178,7 @@ const styles = StyleSheet.create({
     form: {
         alignSelf: "center",
         marginVertical: 3,
-        width:300
+        width: 300
     },
     button: {
         alignSelf: "center",

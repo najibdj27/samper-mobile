@@ -1,37 +1,42 @@
 import { useEffect } from "react"
-import axios from "../api/axios"
+import axiosCall from "../api/axios"
+import useModal from './useModal'
 
 const usePublicCall = () => {
 
-    const axiosPublic = axios
+    const { showDialogMessage } = useModal()
 
-    useEffect(() => {
-        const requestLogger = axiosPublic.interceptors.request.use(
+    useEffect(() => {        
+        let requestPublicInterceptor  
+        let responsePublicInterceptor
+
+        requestPublicInterceptor = axiosCall.interceptors.request.use(
             config => config,
             (error) => {
-                console.error(`error request: ${JSON.stringify(error.request)}`)
                 return Promise.reject(error)
             }
         )
         
-        const responseLogger = axiosPublic.interceptors.response.use(
+        responsePublicInterceptor = axiosCall.interceptors.response.use(
             response => {
-                console.log(`success response: ${JSON.stringify(response)}`)
+                
                 return response
             },
             (error) => {
-                console.log(`error response: ${JSON.stringify(error.response)}`)
+                if (error.request._timeout) {
+                    showDialogMessage('error', "C0001", "Server timeout!")
+                }  
                 return Promise.reject(error)
             }
         )
 
         return () => {
-            axiosPublic.interceptors.request.eject(requestLogger)
-            axiosPublic.interceptors.response.eject(responseLogger)
+            axiosCall.interceptors.request.eject(requestPublicInterceptor)
+            axiosCall.interceptors.response.eject(responsePublicInterceptor)
         }
     }, [])
 
-    return axiosPublic
+    return axiosCall
 }
 
 export default usePublicCall
