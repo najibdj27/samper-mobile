@@ -6,29 +6,33 @@ const usePublicCall = () => {
 
     const { showDialogMessage } = useModal()
 
-    useEffect(() => {
-        const requestInterceptor = axiosCall.interceptors.request.use(
+    useEffect(() => {        
+        let requestPublicInterceptor  
+        let responsePublicInterceptor
+
+        requestPublicInterceptor = axiosCall.interceptors.request.use(
             config => config,
             (error) => {
-                showDialogMessage('success', "C0001", "Server timeout!")
                 return Promise.reject(error)
             }
         )
         
-        const responseInterceptor = axiosCall.interceptors.response.use(
+        responsePublicInterceptor = axiosCall.interceptors.response.use(
             response => {
                 
                 return response
             },
             (error) => {
-                showDialogMessage('error', "C0001", "Server timeout!")
+                if (error.request._timeout) {
+                    showDialogMessage('error', "C0001", "Server timeout!")
+                }  
                 return Promise.reject(error)
             }
         )
 
         return () => {
-            axiosCall.interceptors.request.eject(requestInterceptor)
-            axiosCall.interceptors.response.eject(responseInterceptor)
+            axiosCall.interceptors.request.eject(requestPublicInterceptor)
+            axiosCall.interceptors.response.eject(responsePublicInterceptor)
         }
     }, [])
 
