@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native'
 import Loader from './components/Loader'
 import usePrivateCall from './hooks/usePrivateCall'
 import useAuth from './hooks/useAuth'
+import useModal from './hooks/useModal'
 
 const AddNewRequestScreen = () => {
 	const [requestTypeForm, setRequestTypeForm] = useState(null)
@@ -23,9 +24,8 @@ const AddNewRequestScreen = () => {
 	const { width } = useWindowDimensions()
 
 	const axiosPrivate = usePrivateCall()
+	const { loaderOn, showDialogMessage } = useModal()
 	const {authState} = useAuth()
-	const dialogMessageRef = useRef()
-	const loaderRef = useRef()
 	const navigation = useNavigation()
 
 	const scheduleData = useMemo(() => {
@@ -173,19 +173,18 @@ const AddNewRequestScreen = () => {
 		}).catch((err) => {
 			console.log(`schedule: failed`)
 			if (err.response) {
-				console.log(`${JSON.stringify(err.response)}`)
 				setSchedule({
 					data: [],
 					isLoading: false
 				})
 			} else if (err.request) {
-				dialogMessageRef.current.showDialog('error', "C0001", "Server timeout!")
+				showDialogMessage('error', "C0001", "Server timeout!")
 			}
 		})
 	}, [dateForm])
 
 	const handleSubmit = async () => {
-		loaderRef.current?.showLoader()
+		loaderOn()
 		const reqBody = {
 			reason: reasonForm,
 			type: requestTypeForm,
@@ -194,15 +193,14 @@ const AddNewRequestScreen = () => {
 		}
 		await axiosPrivate.post('/request/add', reqBody)
 		.then(() => {
-			loaderRef.current?.showLoader()
+			loaderOn()
 			console.log(`addRequest: success`)
-			dialogMessageRef.current?.showDialog('success', "RRC202403270001", "Successfully send new request!", () => { navigation.navigate('Main', { index: 3 }) })
+			showDialogMessage('success', "RRC202403270001", "Successfully send new request!", () => { navigation.navigate('Main', { index: 3 }) })
 		}).catch((err) => {
-			loaderRef.current?.showLoader()
+			loaderOn()
 			console.log(`addRequest: failed`)
 			if (err.response) {
-				dialogMessageRef.current?.showDialog('error', err.response.data.error_code, err.response.data.error_message, loaderRef.current?.hideLoader())
-				console.log(`err: ${JSON.stringify(err.response)}`)
+				showDialogMessage('error', err.response.data.error_code, err.response.data.error_message, loaderRef.current?.hideLoader())
 			}
 		})
 	}
@@ -424,8 +422,6 @@ const AddNewRequestScreen = () => {
 					disabled={disableSubmit}
 				/>
 			</KeyboardAvoidingView>
-			<DialogMessage ref={dialogMessageRef} />
-			<Loader ref={loaderRef} />
 		</PaperProvider>
 	)
 }

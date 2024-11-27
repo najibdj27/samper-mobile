@@ -5,7 +5,7 @@ import usePublicCall from './usePublicCall'
 const useRefreshToken = () => {
 
     const axiosPublic = usePublicCall()
-    const {authState, setAuthState} = useAuth()
+    const {authState, setAuthState, setAccessToken } = useAuth()
 
     const refresh = async () => {
         let refreshToken
@@ -20,21 +20,28 @@ const useRefreshToken = () => {
         
         console.log(`refreshToken: ${refreshToken}`)
 
-        const response = await axiosPublic.post('/auth/refreshtoken', 
-            {
-                refreshToken: refreshToken 
-            },
-            {
-                withCredentials: true
-            }
-        )
-
-        setAuthState((prevState => ({
-            ...prevState,
-            accessToken: response.data?.data?.accessToken
-        })))
-
-        return response.data?.data?.accessToken 
+        try {
+            const response = await axiosPublic.post('/auth/refreshtoken', 
+                {
+                    refreshToken: refreshToken 
+                },
+                {
+                    withCredentials: true
+                }
+            )
+    
+            await setAccessToken(response.data?.data?.accessToken)
+    
+            setAuthState((prevState => ({
+                ...prevState,
+                accessToken: response.data?.data?.accessToken
+            })))
+    
+            return response.data?.data?.accessToken 
+        } catch (error) {
+            console.log(JSON.stringify(error))
+            return
+        }
     }
 
     return refresh

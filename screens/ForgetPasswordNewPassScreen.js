@@ -1,24 +1,19 @@
-import { StyleSheet, Pressable, Keyboard, Image, BackHandler, KeyboardAvoidingView, View } from 'react-native'
+import { StyleSheet, Pressable, Keyboard, Image, BackHandler, KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
-import { Text, Button, Provider } from 'react-native-paper'
+import { Text, Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import InputForm from './components/InputForm'
-import Loader from './components/Loader'
-import DialogMessage from './components/DialogMessage'
 import usePublicCall from './hooks/usePublicCall'
+import useModal from './hooks/useModal'
 
-const ForgetPasswordNewPassScreen = ({route}) => {
+const ForgetPasswordNewPassScreen = ({ route }) => {
     //states
     const [newPassword, setNewPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
-    const [screenLoading, setScreenLoading] = React.useState()
+    const { loaderOn, loaderOff, showDialogMessage } = useModal()
 
     //hooks
     const axiosPublic = usePublicCall()
-
-    //refs
-    const dialogMessageRef = React.useRef()
-    const loaderRef = React.useRef()
 
     //hooks
     const navigation = useNavigation()
@@ -26,14 +21,13 @@ const ForgetPasswordNewPassScreen = ({route}) => {
     //handler
     const handleSetNewPassword = async () => {
         Keyboard.dismiss()
-        console.log(`screenLoading: on`)
-        setScreenLoading(true)
+        loaderOn()
         if (newPassword === confirmPassword) {
             console.log(`resetPassword`)
-            await axiosPublic.patch('/auth/reset_password', 
+            await axiosPublic.patch('/auth/reset_password',
                 {
                     newPassword: newPassword
-                }, 
+                },
                 {
                     params: {
                         token: route.params.token
@@ -42,19 +36,19 @@ const ForgetPasswordNewPassScreen = ({route}) => {
             )
             .then((response) => {
                 console.log(`resetPassword: success`)
-                setScreenLoading(false)
+                loaderOff()
                 const resetPasswordResponse = response.data
-                dialogMessageRef.current.showDialog('success', '0000', resetPasswordResponse.message, () => {navigation.navigate('Login')})
+                showDialogMessage('success', '0000', resetPasswordResponse.message, () => { navigation.navigate('Login') })
             }).catch((err) => {
                 console.log(`resetPassword: failed`)
-                setScreenLoading(false)
+                loaderOff()
                 if (err.response) {
-                    dialogMessageRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+                    showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message)
                 }
             })
         } else {
-            setScreenLoading(false)
-            dialogMessageRef.current.showDialog('error', '1104', `Your new password doesn't match!`)
+            loaderOff()
+            showDialogMessage('error', '1104', `Your new password doesn't match!`)
         }
     }
 
@@ -63,69 +57,57 @@ const ForgetPasswordNewPassScreen = ({route}) => {
         BackHandler.addEventListener('hardwareBackPress', () => true)
     }, [])
 
-    React.useEffect(() => {
-        if (screenLoading) {
-            loaderRef.current.showLoader()
-        }else{
-            loaderRef.current.hideLoader()
-        }
-    }, [screenLoading])
-
     //source
     const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
 
     return (
-        <Provider>
-            <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView behavior='position'>
-                    <Image source={topImg} style={{width: 350, height: 260}} />
-                    <Text style={styles.titleText}>
-                        Set your new password!
-                    </Text>
-                    <InputForm 
-                        mode="outlined"
-                        label="New Password"
-                        input={newPassword}
-                        setInput={setNewPassword}
-                        placeholder="Input your new password"
-                        inputMode="password"
-                        useValidation={true}
-                        validationMode="newPassword"
-                        centered={true}
-                        style={styles.form}
-                        secureTextEntry={true}
-                    />
-                    <InputForm 
-                        mode="outlined"
-                        label="Confirm New Password"
-                        input={confirmPassword}
-                        setInput={setConfirmPassword}
-                        placeholder="Confirm your new password"
-                        inputMode="password"
-                        useValidation={false}
-                        style={styles.form}
-                        centered={true}
-                        secureTextEntry={true}
-                    />
-                    <Button 
-                        icon="lock-reset" 
-                        mode="contained" 
-                        style={styles.button} 
-                        contentStyle={styles.buttonContent} 
-                        buttonColor="#03913E"
-                        onPress={handleSetNewPassword}
-                        labelStyle={{
-                            fontSize: 18, 
-                            fontWeight: "bold"
-                        }}
-                    >
-                        Reset
-                    </Button>
-                </KeyboardAvoidingView>
-            </Pressable>
-            <Loader ref={loaderRef} />
-            <DialogMessage ref={dialogMessageRef} />
-        </Provider>
+        <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView behavior='position'>
+                <Image source={topImg} style={{ width: 350, height: 260 }} />
+                <Text style={styles.titleText}>
+                    Set your new password!
+                </Text>
+                <InputForm
+                    mode="outlined"
+                    label="New Password"
+                    input={newPassword}
+                    setInput={setNewPassword}
+                    placeholder="Input your new password"
+                    inputMode="password"
+                    useValidation={true}
+                    validationMode="newPassword"
+                    centered={true}
+                    style={styles.form}
+                    secureTextEntry={true}
+                />
+                <InputForm
+                    mode="outlined"
+                    label="Confirm New Password"
+                    input={confirmPassword}
+                    setInput={setConfirmPassword}
+                    placeholder="Confirm your new password"
+                    inputMode="password"
+                    useValidation={false}
+                    style={styles.form}
+                    centered={true}
+                    secureTextEntry={true}
+                />
+                <Button
+                    icon="lock-reset"
+                    mode="contained"
+                    style={styles.button}
+                    contentStyle={styles.buttonContent}
+                    buttonColor="#03913E"
+                    onPress={handleSetNewPassword}
+                    labelStyle={{
+                        fontSize: 18,
+                        fontWeight: "bold"
+                    }}
+                >
+                    Reset
+                </Button>
+            </KeyboardAvoidingView>
+        </Pressable>
     )
 }
 
