@@ -1,21 +1,22 @@
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Avatar, Divider, Provider, Surface, Text, TextInput } from 'react-native-paper'
 import { Button } from 'react-native-paper'
-import { AuthContext } from './contexts/AuthContext'
 import moment from 'moment/moment'
 import Loader from './components/Loader'
 import DialogMessage from './components/DialogMessage'
 import DialogConfirmation from './components/DialogConfirmation'
 import useAuth from './hooks/useAuth'
 import usePrivateCall from './hooks/usePrivateCall'
+import useModal from './hooks/useModal'
 
 const RequestDetailScreen = ({route}) => {
-    const [requestDetail, setRequestDetail] = useState({data: {}, isLoading: false})
+    const [requestDetail, setRequestDetail] = useState({})
 
-    const {authState} = useAuth()
+    const { authState } = useAuth()
+    const { loaderOn, loaderOff, showDialogMessage, showDialogConfirmation } = useModal()
     const axiosPrivate = usePrivateCall()
-    const {width, height} = useWindowDimensions()
+    const { width } = useWindowDimensions()
     const loaderRef = useRef()
     const dialogRef = useRef()
     const dialogConfirmationRef = useRef()
@@ -23,7 +24,7 @@ const RequestDetailScreen = ({route}) => {
 
     const handleApprove = async () => {
         console.log('handleApprove')
-        loaderRef.current.showLoader()
+        loaderOn()
         await axiosPrivate.patch(`/request/approve`, {},
             {
                 params: {
@@ -32,23 +33,21 @@ const RequestDetailScreen = ({route}) => {
             }
         ).then(() => {
             console.log('handleApprove: success')
-            loaderRef.current.hideLoader()
-            dialogRef.current.showDialog('success', '0000', 'Request have been approved!', () => loadRequestDetail())
+            loaderOff()
+            showDialogMessage('success', '0000', 'Request have been approved!', () => loadRequestDetail())
         }).catch(err => {
             console.log('handleApprove: failed')
-            loaderRef.current.hideLoader()
+            loaderOff()
             if (err.response) {
-                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
-            } else if (err.request) {
-                dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
-            } 
+                showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
+            }
         })
     }
     
     const handleReject = async () => {
         console.log('handleReject')
         console.log('loader: on')
-        loaderRef.current.showLoader()
+        loaderOn()
         await axiosPrivate.patch(`/request/reject`, {},
             {
                 params: {
@@ -57,16 +56,14 @@ const RequestDetailScreen = ({route}) => {
             }
         ).then(() => {
             console.log('handleApprove: success')
-            loaderRef.current.hideLoader()
-            dialogRef.current.showDialog('success', '0000', 'Request have been approved!', () => loadRequestDetail())
+            loaderOff()
+            showDialogMessage('success', '0000', 'Request have been approved!', () => loadRequestDetail())
         }).catch(err => {
             console.log('handleApprove: failed')
-            loaderRef.current.hideLoader()
+            loaderOff()
             if (err.response) {
-                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
-            } else if (err.request) {
-                dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
-            } 
+                showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, () => loadRequestDetail())
+            }
         })
     }
 
@@ -79,24 +76,19 @@ const RequestDetailScreen = ({route}) => {
         await axiosPrivate.get( `/request/${route.params.requestId}`)
         .then( response => {
             console.log('requestDetail: success')
+            loaderOff()
             const requestDetailData = response.data
-            setRequestDetail({
-                data: requestDetailData.data,
-                isLoading: false
-            })
+            setRequestDetail(requestDetailData.data)
         }).catch( err => {
             console.log('requestDetail: failed')
-            setRequestDetail(prevData => ({
-                ...prevData,
-                isLoading: false
-            }))
+            loaderOff()
             if (err.response) {
                 if (err.response.data.status === 401) {
                     loadRequestDetail()
                 }
-                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
+                showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message)
             } else if (err.request) {
-                dialogRef.current.showDialog('error', "RCA0001", "Server Timeout!")
+                showDialogMessage('error', "RCA0001", "Server Timeout!")
             } 
         })
     }
@@ -104,16 +96,6 @@ const RequestDetailScreen = ({route}) => {
     useEffect(() => {
         loadRequestDetail()
     }, [])
-
-    useEffect(() => {
-        if (requestDetail.isLoading) {
-            console.log('loader: on')
-            loaderRef.current.showLoader()
-        }else{
-            console.log('loader: off')
-            loaderRef.current.hideLoader()
-        }
-    }, [requestDetail.isLoading])
 
     const statusType = (type) => {
         switch (type) {
@@ -149,12 +131,12 @@ const RequestDetailScreen = ({route}) => {
                 <Surface style={[styles.ticket, {width: width*0.9}]} elevation={1}>
                     <View style={{flexDirection: 'row'}}>
                         <Avatar.Icon
-                            icon={statusType(requestDetail.data?.type)}
+                            icon={statusType(requestDetail.type)}
                             size={40}
                             style={styles.ticketIcon}
                         />
                         <Text variant="headlineMedium" style={styles.ticketTittle}>
-                            {requestDetail.data?.type?.replace('_', ' ')} REQUEST
+                            {requestDetail.type?.replace('_', ' ')} REQUEST
                         </Text>
                     </View>
                     <Divider style={{marginTop: 10}} />
@@ -164,7 +146,7 @@ const RequestDetailScreen = ({route}) => {
                                 <TextInput.Icon icon="file-upload-outline" disabled/>
                             )}
                             label="From"
-                            value={`${requestDetail.data.sender?.firstName} ${requestDetail.data.sender?.lastName}`}
+                            value={`${requestDetail.sender?.firstName} ${requestDetail.sender?.lastName}`}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
@@ -176,7 +158,7 @@ const RequestDetailScreen = ({route}) => {
                                 <TextInput.Icon icon="file-download-outline" disabled/>
                             )}
                             label="To"
-                            value={`${requestDetail.data.receiver?.firstName} ${requestDetail.data.receiver?.lastName}`}
+                            value={`${requestDetail.receiver?.firstName} ${requestDetail.receiver?.lastName}`}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
@@ -188,7 +170,7 @@ const RequestDetailScreen = ({route}) => {
                                 <TextInput.Icon icon="file-question-outline" disabled/>
                             )}
                             label="Reason"
-                            value={`${requestDetail.data.reason}`}
+                            value={`${requestDetail.reason}`}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
@@ -200,7 +182,7 @@ const RequestDetailScreen = ({route}) => {
                                 <TextInput.Icon icon="calendar" disabled/>
                             )}
                             label="Request time"
-                            value={moment(requestDetail.data.requestTime).format('D MMM YYYY | HH:mm')}
+                            value={moment(requestDetail.requestTime).format('D MMM YYYY | HH:mm')}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
@@ -212,7 +194,7 @@ const RequestDetailScreen = ({route}) => {
                                 <TextInput.Icon icon="list-status" disabled/>
                             )}
                             label="Status"
-                            value={requestDetail.data.status}
+                            value={requestDetail.status}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
@@ -228,7 +210,7 @@ const RequestDetailScreen = ({route}) => {
                                     <TextInput.Icon icon="calendar-multiple" disabled/>
                                 )}
                                 label="Subject"
-                                value={`${requestDetail.data.schedule?.subject.name} Pertemuan ${requestDetail.data.schedule?.meetingOrder}`}
+                                value={`${requestDetail.schedule?.subject.name} Pertemuan ${requestDetail.schedule?.meetingOrder}`}
                                 style={{
                                     width: width*0.8,
                                     backgroundColor: 'white'
@@ -241,7 +223,7 @@ const RequestDetailScreen = ({route}) => {
                                         <TextInput.Icon icon="calendar-month" disabled/>
                                     )}
                                     label="Date"
-                                    value={moment(requestDetail.data.schedule?.timeStart).format('D MMM YYYY')}
+                                    value={moment(requestDetail.schedule?.timeStart).format('D MMM YYYY')}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
@@ -253,7 +235,7 @@ const RequestDetailScreen = ({route}) => {
                                         <TextInput.Icon icon="clock-outline" disabled/>
                                     )}
                                     label="Time"
-                                    value={`${moment(requestDetail.data.schedule?.timeStart).format('HH:mm')} - ${moment(requestDetail.data.schedule?.timeEnd).format('HH:mm')}`}
+                                    value={`${moment(requestDetail.schedule?.timeStart).format('HH:mm')} - ${moment(requestDetail.schedule?.timeEnd).format('HH:mm')}`}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
@@ -266,7 +248,7 @@ const RequestDetailScreen = ({route}) => {
                                     <TextInput.Icon icon="google-classroom" disabled/>
                                 )}
                                 label="Class"
-                                value={`${requestDetail.data.schedule?.kelas.name}`}
+                                value={`${requestDetail.schedule?.kelas.name}`}
                                 style={{
                                     width: width*0.8,
                                     backgroundColor: 'white'
@@ -284,7 +266,7 @@ const RequestDetailScreen = ({route}) => {
                                         <TextInput.Icon icon="calendar-month" disabled/>
                                     )}
                                     label="Date"
-                                    value={moment(requestDetail.data.requestData?.timeStart).format('D MMM YYYY')}
+                                    value={moment(requestDetail.requestData?.timeStart).format('D MMM YYYY')}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
@@ -296,7 +278,7 @@ const RequestDetailScreen = ({route}) => {
                                         <TextInput.Icon icon="clock-outline" disabled/>
                                     )}
                                     label="Time"
-                                    value={`${moment(requestDetail.data.requestData?.timeStart).format('HH:mm')} - ${moment(requestDetail.data.requestData?.timeEnd).format('HH:mm')}`}
+                                    value={`${moment(requestDetail.requestData?.timeStart).format('HH:mm')} - ${moment(requestDetail.requestData?.timeEnd).format('HH:mm')}`}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
@@ -310,7 +292,7 @@ const RequestDetailScreen = ({route}) => {
             </ScrollView>
             <View style={{flexDirection: 'row', justifyContent: 'center', marginVertical: 24}}>
                 {
-                    authState.profile.user?.id === requestDetail.data.receiver?.id ?
+                    authState.profile.user?.id === requestDetail.receiver?.id ?
                         (
                             <Button 
                                 // label="Approve"]
@@ -318,8 +300,8 @@ const RequestDetailScreen = ({route}) => {
                                 labelStyle={styles.buttonLabel}
                                 mode="contained"
                                 buttonColor="#212121"
-                                disabled={requestDetail.data?.status === 'PENDING' ? false : true}
-                                onPress={() => {dialogConfirmationRef.current?.showDialog('note-check', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
+                                disabled={requestDetail.status === 'PENDING' ? false : true}
+                                onPress={() => {showDialogConfirmation('note-check', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
                                 >
                                     Approve
                                 </Button>
@@ -328,7 +310,7 @@ const RequestDetailScreen = ({route}) => {
                         null
                     }
                 {
-                    authState.profile.user?.id === requestDetail.data.receiver?.id ?
+                    authState.profile.user?.id === requestDetail.receiver?.id ?
                     (
                             <Button 
                                 // label="Approve"   
@@ -336,8 +318,9 @@ const RequestDetailScreen = ({route}) => {
                                 labelStyle={styles.buttonLabel}
                                 mode="contained"                            
                                 buttonColor="#212121"
-                                disabled={requestDetail.data?.status === 'PENDING' ? false : true}
-                                onPress={() => {dialogConfirmationRef.current?.showDialog('note-remove', 'Reject', 'Are you sure you want to reject this request?', () => handleReject(), null)}}  
+                                disabled={requestDetail.status === 'PENDING' ? false : true}
+                                onPress={() => {
+                                    showDialogConfirmation('note-remove', 'Reject', 'Are you sure you want to reject this request?', () => handleReject(), null)}}                       
                             >
                                 Reject
                             </Button>

@@ -1,26 +1,27 @@
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Appbar, Avatar, Text, List } from "react-native-paper";
-import { AuthContext } from "./contexts/AuthContext";
+import { Avatar, Text, List } from "react-native-paper";
 import DialogConfirmation from "./components/DialogConfirmation";
+import useAuth from "./hooks/useAuth";
+import useModal from "./hooks/useModal";
 
 
-function SettingScreen() {
-    const auth = useContext(AuthContext)
+const SettingScreen = () => {
+    const { authState, logout } = useAuth()
     const navigation = useNavigation()
-    const dialogConfirmationRef = useRef()
+    const { showDialogConfirmation } = useModal()
 
     const nomorInduk = useMemo(() => {
-        if (auth.authState.profile?.user.roles.includes('LECTURE')) {
-            return auth.authState.profile?.nip
+        if (authState?.roles.includes('LECTURE')) {
+            return authState.profile?.nip
         } else {
-            return auth.authState.profile?.nim
+            return authState.profile?.nim
         }
-    }, [auth.authState.profile])
+    }, [authState])
 
     const handleLogout = () => {
-        dialogConfirmationRef.current?.showDialog('logout' , 'Logout', 'Are you sure you want to logout?', () => auth.logout(), null)
+        showDialogConfirmation('logout' , 'Logout', 'Are you sure you want to logout?', () => logout(), null)
     } 
 
     return (
@@ -30,7 +31,7 @@ function SettingScreen() {
                     {/* <Avatar.Image size={80} source={} /> */}
                     <Avatar.Icon size={80} icon="account" style={{marginVertical: 10}} />
                     <Text style={styles.nameText}>
-                        {auth.authState.profile.user.firstName} {auth.authState.profile.user.lastName}
+                        {authState.profile.user.firstName} {authState.profile.user.lastName}
                     </Text>
                     <Text style={styles.nimText}>
                         {nomorInduk}
@@ -44,7 +45,7 @@ function SettingScreen() {
                             right={props => <List.Icon {...props} icon="chevron-right" />}
                         />
                     </Pressable>
-                    <Pressable onPress={() => {navigation.navigate('AccountDetail', {userId: auth.authState?.profile.user.id})}}>
+                    <Pressable onPress={() => {navigation.navigate('AccountDetail', {userId: authState?.profile?.user?.id})}}>
                         <List.Item
                             title="Account"
                             left={props => <List.Icon {...props} icon="key" />}
@@ -86,7 +87,6 @@ function SettingScreen() {
                     2024 © Samper Mobile
                 </Text>
             </View>
-            <DialogConfirmation ref={dialogConfirmationRef} />
         </View>
     );
 }

@@ -1,13 +1,12 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.58.227:8080';
+const BASE_URL = 'http://192.168.8.28:8080';
 const TIMEOUT = 70000;
 
 const axiosCall = axios.create({
     baseURL: BASE_URL,
     timeout: TIMEOUT
 })
-
 
 axiosCall.interceptors.request.use(
     config => config,
