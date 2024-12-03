@@ -191,7 +191,7 @@ function HomeScreen() {
                 {
                     presenceHistoryData.isLoading? 
                     ( <History isLoading={true} />) :
-                        presenceHistoryData.data.length == 0 ?
+                        presenceHistoryData.data?.length == 0 ?
                             ( <History isEmpty={true} /> ) : 
                             console.log(`available`)
                 }
