@@ -126,7 +126,7 @@ const RequestDetailScreen = ({route}) => {
     // })
 
     return (
-        <Provider>
+        <>
             <ScrollView contentContainerStyle={styles.container}>
                 <Surface style={[styles.ticket, {width: width*0.9}]} elevation={1}>
                     <View style={{flexDirection: 'row'}}>
@@ -329,10 +329,7 @@ const RequestDetailScreen = ({route}) => {
                         null
                 }
             </View>
-            <Loader ref={loaderRef} />
-            <DialogMessage ref={dialogRef} />
-            <DialogConfirmation ref={dialogConfirmationRef} />
-        </Provider>
+        </>
     )
 }
 
