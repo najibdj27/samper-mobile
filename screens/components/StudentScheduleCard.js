@@ -34,10 +34,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
         if (authState.profile?.user?.roles.includes('STUDENT')) {
             return (
                 <>
-                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={!item.clockIn && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {console.log('Pressed')}}>
+                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={!item.clockIn && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, action: 'CLOCK_IN'})}}>
                         Clock In
                     </Button>
-                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockIn && !item.clockOut && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockIn && !item.clockOut && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, action: 'CLOCK_OUT'})}}>
                         Clock Out
                     </Button>
                 </>
@@ -77,13 +77,13 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                                 [
                                     {
                                         value: 'clockIn',
-                                        label: item.clockIn? item.clockIn : '-',
-                                        disabled: true
+                                        label: item.clockIn? moment(item.clockIn).format('HH:mm') : '-',
+                                        disabled: item.clockIn? false : true
                                     },
                                     {
                                         value: 'clockOut',
-                                        label: item.clockOut? item.clockOut : '-',
-                                        disabled: true
+                                        label: item.clockOut? moment(item.clockOut).format('HH:mm') : '-',
+                                        disabled: item.clockOut? false : true
                                     }
                                 ]
                             }
