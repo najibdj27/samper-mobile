@@ -9,7 +9,7 @@ export const AuthProvider = ({children}) => {
         refreshToken: null,
         profile: {},
         roles: [],
-        isAuthenticated: null,
+        isAuthenticated: undefined,
     })
 
     

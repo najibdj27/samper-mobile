@@ -23,7 +23,7 @@ const usePublicCall = () => {
                 return response
             },
             (error) => {
-                if (error.request._timeout) {
+                if (error.request?._response === 'timeout') {
                     showDialogMessage('error', "C0001", "Server timeout!")
                 }  
                 return Promise.reject(error)
