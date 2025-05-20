@@ -6,6 +6,7 @@ import AddNewRequestScreen from '../AddNewRequestScreen';
 import RequestDetailScreen from '../RequestDetailScreen';
 import AccountDetailScreen from '../AccountDetailScreen';
 import ScheduleDetailScreen from '../ScheduleDetailScreen';
+import ActionScheduleScreen from '../ActionScheduleScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -106,6 +107,23 @@ const AuthStack = () => {
                 },
                 headerTintColor: "#fff"
             }} 
+        />
+        <Stack.Screen 
+            name="ActionSchedule" 
+            component={ActionScheduleScreen}
+            options={({route}) => ({
+                headerShown: true,
+                headerTitleAlign: "left",
+                title: 'Schedule Action',
+                headerStyle: {
+                    backgroundColor: "#D8261D"
+                },
+                headerTitleStyle:{
+                    fontWeight: "bold",
+                    color: "#fff"
+                },
+                headerTintColor: "#fff"
+            })} 
         />
     </Stack.Navigator>
   )

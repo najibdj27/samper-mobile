@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.8.28:8080';
+// const BASE_URL = 'http://192.168.0.122:8080'; //kost 
+const BASE_URL = 'http://192.168.3.206:8080'; // office
+// const BASE_URL = 'http://192.168.209.227:8080';
 const TIMEOUT = 70000;
 
 const axiosCall = axios.create({
@@ -11,7 +13,7 @@ const axiosCall = axios.create({
 axiosCall.interceptors.request.use(
     config => config,
     (error) => {
-        console.log(`error: ${JSON.stringify(error.request)}`)
+        console.log(`error request: ${JSON.stringify(error.request)}`)
         return Promise.reject(error)
     }
 )
@@ -23,15 +25,12 @@ axiosCall.interceptors.response.use(
     },
     (error) => {
         if (error.response){
-            console.log(`error: ${JSON.stringify(error.response)}`)
+            console.log(`error response: ${JSON.stringify(error.response)}`)
         }else {
-            console.log(`error: ${JSON.stringify(error.request)}`)
+            console.log(`error request: ${JSON.stringify(error.request)}`)
         }
         return Promise.reject(error)
     }
 )
 
 export default axiosCall
-
-
-
