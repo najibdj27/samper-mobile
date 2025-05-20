@@ -13,20 +13,22 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
 
     const isAbleToOpen = useMemo(() => {
         if (moment(Date.now()).isBetween(moment(item?.timeStart), moment(item?.timeEnd))) {
-            if (item?.isActive) {
+            if (item?.openTime) {
                 return false
+            } else {
+
+                return true
             }
-            return true
         } else {
             return false
         }
     }, [item])
 
     const isAbleToClose = useMemo(() => {
-        if (item?.isActive) {
-            return true
-        } else {
+        if (item?.closeTime) {
             return false
+        } else {
+            return true
         }
     }, [item])
 
@@ -77,12 +79,12 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                                 [
                                     {
                                         value: 'clockIn',
-                                        label: item.clockIn? moment(item.clockIn).format('HH:mm') : '-',
+                                        label: authState.profile?.user?.roles.includes('STUDENT')? item.clockIn? moment(item.clockIn).format('HH:mm') : '-' : item.openTime? moment(item.openTime).format('HH:mm') : '-',
                                         disabled: item.clockIn? false : true
                                     },
                                     {
                                         value: 'clockOut',
-                                        label: item.clockOut? moment(item.clockOut).format('HH:mm') : '-',
+                                        label: authState.profile?.user?.roles.includes('STUDENT')? item.clockOut? moment(item.clockOut).format('HH:mm') : '-': item.closeTime? moment(item.closeTime).format('HH:mm') : '-',
                                         disabled: item.clockOut? false : true
                                     }
                                 ]
