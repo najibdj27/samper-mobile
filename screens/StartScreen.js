@@ -12,24 +12,42 @@ function StartScreen() {
                 <Text style={{fontSize: 28}}>Perjuangan University</Text>{'\n'}
                 Student Presence System 
             </Text>
-            <Text style={styles.textBottom}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut risus tempor, aliquet lectus in, egestas lacus. Fusce pellentesque faucibus nulla. Nullam sit amet accumsan odio, sit amet vestibulum diam.
-            </Text>
-            <View style={styles.button}>
-            <Button 
-                icon="login" 
-                mode="contained" 
-                style={styles.button} 
-                contentStyle={styles.buttonContent} 
-                buttonColor="#03913E"
-                onPress={() => navigation.navigate("Login")}
-                labelStyle={{
-                    fontSize: 18, 
-                    fontWeight: "bold"
-                }}
-            >
-                Sign In
-            </Button>
+            <ImageBackground 
+                style={styles.logo}
+                source={{uri: 'https://upload.wikimedia.org/wikipedia/id/6/61/Unper.png'}}
+            />
+            <View style={{marginTop: 40}}>
+                <Button 
+                    icon="login" 
+                    mode="contained" 
+                    style={styles.button} 
+                    contentStyle={styles.buttonContent} 
+                    buttonColor="#03913E"
+                    onPress={() => navigation.navigate("Login")}
+                    labelStyle={{
+                        fontSize: 18, 
+                        fontWeight: "bold"
+                    }}
+                >
+                    Sign In
+                </Button>
+                {/* <Text style={{marginTop: 10}}>
+                    Or
+                </Text> */}
+                <Button 
+                    icon="account-plus" 
+                    mode="contained" 
+                    style={[styles.button, {marginTop: 20}]} 
+                    contentStyle={styles.buttonContent} 
+                    buttonColor="#03913E"
+                    onPress={() => navigation.navigate("SignUp")}
+                    labelStyle={{
+                        fontSize: 18, 
+                        fontWeight: "bold"
+                    }}
+                >
+                    Sign Up
+                </Button>
             </View>
             <ImageBackground
                 style={styles.imagebackgroung}
@@ -45,6 +63,14 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor: "#fff",
         paddingTop: 30 
+    },
+    logo: {
+        alignSelf: "center",
+        alignContent: "center",
+        marginTop: 20,
+        marginHorizontal: "auto",
+        width: 150,
+        height: 150
     },
     text: {
         justifyContent: "flex-start",
@@ -68,7 +94,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 80,
+        marginTop: 10,
         borderRadius: 8
     },
     buttonContent: {
