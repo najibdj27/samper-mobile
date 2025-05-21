@@ -47,7 +47,7 @@ function ForgetPasswordOtpScreen({ route }) {
 
 	const handleValidateOtp = async () => {
 		Keyboard.dismiss()
-		setScreenLoading()
+		loaderOn()
 		const intCode = parseInt(code)
 		const reqBody = { emailAddress: route.params.emailAddress, otp: intCode }
 		console.log(`confirmOTP`)
@@ -107,7 +107,7 @@ function ForgetPasswordOtpScreen({ route }) {
 					}}
 					disabled={!pinReady}
 				>
-					Send OTP
+					Validate OTP
 				</Button>
 			</KeyboardAvoidingView>
 		</Pressable>
