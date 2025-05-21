@@ -12,6 +12,7 @@ const InputForm = ({
         label,
         input,
         setInput,
+        setInputObject,
         placeholder,
         inputMode,
         keyboardType,
@@ -53,7 +54,7 @@ const InputForm = ({
                     placeholder={placeholder}
                     value={input}
                     mode={mode}
-                    activeOutlineColor={useValidation? isValid? "#03913E" : "#D8261D" : "blue"}
+                    activeOutlineColor={useValidation? isValid? "#03913E" : "#D8261D" : "#03913E"}
                     inputMode={inputMode === 'password' || 'newPassword' ? null : inputMode}
                     keyboardType={keyboardType}
                     style={[{
@@ -66,7 +67,7 @@ const InputForm = ({
                         fontWeight: "bold"
                     }]}
                     outlineStyle={{borderRadius:16}}
-                    onChangeText={text => setInput(text)}
+                    onChangeText={setInput? text => setInput(text): setInputObject? setInputObject: null}
                     secureTextEntry={secureTextEntry}
                     disabled={disabled}
                     editable={editable}
