@@ -1,4 +1,4 @@
-import { StyleSheet, useWindowDimensions, View } from 'react-native'
+import { Dimensions, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { Icon, Text } from 'react-native-paper'
 import moment from 'moment'
@@ -10,6 +10,8 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector'
 import * as ImageManipulator from 'expo-image-manipulator';
 import useGeolocation from './hooks/useGeolocation'
+
+const { width, height } = Dimensions.get('window');
 
 const ActionScheduleScreen = ({ route }) => {
     const [scheduleDetailData, setScheduleDetailData] = useState({})
@@ -275,18 +277,25 @@ const ActionScheduleScreen = ({ route }) => {
                             </View>
                         </View>
                     </View>
+                    <View style={styles.overlay}>
+                        <View style={styles.faceGuide} />
+                        <Text style={styles.instruction}>Align your face in the frame</Text>
+                    </View>
+                <StickyButton
+                    label={actionLabel}
+                    buttonColor={buttonColor}
+                    onPress={handleButtonAction}
+                />
                 </CameraView>
             </View>
-            <StickyButton
-                label={actionLabel}
-                buttonColor={buttonColor}
-                onPress={handleButtonAction}
-            />
         </>
     )
 }
 
 export default ActionScheduleScreen
+
+const FRAME_WIDTH = width * 0.7;
+const FRAME_HEIGHT = FRAME_WIDTH * 1.2;
 
 const styles = StyleSheet.create({
     container: {
@@ -313,12 +322,26 @@ const styles = StyleSheet.create({
         height: 120,
         paddingVertical: 10,
     },
-    faceBox: {
+    overlay: {
         position: 'absolute',
-        bottom: 10,
-        alignSelf: 'center',
-        backgroundColor: 'rgba(255,255,255,0.8)',
-        padding: 10,
-        borderRadius: 8,
-    }
+        width: width,
+        height: height,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+    },
+    faceGuide: {
+        width: FRAME_WIDTH,
+        height: FRAME_HEIGHT,
+        borderRadius: FRAME_WIDTH / 2,
+        borderWidth: 3,
+        borderColor: 'white',
+        backgroundColor: 'transparent',
+    },
+    instruction: {
+        marginTop: 20,
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 })
