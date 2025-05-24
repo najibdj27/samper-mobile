@@ -264,7 +264,7 @@ const ActionScheduleScreen = ({ route }) => {
                                     color="white"
                                     size={24}
                                 />
-                                <Text variant='headlineMedium' style={{marginHorizontal: 20, fontWeight: "bold", color: '#fff'}} >{currentTime}</Text>
+                                <Text variant='headlineMedium' style={{marginHorizontal: 20, fontWeight: "bold", color: '#fff'}} >{route.params.action === 'OPEN' || route.params.action === 'CLOCK_IN'? currentTime : route.params.clockIn ? moment(route.params.clockIn).format('HH:mm') : route.params.openTime? moment(route.params.openTime).format('HH:mm') : '--:--'}</Text>
                             </View>
                             <Text variant='headlineMedium' style={{marginHorizontal: 20, fontWeight: "bold", color: '#fff'}} >|</Text>
                             <View style={{flexDirection: "row-reverse", alignItems: "center"}}>
@@ -273,7 +273,7 @@ const ActionScheduleScreen = ({ route }) => {
                                     color="white"
                                     size={24}
                                 />
-                                <Text variant='headlineMedium' style={{marginHorizontal: 20, fontWeight: "bold", color: '#fff'}} >--:--</Text>
+                                <Text variant='headlineMedium' style={{marginHorizontal: 20, fontWeight: "bold", color: '#fff'}} >{route.params.action === 'CLOSE' || route.params.action === 'CLOCK_OUT'? currentTime : route.params.clockOut? moment(route.params.clockOut).format('HH:mm') : route.params.closeTime? moment(route.params.closeTime).format('HH:mm') : '--:--'}</Text>
                             </View>
                         </View>
                     </View>
