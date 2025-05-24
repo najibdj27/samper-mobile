@@ -14,7 +14,7 @@ import useGeolocation from './hooks/useGeolocation'
 const ActionScheduleScreen = ({ route }) => {
     const [scheduleDetailData, setScheduleDetailData] = useState({})
     const [currentTime, setCurrentTime] = useState()
-    const {cameraPermission, requestCameraPermission} = useCameraPermissions()
+    const [permission, requestPermission] = useCameraPermissions()
 
     const axiosPrivate = usePrivateCall()
     const { loaderOn, loaderOff, showDialogConfirmation, showDialogMessage, hideDialogMessage } = useModal()
@@ -221,18 +221,24 @@ const ActionScheduleScreen = ({ route }) => {
     }
     
     useEffect(() => {
+        (async () => {
+            await requestPermission()
+            if (!permission.granted) {
+                console.log(`[NOT GRANTED] cameraPermission: ${JSON.stringify(permission)}`)
+                showDialogMessage('error', 'FEE0003', 'Samper App has no permission to access device camera!', () => {
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{name: 'Main'}]
+                        })
+                    )
+                })
+            }
+        })() 
         loadScheduleDetail()
         getCurrentTime()
-        if (!cameraPermission) {
-            (async () => {
-                await requestCameraPermission()
-            })()
-        }
-        if (!cameraPermission === 'granted') {
-            showDialogConfirmation('camera-off', 'Camera Access', 'Samper App has no access to phone camera', () => {}, () => {})
-        }
     }, [])
-    
+
 
     useEffect(() => {
         longRef.current = longitudeCoords
