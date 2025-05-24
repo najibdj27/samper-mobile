@@ -204,7 +204,8 @@ function HomeScreen() {
 const styles = StyleSheet.create({
     navbarContainer: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "white",
+        paddingTop: 30
     },
     welcomeView: {
         flexDirection: "row", 
