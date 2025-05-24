@@ -113,9 +113,9 @@ const ActionScheduleScreen = ({ route }) => {
     const openClass = async () => {
         const {facesData, imageBase64} = await detectFaces()
         if (facesData.length > 1) {
-            showDialogMessage('error', 'FEE0003', 'Multiple faces detected, make sure only one face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0003', 'Multiple faces detected. Please ensure only one face is visible in the frame!')
         } else if (facesData.length < 1) {
-            showDialogMessage('error', 'FEE0002', 'No face detected, make sure your face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0002', 'No face detected. Please ensure your face is clearly visible in the frame!')
         } else {
             console.log('openClass')
             loaderOn()
@@ -142,9 +142,9 @@ const ActionScheduleScreen = ({ route }) => {
     const clockInClass = async () => {
         const {facesData, imageBase64} = await detectFaces()
         if (facesData.length > 1) {
-            showDialogMessage('error', 'FEE0003', 'Multiple faces detected, make sure only one face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0003', 'Multiple faces detected. Please ensure only one face is visible in the frame!')
         } else if (facesData.length < 1) {
-            showDialogMessage('error', 'FEE0002', 'No face detected, make sure your face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0002', 'No face detected. Please ensure your face is clearly visible in the frame!')
         } else {
             console.log('clockInClass')
             loaderOn()
@@ -169,9 +169,9 @@ const ActionScheduleScreen = ({ route }) => {
     const closeClass = async() => {
         const {facesData, imageBase64} = await detectFaces()
         if (facesData.length > 1) {
-            showDialogMessage('error', 'FEE0003', 'Multiple faces detected, make sure only one face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0003', 'Multiple faces detected. Please ensure only one face is visible in the frame!')
         } else if (facesData.length < 1) {
-            showDialogMessage('error', 'FEE0002', 'No face detected, make sure your face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0002', 'No face detected. Please ensure your face is clearly visible in the frame!')
         } else {
             console.log('closeClass')
             loaderOn()
@@ -197,9 +197,9 @@ const ActionScheduleScreen = ({ route }) => {
     const clockOutClass = async () => {
         const {facesData, imageBase64} = await detectFaces()
          if (facesData.length > 1) {
-            showDialogMessage('error', 'FEE0003', 'Multiple faces detected, make sure only one face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0003', 'Multiple faces detected. Please ensure only one face is visible in the frame!')
         } else if (facesData.length < 1) {
-            showDialogMessage('error', 'FEE0002', 'No face detected, make sure your face showed on the camera frame!')
+            showDialogMessage('error', 'FEE0002', 'No face detected. Please ensure your face is clearly visible in the frame!')
         } else {
             console.log('clockOutClass')
             loaderOn()
