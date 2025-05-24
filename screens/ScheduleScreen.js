@@ -61,7 +61,7 @@ const ScheduleScreen = () => {
 
     return (
         <Provider>
-            <SafeAreaView style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1, paddingTop: 30}}>
                 <CalendarAgenda 
                     items={items}
                     markedDate={markedDate}
