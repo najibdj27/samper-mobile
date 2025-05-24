@@ -240,7 +240,8 @@ export default RequestScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "white",
+        paddingTop:30
     },
     fab: {
         position: 'absolute',
