@@ -86,7 +86,9 @@ const AddNewRequestScreen = () => {
 
 	const handleRescheduleTimeChange = (event, selectedTime) => {
 		const currentTime = selectedTime
-		const duration = 50 * scheduleData.creditAmount
+		const startTime = moment(scheduleData.timeStart)
+		const endTime = moment(scheduleData.timeEnd)
+		const duration = endTime.diff(startTime, 'minutes')
 		setAdditionalDataForm({
 			timeStart: moment(new Date(currentTime)).format("YYYY-MM-DD HH:mm:ss.sss"),
 			timeEnd: moment(new Date(currentTime)).add(duration, "minute").format("YYYY-MM-DD HH:mm:ss.sss")
@@ -167,8 +169,7 @@ const AddNewRequestScreen = () => {
 			console.log(`schedule: success`)
 			const scheduleData = response.data
 			setSchedule({
-				data: scheduleData.data,
-				isLoading: false
+				data: scheduleData.data
 			})
 		}).catch((err) => {
 			console.log(`schedule: failed`)
@@ -177,8 +178,6 @@ const AddNewRequestScreen = () => {
 					data: [],
 					isLoading: false
 				})
-			} else if (err.request) {
-				showDialogMessage('error', "C0001", "Server timeout!")
 			}
 		})
 	}, [dateForm])
