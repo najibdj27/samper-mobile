@@ -22,7 +22,8 @@ const InputForm = ({
         secureTextEntry,
         editable,
         disabled,
-        autoCapitalize
+        autoCapitalize,
+        maxLength
     }) => {
     const {isValid, message, validate} = useTextValidation()
     const {width} = useWindowDimensions()
@@ -73,6 +74,7 @@ const InputForm = ({
                     disabled={disabled}
                     editable={editable}
                     autoCapitalize={autoCapitalize}
+                    maxLength={maxLength}
                 />
                 {
                     useValidation?
