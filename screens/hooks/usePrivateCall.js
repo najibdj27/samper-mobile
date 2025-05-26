@@ -46,6 +46,9 @@ const usePrivateCall = () => {
                         return axiosCall(prevRequest)
                     }
                 }
+                if (error.response.status === 500) {
+                    showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
+                }
                 return Promise.reject(error)
             }
         )
