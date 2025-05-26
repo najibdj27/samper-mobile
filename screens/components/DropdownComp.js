@@ -3,13 +3,13 @@ import React, { useState } from 'react'
 import { Text } from 'react-native-paper'
 import { Dropdown } from 'react-native-element-dropdown'
 
-const DropdownComp = ({ style, data, label, value, setValue, placeholder, onChange, disabled }) => {
+const DropdownComp = ({ style, data, label, value, setValue, setValueObject, placeholder, disabled }) => {
     const [isFocus, setIsFocus] = useState(false);
 
     const renderLabel = () => {
         if (value || isFocus) {
             return (
-                <Text style={[styles.label, isFocus && { color: '#D8261D' }]}>
+                <Text style={[styles.label, isFocus && { color: '#03913E' }]}>
                     {label}
                 </Text>
             );
@@ -30,21 +30,24 @@ const DropdownComp = ({ style, data, label, value, setValue, placeholder, onChan
         <View>
             {renderLabel()}
             <Dropdown
-                style={[styles.dropdown, style, isFocus && { borderColor: '#D8261D' }]}
+                style={[styles.dropdown, style, isFocus && { borderColor: '#03913E' }]}
                 selectedTextStyle={styles.selectedTextStyle}
                 data={data}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                iconColor='#D8261D'
+                iconColor='#03913E'
                 placeholder={placeholder}
                 value={value}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 onChange={item => {
-                    setValue(item.value);
+                    if (setValue) {
+                        setValue(item.value);
+                    }else {
+                        setValueObject(item)
+                    }
                     setIsFocus(false);
-                    onChange ? onChange() : null
                 }}
                 renderItem={renderItem}
                 disable={disabled}
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     dropdown: {
         marginVertical: 10,
         height: 50,
-        borderColor: 'gray',
+        borderColor: '#000',
         borderWidth: 0.5,
         borderRadius: 8,
         paddingHorizontal: 8,
@@ -73,7 +76,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         fontSize: 12,
         fontWeight: "bold",
-        color: "#D8261D"
     },
     icon: {
         marginRight: 5,
