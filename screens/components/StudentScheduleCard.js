@@ -25,10 +25,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
     }, [item])
 
     const isAbleToClose = useMemo(() => {
-        if (item?.closeTime) {
-            return false
-        } else {
+        if (item?.openTime && !item?.closeTime) {
             return true
+        } else {
+            return false
         }
     }, [item])
 
