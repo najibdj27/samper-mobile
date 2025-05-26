@@ -8,14 +8,16 @@ function StartScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>
-                <Text style={{fontSize: 28}}>Perjuangan University</Text>{'\n'}
-                Student Presence System 
-            </Text>
-            <ImageBackground 
-                style={styles.logo}
-                source={{uri: 'https://upload.wikimedia.org/wikipedia/id/6/61/Unper.png'}}
-            />
+            <View style={{backgroundColor: "#03913E", borderBottomRightRadius: 180, borderBottomLeftRadius: 180, paddingBottom: 20}}>
+                <Text style={styles.text}>
+                    <Text style={{fontSize: 28, color: "#ffff"}}>Perjuangan University</Text>{'\n'}
+                    Student Presence System 
+                </Text>
+                <ImageBackground 
+                    style={styles.logo}
+                    source={{uri: 'https://upload.wikimedia.org/wikipedia/id/6/61/Unper.png'}}
+                />
+            </View>
             <View style={{marginTop: 40}}>
                 <Button 
                     icon="login" 
@@ -31,9 +33,6 @@ function StartScreen() {
                 >
                     Sign In
                 </Button>
-                {/* <Text style={{marginTop: 10}}>
-                    Or
-                </Text> */}
                 <Button 
                     icon="account-plus" 
                     mode="contained" 
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
     container: {
         flex:1,
         backgroundColor: "#fff",
-        paddingTop: 30 
     },
     logo: {
         alignSelf: "center",
@@ -77,7 +75,8 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: "bold",
         marginTop: 120,
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        color: "#ffff"
     },
     textBottom: {
         justifyContent: "flex-start",
