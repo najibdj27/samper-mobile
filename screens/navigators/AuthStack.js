@@ -122,7 +122,8 @@ const AuthStack = () => {
                     fontWeight: "bold",
                     color: "#fff"
                 },
-                headerTintColor: "#fff"
+                headerTintColor: "#fff",
+                navigationBarColor: "#ffff",
             })} 
         />
     </Stack.Navigator>
