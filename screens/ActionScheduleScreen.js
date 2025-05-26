@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
-import { Icon, Text } from 'react-native-paper'
+import { Icon, Text, SegmentedButtons } from 'react-native-paper'
 import moment from 'moment'
 import usePrivateCall from './hooks/usePrivateCall'
 import StickyButton from './components/StickyButton'
@@ -16,8 +16,9 @@ const { width, height } = Dimensions.get('window');
 const ActionScheduleScreen = ({ route }) => {
     const [scheduleDetailData, setScheduleDetailData] = useState({})
     const [currentTime, setCurrentTime] = useState()
+    const [isGeolocationOn, setIsGeolocationOn] = useState(true)
+    
     const [permission, requestPermission] = useCameraPermissions()
-
     const axiosPrivate = usePrivateCall()
     const { loaderOn, loaderOff, showDialogConfirmation, showDialogMessage, hideDialogMessage } = useModal()
     const navigation = useNavigation()
@@ -30,7 +31,7 @@ const ActionScheduleScreen = ({ route }) => {
     const imageBase64Ref = useRef()
 
     const getCurrentTime = () => {
-        setCurrentTime(moment(Date()).format('hh:mm'))
+        setCurrentTime(moment(Date()).format('HH:mm'))
     }
 
     const buttonColor = useMemo(() => {
@@ -124,17 +125,19 @@ const ActionScheduleScreen = ({ route }) => {
                     scheduleId: route.params?.scheduleId,
                     longitude: longRef.current,
                     latitude: latRef.current,
-                    geolocationFlag: true,
+                    geolocationFlag: isGeolocationOn,
                     imageBase64: imageBase64
                 }
             ).then(() => {
-                loaderOff()
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,
                         routes: [{name: 'Main'}]
                     })
                 )
+            }).catch(err => {
+            }).finally(() => {
+                loaderOff()
             })
         }
     }
@@ -281,12 +284,55 @@ const ActionScheduleScreen = ({ route }) => {
                         <View style={styles.faceGuide} />
                         <Text style={styles.instruction}>Align your face in the frame</Text>
                     </View>
-                <StickyButton
-                    label={actionLabel}
-                    buttonColor={buttonColor}
-                    onPress={handleButtonAction}
-                />
                 </CameraView>
+                <View style={{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+                {
+                    route.params.action === 'OPEN'?
+                        (   
+                            <View style={{flexDirection: 'row',  justifyContent: "center", alignItems: "center"}}>
+                                <SegmentedButtons 
+                                    theme={
+                                        {
+                                            colors: {
+                                                secondaryContainer: '#FFFF',
+                                                outline: '#FFFF'
+                                            }
+                                        }
+                                    }
+                                    style={{
+                                        marginTop: 10,
+                                        width: width * 0.9
+                                    }}
+                                    value={isGeolocationOn}
+                                    onValueChange={() => {setIsGeolocationOn(!isGeolocationOn)}}
+                                    buttons={[
+                                        {
+                                            icon: 'wifi-off',
+                                            label: 'Offline Class',
+                                            value: true,
+                                            checkedColor: "#D8261D",
+                                            uncheckedColor: '#000'
+                                        },
+                                        {
+                                            icon: 'wifi',
+                                            label: 'Online Class',
+                                            value: false,
+                                            checkedColor: "#03913E",
+                                            uncheckedColor: '#000'
+                                        }
+                                    ]}
+                                />
+                            </View>
+                        ):
+                        null
+                    }
+                    <StickyButton
+                        label={actionLabel}
+                        buttonColor={buttonColor}
+                        textColor='#ffff'
+                        onPress={handleButtonAction}
+                    />
+                </ View>
             </View>
         </>
     )
@@ -344,4 +390,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    switch: {
+    }
 })
