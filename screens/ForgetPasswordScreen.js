@@ -19,7 +19,7 @@ function ForgetPasswordScreen(){
         Keyboard.dismiss()
         console.log(`forgetPassword`)
         loaderOn()
-        await axiosPublic.post('/auth/forgetpassword', 
+        await axiosPublic.post('/auth/forgetpassword/sendotp', 
             {
                 emailAddress: email
             }

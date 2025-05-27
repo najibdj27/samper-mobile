@@ -27,7 +27,7 @@ function ForgetPasswordOtpScreen({ route }) {
 		loaderOn()
 		const reqBody = { emailAddress: route.params.emailAddress }
 		console.log(`sendForgetPasswordOTP`)
-		await axiosPublic.post('/auth/forgetpassword', reqBody)
+		await axiosPublic.post('/auth/forgetpassword/sendotp', reqBody)
 			.then((response) => {
 				console.log(`sendForgetPasswordOTP`)
 				loaderOff()
@@ -49,9 +49,9 @@ function ForgetPasswordOtpScreen({ route }) {
 		Keyboard.dismiss()
 		loaderOn()
 		const intCode = parseInt(code)
-		const reqBody = { emailAddress: route.params.emailAddress, otp: intCode }
+		const reqBody = { key: route.params.emailAddress, otp: intCode }
 		console.log(`confirmOTP`)
-		await axiosPublic.post('/auth/confirmotp', reqBody)
+		await axiosPublic.post('/auth/forgetpassword/confirmotp', reqBody)
 			.then((response) => {
 				console.log(`confirmOTP: success`)
 				loaderOff()
@@ -77,7 +77,7 @@ function ForgetPasswordOtpScreen({ route }) {
 				<Image source={topImg} style={{ width: 320, height: 260, alignSelf: "center" }} />
 				<Text style={styles.headerText}>Enter your OTP</Text>
 				<Text style={styles.informationText}>
-					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
+					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 3 minutes.
 				</Text>
 				<OtpForm
 					setPinReady={setPinReady}
