@@ -1,3 +1,4 @@
+import 'expo-dev-client';
 import { name as appName } from './app.json';
 import { AppRegistry } from 'react-native';
 import { AuthProvider } from './screens/contexts/AuthContext';
