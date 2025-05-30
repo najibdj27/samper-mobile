@@ -55,10 +55,10 @@ const Request = ({item, isLoading, isEmpty}) => {
         rippleColor="rgba(0, 0, 0, .32)"
       >
         <Card style={{marginVertical: 10, marginHorizontal: 5, paddingEnd: 5, backgroundColor: 'white'}}>
-            <Card.Title title={item.schedule.subject.name} subtitle={`${moment(item.requestTime).format("D MMMM YYYY | HH:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold"}} />
+            <Card.Title title={item.schedule.subject.name} subtitle={`${moment(item.requestTime).format("D MMMM YYYY | HH:mm")}`} left={LeftContent} right={RightContent} titleStyle={{fontWeight: "bold", color: 'black'}} subtitleStyle={{color: 'black'}} />
             <Card.Content>
-                <Text variant="titleMedium">Reason</Text>
-                <Text variant="bodyMedium">{item.reason}</Text>
+                <Text variant="titleMedium" style={{color: 'black'}}>Reason</Text>
+                <Text variant="bodyMedium" style={{color: 'black'}}>{item.reason}</Text>
             </Card.Content>
         </Card>
       </TouchableRipple>
@@ -70,7 +70,7 @@ const Request = ({item, isLoading, isEmpty}) => {
     const loopLength = 6
     for (let index = 0; index < loopLength; index++) {
       element.push(
-        <Card key={index} style={{marginBottom: 5, marginHorizontal: 5}}>
+        <Card key={index} style={{marginBottom: 5, marginHorizontal: 5, backgroundColor: 'white'}}>
             <View style={{flexDirection: "row", justifyContent:"space-between", marginVertical: 16, marginHorizontal: 16}}>
                 <View style={{flexDirection: 'row'}}>
                   <Skeleton width={40} height={40} style={{borderRadius: 20}} />
@@ -99,7 +99,7 @@ const Request = ({item, isLoading, isEmpty}) => {
     return (
       <View style={{justifyContent: "center", alignItems: "center", marginTop: 80}}>
         <Image source={emptyImg} style={{height: 200, width: width}} />
-        <Text style={{fontSize: 28, fontWeight: "bold"}}>
+        <Text style={{fontSize: 28, fontWeight: "bold", color: 'black'}}>
           Request is empty!
         </Text>
       </View>

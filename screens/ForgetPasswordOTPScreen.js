@@ -4,8 +4,6 @@ import OtpForm from "./components/OtpForm";
 import * as React from "react";
 import useCountDown from "./hooks/useCountDown"
 import { useNavigation } from "@react-navigation/native";
-import Loader from './components/Loader';
-import DialogMessage from './components/DialogMessage';
 import usePublicCall from "./hooks/usePublicCall";
 import useModal from "./hooks/useModal";
 
@@ -27,7 +25,7 @@ function ForgetPasswordOtpScreen({ route }) {
 		loaderOn()
 		const reqBody = { emailAddress: route.params.emailAddress }
 		console.log(`sendForgetPasswordOTP`)
-		await axiosPublic.post('/auth/forgetpassword/sendotp', reqBody)
+		await axiosPublic.post('/auth/forgetpassword', reqBody)
 			.then((response) => {
 				console.log(`sendForgetPasswordOTP`)
 				loaderOff()
@@ -49,9 +47,9 @@ function ForgetPasswordOtpScreen({ route }) {
 		Keyboard.dismiss()
 		loaderOn()
 		const intCode = parseInt(code)
-		const reqBody = { key: route.params.emailAddress, otp: intCode }
+		const reqBody = { emailAddress: route.params.emailAddress, otp: intCode }
 		console.log(`confirmOTP`)
-		await axiosPublic.post('/auth/forgetpassword/confirmotp', reqBody)
+		await axiosPublic.post('/auth/confirmotp', reqBody)
 			.then((response) => {
 				console.log(`confirmOTP: success`)
 				loaderOff()
@@ -77,7 +75,7 @@ function ForgetPasswordOtpScreen({ route }) {
 				<Image source={topImg} style={{ width: 320, height: 260, alignSelf: "center" }} />
 				<Text style={styles.headerText}>Enter your OTP</Text>
 				<Text style={styles.informationText}>
-					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 3 minutes.
+					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
 				</Text>
 				<OtpForm
 					setPinReady={setPinReady}
@@ -100,6 +98,7 @@ function ForgetPasswordOtpScreen({ route }) {
 					style={styles.button}
 					contentStyle={styles.buttonContent}
 					buttonColor="#03913E"
+					textColor="white"
 					onPress={handleValidateOtp}
 					labelStyle={{
 						fontSize: 18,
@@ -127,13 +126,15 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		fontWeight: "bold",
 		marginBottom: 10,
-		alignSelf: "center"
+		alignSelf: "center",
+		color: 'black'
 	},
 	informationText: {
 		textAlign: "center",
 		fontSize: 14,
 		marginVertical: 15,
-		paddingHorizontal: 30
+		paddingHorizontal: 30,
+		color: 'black'
 	},
 	button: {
 		alignSelf: "center",

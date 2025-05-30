@@ -1,6 +1,6 @@
-import { Text, View, useWindowDimensions } from 'react-native'
+import { View, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { HelperText, TextInput } from 'react-native-paper'
+import { HelperText, TextInput, Text } from 'react-native-paper'
 import useTextValidation from '../hooks/useTextValidation'
 
 const InputForm = ({
@@ -52,7 +52,7 @@ const InputForm = ({
                 <TextInput
                     left={left}
                     right={right}
-                    label={<Text style={labelColor}>{label}</Text>}
+                    label={<Text style={{color: 'black'}}>{label}</Text>}
                     placeholder={placeholder}
                     value={input}
                     mode={mode}
@@ -66,7 +66,8 @@ const InputForm = ({
                     }, style]}
                     activeUnderlineColor='#D8261D'
                     contentStyle={[contentStyle, {
-                        fontWeight: "bold"
+                        fontWeight: "bold",
+                        color: 'black'
                     }]}
                     outlineStyle={{borderRadius:16}}
                     onChangeText={setInput? text => setInput(text): setInputObject? setInputObject: null}

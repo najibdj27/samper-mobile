@@ -14,7 +14,7 @@ const EmptyAgendaCard = () => {
                     alignItems: 'center'
                 }}>
                     <Image source={freeImg} style={{ height: 50, width: 80 }} />
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>It's Free!</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>It's Free!</Text>
                 </View>
             </Card.Content>
         </Card>

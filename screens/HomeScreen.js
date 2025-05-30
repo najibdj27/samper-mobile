@@ -154,7 +154,7 @@ function HomeScreen() {
                 </View>
             </View>
             {/* Today's Schedule Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
+            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color:"black"}}>
                 Today's Schedule
             </Text>
             <FlatList 
@@ -184,7 +184,7 @@ function HomeScreen() {
                 scrollX={scrollX}
             />
             {/* History Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
+            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color: 'black'}}>
                 History
             </Text>
             <ScrollView style={{marginBottom: 20, padding:10, height: 270}} showsVerticalScrollIndicator={false} >
@@ -205,7 +205,6 @@ const styles = StyleSheet.create({
     navbarContainer: {
         flex: 1,
         backgroundColor: "white",
-        paddingTop: 30
     },
     welcomeView: {
         flexDirection: "row", 
@@ -223,7 +222,7 @@ const styles = StyleSheet.create({
     welcomeText: {
         color: '#fff',
         fontSize: 24,
-        fontWeight: "bold"
+        fontWeight: "bold",
     },
     icon: {
 

@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Avatar, Divider, Provider, Surface, Text, TextInput } from 'react-native-paper'
 import { Button } from 'react-native-paper'
 import moment from 'moment/moment'
@@ -17,10 +17,6 @@ const RequestDetailScreen = ({route}) => {
     const { loaderOn, loaderOff, showDialogMessage, showDialogConfirmation } = useModal()
     const axiosPrivate = usePrivateCall()
     const { width } = useWindowDimensions()
-    const loaderRef = useRef()
-    const dialogRef = useRef()
-    const dialogConfirmationRef = useRef()
-
 
     const handleApprove = async () => {
         console.log('handleApprove')
@@ -111,19 +107,37 @@ const RequestDetailScreen = ({route}) => {
         }
     }
 
-    // const submitButton = useMemo(() => {
-    //     if (auth.authState.profile.user.id == requestDetail.data?.receiver.id) {
-    //         return (
-    //             <StickyButton 
-    //             label="Approve"
-    //             buttonColor="#D8261D"
-    //             onPress={() => {}}
-    //         />
-    //         )
-    //     } else {
-    //         return null
-    //     }
-    // })
+    const actionButton = useMemo(() => {
+        if (authState.profile.user?.id === requestDetail.receiver?.id) {
+            return (
+                <View style={{flexDirection: 'row', justifyContent: 'center', marginVertical: 24}}>
+                    <Button 
+                        style={styles.button} 
+                        labelStyle={styles.buttonLabel}
+                        mode="contained"                            
+                        buttonColor="#D8261D"
+                        textColor='white'
+                        disabled={requestDetail.status === 'PENDING' ? false : true}
+                        onPress={() => {
+                            showDialogConfirmation('note-remove', 'Reject', 'Are you sure you want to reject this request?', () => handleReject(), null)}}                       
+                    >
+                        Reject
+                    </Button>
+                    <Button 
+                        style={styles.button}
+                        labelStyle={styles.buttonLabel}
+                        mode="contained"
+                        buttonColor="#03913E"
+                        textColor='white'
+                        disabled={requestDetail.status === 'PENDING' ? false : true}
+                        onPress={() => {showDialogConfirmation('note-check', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
+                        >
+                            Approve
+                    </Button>
+                </View>
+            )
+        }
+    }, [])
 
     return (
         <>
@@ -134,6 +148,7 @@ const RequestDetailScreen = ({route}) => {
                             icon={statusType(requestDetail.type)}
                             size={40}
                             style={styles.ticketIcon}
+                            color='black'
                         />
                         <Text variant="headlineMedium" style={styles.ticketTittle}>
                             {requestDetail.type?.replace('_', ' ')} REQUEST
@@ -143,146 +158,168 @@ const RequestDetailScreen = ({route}) => {
                     <View style={styles.ticketContent}>
                         <TextInput 
                             left={(
-                                <TextInput.Icon icon="file-upload-outline" disabled/>
+                                <TextInput.Icon icon="file-upload-outline" color='black'/>
                             )}
-                            label="From"
+                            label={<Text style={{color:'black'}}>From</Text>}
                             value={`${requestDetail.sender?.firstName} ${requestDetail.sender?.lastName}`}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
                             }}
+                            textColor='black'
+                            underlineColor='black'
                             editable={false}
                         />
                         <TextInput 
                             left={(
-                                <TextInput.Icon icon="file-download-outline" disabled/>
+                                <TextInput.Icon icon="file-download-outline" color='black'/>
                             )}
-                            label="To"
+                            label={<Text style={{color:'black'}}>To</Text>}
                             value={`${requestDetail.receiver?.firstName} ${requestDetail.receiver?.lastName}`}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
                             }}
+                            textColor='black'
+                            underlineColor='black'
                             editable={false}
                         />
                         <TextInput 
                             left={(
-                                <TextInput.Icon icon="file-question-outline" disabled/>
+                                <TextInput.Icon icon="file-question-outline" color='black'/>
                             )}
-                            label="Reason"
+                            label={<Text style={{color:'black'}}>Reason</Text>}
                             value={`${requestDetail.reason}`}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
                             }}
+                            textColor='black'
+                            underlineColor='black'
                             editable={false}
                         />
                         <TextInput 
                             left={(
-                                <TextInput.Icon icon="calendar" disabled/>
+                                <TextInput.Icon icon="calendar" color='black'/>
                             )}
-                            label="Request time"
+                            label={<Text style={{color:'black'}}>Request Time</Text>}
                             value={moment(requestDetail.requestTime).format('D MMM YYYY | HH:mm')}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
                             }}
+                            textColor='black'
+                            underlineColor='black'
                             editable={false}
                         />
                         <TextInput 
                             left={(
-                                <TextInput.Icon icon="list-status" disabled/>
+                                <TextInput.Icon icon="list-status" color='black'/>
                             )}
-                            label="Status"
+                            label={<Text style={{color:'black'}}>Status</Text>}
                             value={requestDetail.status}
                             style={{
                                 width: width*0.8,
                                 backgroundColor: 'white'
                             }}
+                            textColor='black'
+                            underlineColor='black'
                             editable={false}
                         />
                         <View style={styles.ticketContentGroup}>
-                            <Text variant="labelLarge" style={{fontWeight: "bold"}}>
+                            <Text variant="labelLarge" style={{fontWeight: "bold", color:'black'}}>
                                 Schedule
                             </Text>
                             <TextInput 
                                 left={(
-                                    <TextInput.Icon icon="calendar-multiple" disabled/>
+                                    <TextInput.Icon icon="calendar-multiple" color='black'/>
                                 )}
-                                label="Subject"
+                                label={<Text style={{color:'black'}}>Subject</Text>}
                                 value={`${requestDetail.schedule?.subject.name} Pertemuan ${requestDetail.schedule?.meetingOrder}`}
                                 style={{
                                     width: width*0.8,
                                     backgroundColor: 'white'
                                 }}
+                                textColor='black'
+                                underlineColor='black'
                                 editable={false}
                             />
                             <View style={{flexDirection: 'row'}}>
                                 <TextInput 
                                     left={(
-                                        <TextInput.Icon icon="calendar-month" disabled/>
+                                        <TextInput.Icon icon="calendar-month" color='black'/>
                                     )}
-                                    label="Date"
+                                    label={<Text style={{color:'black'}}>Date</Text>}
                                     value={moment(requestDetail.schedule?.timeStart).format('D MMM YYYY')}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
                                     }}
+                                    textColor='black'
+                                    underlineColor='black'
                                     editable={false}
                                 />
                                 <TextInput 
                                     left={(
-                                        <TextInput.Icon icon="clock-outline" disabled/>
+                                        <TextInput.Icon icon="clock-outline" color='black'/>
                                     )}
-                                    label="Time"
+                                    label={<Text style={{color:'black'}}>Time</Text>}
                                     value={`${moment(requestDetail.schedule?.timeStart).format('HH:mm')} - ${moment(requestDetail.schedule?.timeEnd).format('HH:mm')}`}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
                                     }}
+                                    textColor='black'
+                                    underlineColor='black'
                                     editable={false}
                                 />
                             </View>
                             <TextInput 
                                 left={(
-                                    <TextInput.Icon icon="google-classroom" disabled/>
+                                    <TextInput.Icon icon="google-classroom" color='black'/>
                                 )}
-                                label="Class"
+                                label={<Text style={{color:'black'}}>Class</Text>}
                                 value={`${requestDetail.schedule?.kelas.name}`}
                                 style={{
                                     width: width*0.8,
                                     backgroundColor: 'white'
                                 }}
+                                textColor='black'
+                                underlineColor='black'
                                 editable={false}
                             />
                         </View>
                         <View style={styles.ticketContentGroup}>
-                            <Text variant="labelLarge" style={{fontWeight: "bold"}}>
+                            <Text variant="labelLarge" style={{fontWeight: "bold", color: 'black'}}>
                                 Request reschedule to
                             </Text>
                             <View style={{flexDirection: 'row'}}>
                                 <TextInput 
                                     left={(
-                                        <TextInput.Icon icon="calendar-month" disabled/>
+                                        <TextInput.Icon icon="calendar-month" color='black'/>
                                     )}
-                                    label="Date"
+                                    label={<Text style={{color:'black'}}>Date</Text>}
                                     value={moment(requestDetail.requestData?.timeStart).format('D MMM YYYY')}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
                                     }}
+                                    textColor='black'
+                                    underlineColor='black'
                                     editable={false}
                                 />
                                 <TextInput 
                                     left={(
-                                        <TextInput.Icon icon="clock-outline" disabled/>
+                                        <TextInput.Icon icon="clock-outline" color='black'/>
                                     )}
-                                    label="Time"
+                                    label={<Text style={{color:'black'}}>Time</Text>}
                                     value={`${moment(requestDetail.requestData?.timeStart).format('HH:mm')} - ${moment(requestDetail.requestData?.timeEnd).format('HH:mm')}`}
                                     style={{
                                         width: width*0.4,
                                         backgroundColor: 'white'
                                     }}
+                                    textColor='black'
+                                    underlineColor='black'
                                     editable={false}
                                 />
                             </View>
@@ -290,45 +327,7 @@ const RequestDetailScreen = ({route}) => {
                     </View>
                 </Surface>
             </ScrollView>
-            <View style={{flexDirection: 'row', justifyContent: 'center', marginVertical: 24}}>
-                {
-                    authState.profile.user?.id === requestDetail.receiver?.id ?
-                        (
-                            <Button 
-                                // label="Approve"]
-                                style={styles.button}
-                                labelStyle={styles.buttonLabel}
-                                mode="contained"
-                                buttonColor="#212121"
-                                disabled={requestDetail.status === 'PENDING' ? false : true}
-                                onPress={() => {showDialogConfirmation('note-check', 'Approve', 'Are you sure you want to approve this request?', () => handleApprove(), null)}}  
-                                >
-                                    Approve
-                                </Button>
-                        )
-                        :
-                        null
-                    }
-                {
-                    authState.profile.user?.id === requestDetail.receiver?.id ?
-                    (
-                            <Button 
-                                // label="Approve"   
-                                style={styles.button} 
-                                labelStyle={styles.buttonLabel}
-                                mode="contained"                            
-                                buttonColor="#212121"
-                                disabled={requestDetail.status === 'PENDING' ? false : true}
-                                onPress={() => {
-                                    showDialogConfirmation('note-remove', 'Reject', 'Are you sure you want to reject this request?', () => handleReject(), null)}}                       
-                            >
-                                Reject
-                            </Button>
-                        )
-                        :
-                        null
-                }
-            </View>
+            {actionButton}
         </>
     )
 }

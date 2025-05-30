@@ -28,9 +28,10 @@ function StartScreen() {
                     onPress={() => navigation.navigate("Login")}
                     labelStyle={{
                         fontSize: 18, 
-                        fontWeight: "bold"
+                        fontWeight: "bold",
+                        color: 'white'
                     }}
-                >
+                    >
                     Sign In
                 </Button>
                 <Button 
@@ -42,9 +43,10 @@ function StartScreen() {
                     onPress={() => navigation.navigate("SignUp")}
                     labelStyle={{
                         fontSize: 18, 
-                        fontWeight: "bold"
+                        fontWeight: "bold",
+                        color: 'white'
                     }}
-                >
+                    >
                     Sign Up
                 </Button>
             </View>

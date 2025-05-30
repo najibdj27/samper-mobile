@@ -37,10 +37,10 @@ const DialogMessage = React.forwardRef((props, ref) => {
       <BlurView style={{flex: 1}} intensity={10}>
         <Dialog dismissable={false} visible={visible} onDismiss={hideDialog} style={{backgroundColor: "#fff"}}>
           <Dialog.Icon icon="close-circle" size={75} color='#D8261D' />
-          <Dialog.Title style={{textAlign: "center"}}>Error</Dialog.Title>
+          <Dialog.Title style={{textAlign: "center", color: "black"}}>Error</Dialog.Title>
           <Dialog.Content>
-            <Text style={{textAlign: "center"}} variant="titleMedium">Code: {itemState.code}</Text>
-            <Text style={{textAlign: "center"}} variant="bodyMedium">{itemState.message}</Text>
+            <Text style={{textAlign: "center", color: "black"}} variant="titleMedium">Code: {itemState.code}</Text>
+            <Text style={{textAlign: "center", color: "black"}} variant="bodyMedium">{itemState.message}</Text>
           </Dialog.Content>
           <Dialog.Actions style={{justifyContent: "center"}}>
             <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
@@ -55,9 +55,9 @@ const DialogMessage = React.forwardRef((props, ref) => {
       <BlurView style={{flex: 1}} intensity={10}>
         <Dialog dismissable={false} visible={visible} onDismiss={hideDialog} style={{backgroundColor: "#fff"}}>
           <Dialog.Icon icon="alert-rhombus" size={75} color='#F8C301' />
-          <Dialog.Title style={{textAlign: "center"}}>Alert</Dialog.Title>
+          <Dialog.Title style={{textAlign: "center", color: "black"}}>Alert</Dialog.Title>
           <Dialog.Content>
-            <Text style={{textAlign: "center"}} variant="bodyMedium">{itemState.message}</Text>
+            <Text style={{textAlign: "center", color: "black"}} variant="bodyMedium">{itemState.message}</Text>
           </Dialog.Content>
           <Dialog.Actions style={{justifyContent: "center"}}>
             <Button onPress={() => {hideDialog()}} mode='text'  style={{borderRadius: 10, width: 60}} labelStyle={{color: "#03913E" ,fontSize: 16}}>OK</Button>
@@ -71,11 +71,11 @@ const DialogMessage = React.forwardRef((props, ref) => {
       <BlurView style={{flex: 1}} intensity={10}>
         <Dialog dismissable={false} visible={visible} onDismiss={hideDialog} style={{backgroundColor: "#fff"}}>
           <Dialog.Icon icon="checkbox-marked" size={75} color='#03913E' />
-          <Dialog.Title style={{textAlign: "center", fontWeight: "bold"}}>Success</Dialog.Title>
+          <Dialog.Title style={{textAlign: "center", color: "black", fontWeight: "bold"}}>Success</Dialog.Title>
             <Divider style={{marginVertical: 10}} />
           <Dialog.Content>
-            <Text style={{textAlign: "center", marginVertical: 15}} variant="bodyLarge">{itemState.message}</Text>
-            <Text style={{textAlign: "center"}} variant="labelSmall">{itemState.code}</Text>
+            <Text style={{textAlign: "center", color: "black", marginVertical: 15}} variant="bodyLarge">{itemState.message}</Text>
+            <Text style={{textAlign: "center", color: "black"}} variant="labelSmall">{itemState.code}</Text>
           </Dialog.Content>
             <Divider style={{marginVertical: 10}} />
           <Dialog.Actions style={{justifyContent: "center"}}>

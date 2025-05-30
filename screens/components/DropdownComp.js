@@ -36,7 +36,7 @@ const DropdownComp = ({ style, data, label, value, setValue, setValueObject, pla
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                iconColor='#03913E'
+                iconColor='black'
                 placeholder={placeholder}
                 value={value}
                 onFocus={() => setIsFocus(true)}
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         fontSize: 12,
         fontWeight: "bold",
+        color: 'black'
     },
     icon: {
         marginRight: 5,
@@ -89,6 +90,7 @@ const styles = StyleSheet.create({
     textItem: {
         flex: 1,
         fontSize: 16,
+        color: 'black'
     },
     placeholderStyle: {
         fontSize: 16,

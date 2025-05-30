@@ -13,8 +13,6 @@ function ForgetPasswordScreen(){
     const axiosPublic = usePublicCall()
     const navigation = useNavigation()
 
-
-
     const handleSendOtp = async () => {
         Keyboard.dismiss()
         console.log(`forgetPassword`)
@@ -42,8 +40,8 @@ function ForgetPasswordScreen(){
 
     return(
         <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView behavior='position' style={{justifyContent: "center", alignItems: "center"}}>
-                <Image source={topImg} style={{width: 320, height: 260}} />
+            <KeyboardAvoidingView behavior='position' style={styles.container}>
+                <Image source={topImg} style={{width: 320, height: 260, alignSelf:'center'}} />
                 <Text variant="titleLarge" style={styles.titleText}>
                     We will send OTP code to your email!
                 </Text>
@@ -66,6 +64,7 @@ function ForgetPasswordScreen(){
                     style={styles.button} 
                     contentStyle={styles.buttonContent} 
                     buttonColor="#03913E"
+                    textColor='white'
                     onPress={handleSendOtp}
                     labelStyle={{
                         fontSize: 18, 
@@ -75,8 +74,8 @@ function ForgetPasswordScreen(){
                     Send OTP
                 </Button>
             </KeyboardAvoidingView>
-        </Pressable>
-    );
+        </Pressable> 
+    )
 }
 
 const styles = StyleSheet.create({
@@ -90,7 +89,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
         marginBottom: 20,
-        marginTop: 20
+        marginTop: 20,
+        alignSelf: 'center',
+        color: 'black'
     },
     form: {
         alignSelf: "center"

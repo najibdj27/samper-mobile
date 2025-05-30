@@ -21,20 +21,26 @@ const CalendarAgenda = ({ items, markedDate, isRefreshing, loadItems }) => {
 		loadItems(currentDate)
 	}, [currentDate])
 
+	const renderItem = (item) => <ScheduleAgendaCard item={item} />
+
+	const renderEmptyDate = () => <EmptyAgendaCard />
+
+	const renderDay = (date, item) => <DayAgenda item={item} date={date} />
+
 	return (
 		<Agenda
 			items={items}
 			loadItemsForMonth={(data) => {loadItems(data)}}
-			renderItem={(item) => <ScheduleAgendaCard item={item} />}
-			renderEmptyDate={() => <EmptyAgendaCard />}
-			renderDay={(date, item) => <DayAgenda item={item} date={date} />}
+			renderItem={renderItem}
+			renderEmptyDate={renderEmptyDate}
+			renderDay={renderDay}
 			refreshing={isRefreshing}
 			selected={currentDate.dateString}
 			initialNumToRender={10}
 			markedDates={markedDate}
 			showClosingKnob
+			keyExtractor={(item) => item.id}
 			onDayPress={day => {
-				console.log('dayPressed')
 				const data = day
 				setCurrentDate(data)
 			}}
