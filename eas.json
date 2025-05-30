@@ -6,53 +6,38 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "development",
+      "distribution": "internal",
       "android" : {
         "buildType": "apk"
-      },
-      "ios" : {
-        "buildType": "ipa"
       }
     },
     "SIT": {
       "developmentClient": false,
-      "distribution": "SIT",
+      "distribution": "internal",
       "android" : {
         "buildType": "apk"
-      },
-      "ios" : {
-        "buildType": "ipa"
       }
     },
     "UAT": {
       "developmentClient": false,
-      "distribution": "UAT",
+      "distribution": "internal",
       "android" : {
         "buildType": "apk"
-      },
-      "ios" : {
-        "buildType": "ipa"
       }
     },
     "review": {
       "developmentClient": false,
-      "distribution": "review",
+      "distribution": "internal",
       "android" : {
         "buildType": "apk"
-      },
-      "ios" : {
-        "buildType": "ipa"
       }
     },
     "production": {
       "autoIncrement": true,
       "developmentClient": false,
-      "distribution": "internal",
+      "distribution": "store",
       "android" : {
         "buildType": "apk"
-      },
-      "ios" : {
-        "buildType": "ipa"
       }
     }
   },
