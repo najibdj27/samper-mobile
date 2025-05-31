@@ -173,4 +173,16 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-async-storage_async-storage')
+    implementation project(':react-native-community_datetimepicker')
+    implementation project(':react-native-pager-view')
+    implementation project(':react-native-reanimated')
+    implementation project(':react-native-safe-area-context')
+    implementation project(':react-native-screens')
+    implementation project(':react-native-svg')
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-vision-camera')
+    implementation project(':react-native-vision-camera-face-detector')
+    implementation project(':react-native-worklets-core')
 }
