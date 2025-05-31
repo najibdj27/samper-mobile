@@ -42,7 +42,8 @@
     "react-native-vision-camera": "^4.6.4",
     "react-native-vision-camera-face-detector": "^1.8.3",
     "react-native-worklets-core": "^1.5.0",
-    "samper-mobile": "file:"
+    "samper-mobile": "file:",
+    "expo-build-properties": "~0.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
