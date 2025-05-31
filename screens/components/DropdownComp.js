@@ -1,10 +1,15 @@
 import { View, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { Text } from 'react-native-paper'
 import { Dropdown } from 'react-native-element-dropdown'
 
-const DropdownComp = ({ style, data, label, value, setValue, setValueObject, placeholder, disabled }) => {
+const DropdownComp = forwardRef(({ style, data, label, value, setValue, setValueObject, placeholder, disabled, isRequired }, ref) => {
     const [isFocus, setIsFocus] = useState(false);
+    const [isError, setIsError] = useState();
+
+    useImperativeHandle(ref, () => ({
+        setError: (err) => setIsError(err)
+    }))
 
     const renderLabel = () => {
         if (value || isFocus) {
@@ -30,14 +35,19 @@ const DropdownComp = ({ style, data, label, value, setValue, setValueObject, pla
         <View>
             {renderLabel()}
             <Dropdown
-                style={[styles.dropdown, style, isFocus && { borderColor: '#03913E' }]}
+                ref={ref}
+                style={[styles.dropdown, style, isFocus ? { borderColor: '#03913E' } : isError && { borderColor: '#fab6b6', borderWidth: 2 }]}
                 selectedTextStyle={styles.selectedTextStyle}
                 data={data}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                iconColor='black'
-                placeholder={placeholder}
+                iconColor={isError? '#D8261D' : 'black'}
+                placeholder={`${placeholder} ${isRequired? '(required)' : ''}`}
+                placeholderStyle={{
+                    color: 'black',
+                    fontWeight: 'normal'
+                }}
                 value={value}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
@@ -48,13 +58,14 @@ const DropdownComp = ({ style, data, label, value, setValue, setValueObject, pla
                         setValueObject(item)
                     }
                     setIsFocus(false);
+                    setIsError(false)
                 }}
                 renderItem={renderItem}
                 disable={disabled}
             />
         </View>
     )
-}
+})
 
 export default DropdownComp
 
@@ -62,8 +73,8 @@ const styles = StyleSheet.create({
     dropdown: {
         marginVertical: 10,
         height: 50,
-        borderColor: '#000',
-        borderWidth: 0.5,
+        borderColor: "#969696",
+        borderWidth: 1,
         borderRadius: 8,
         paddingHorizontal: 8,
     },

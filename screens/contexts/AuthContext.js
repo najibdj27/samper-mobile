@@ -15,11 +15,8 @@ export const AuthProvider = ({children}) => {
     
         const setProfile = async (profile) => {
             try {
-                console.log('setStorage: profile')
                 await AsyncStorage.setItem('profile', JSON.stringify(profile))
             } catch (error) {
-                console.log('setStorage: error')
-                console.log(error)
             }
         }
     
@@ -27,11 +24,8 @@ export const AuthProvider = ({children}) => {
     
         const setRoles = async (roles) => {
             try {
-                console.log('setStorage: roles')
                 await AsyncStorage.setItem('roles', JSON.stringify(roles))
             } catch (error) {
-                console.log('setStorage: error')
-                console.log(error)
             }
         }
     
@@ -39,11 +33,8 @@ export const AuthProvider = ({children}) => {
     
         const setAccessToken = async (accessToken) => {
             try {
-                console.log('setStorage: accessToken')
                 await AsyncStorage.setItem('accessToken', accessToken)
             } catch (error) {
-                console.log('setStorage: error')
-                console.log(error)
             }
         }
     
@@ -51,11 +42,8 @@ export const AuthProvider = ({children}) => {
     
         const setRefreshToken = async (refreshToken) => {
             try {
-                console.log('setStorage: refreshToken')
                 await AsyncStorage.setItem('refreshToken', refreshToken)
             } catch (error) {
-                console.log('setStorage: error')
-                console.log(error)
             }
         }
     

@@ -1,84 +1,83 @@
 import { View, useWindowDimensions } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { HelperText, TextInput, Text } from 'react-native-paper'
 import useTextValidation from '../hooks/useTextValidation'
 
-const InputForm = ({
-        left,
-        right,
-        mode,
-        style,
-        contentStyle,
-        label,
-        input,
-        setInput,
-        setInputObject,
-        placeholder,
-        inputMode,
-        keyboardType,
-        useValidation,
-        validationMode,
-        centered,
-        secureTextEntry,
-        editable,
-        disabled,
-        autoCapitalize,
-        maxLength
-    }) => {
+const InputForm = forwardRef((props, ref) => {
     const {isValid, message, validate} = useTextValidation()
     const {width} = useWindowDimensions()
+    const [isError, setIsError] = useState()
+
+    useImperativeHandle(ref, () => ({
+        setError: (err) => setIsError(err)
+    }))
 
     useEffect(() => {
-        if (input && useValidation) {
-            validate(validationMode, input)
+        if (props.input && props.useValidation) {
+            validate(props.validationMode, props.input)
         }
-    }, [input])
+    }, [props.input])
 
-    const labelColor = () => {
-        if (useValidation) {
+    const labelColor = useMemo(() => {
+        if (props.useValidation) {
             if (isValid) {
-                return {color: "#000000"}
-            }else {
-                return {color: "#F8C301"}
+                return "#000000"
+            } else {
+                return "#D8261D"
             }
         } else {
-            return {color: "#000000"}
+            return "black"
         }
-    }
+    }, [isValid])
 
     return (
-        <View style={{alignSelf: centered? 'center' : null}}>
+        <View style={{alignSelf: props.centered? 'center' : null}}>
             <View style={{maxWidth: width*0.9, flexWrap:"wrap"}}>
                 <TextInput
-                    left={left}
-                    right={right}
-                    label={<Text style={{color: 'black'}}>{label}</Text>}
-                    placeholder={placeholder}
-                    value={input}
-                    mode={mode}
-                    activeOutlineColor={useValidation? isValid? "#03913E" : "#D8261D" : "#03913E"}
-                    inputMode={inputMode === 'password' || 'newPassword' ? null : inputMode}
-                    keyboardType={keyboardType}
+                    ref={ref}
+                    left={props.left}
+                    right={props.right}
+                    label={(
+                        <>
+                            <Text style={{color: '#D8261D'}}>{props.isRequired ? '*' : null} </Text>
+                            <Text style={{color: labelColor}}>{props.label}</Text>
+                        </>
+                    )}
+                    placeholder={props.placeholder}
+                    value={props.input}
+                    mode={props.mode}
+                    error={isError ?? !isValid}
+                    activeOutlineColor={props.useValidation? isValid? "#03913E" : "#D8261D" : "#03913E"}
+                    inputMode={props.inputMode === 'password' || 'newPassword' ? null : props.inputMode}
+                    keyboardType={props.keyboardType}
                     style={[{
-                        marginVertical: 3,
+                        marginVertical: 10,
                         backgroundColor: "white",
                         width: width*0.9,
-                    }, style]}
+                    }, props.style]}
                     activeUnderlineColor='#D8261D'
-                    contentStyle={[contentStyle, {
+                    contentStyle={[props.contentStyle, {
                         fontWeight: "bold",
                         color: 'black'
                     }]}
                     outlineStyle={{borderRadius:16}}
-                    onChangeText={setInput? text => setInput(text): setInputObject? setInputObject: null}
-                    secureTextEntry={secureTextEntry}
-                    disabled={disabled}
-                    editable={editable}
-                    autoCapitalize={autoCapitalize}
-                    maxLength={maxLength}
+                    onChangeText={text => {
+                        if(props.setInput){ 
+                            props.setInput(text)
+                        }else{
+                            props.setInputObject(text)
+                        }
+                        setIsError()
+                    }}
+                    onFocus={() => {setIsError()}}
+                    secureTextEntry={props.secureTextEntry}
+                    disabled={props.disabled}
+                    editable={props.editable}
+                    autoCapitalize={props.autoCapitalize}
+                    maxLength={props.maxLength}
                 />
                 {
-                    useValidation?
+                    props.useValidation?
                     isValid?
                     null : 
                     (
@@ -93,6 +92,6 @@ const InputForm = ({
             </View>
         </View>
     )
-}
+})
 
 export default InputForm

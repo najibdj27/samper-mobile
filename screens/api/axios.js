@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const BASE_URL = 'http://192.168.0.122:8080'; //kost 
-const BASE_URL = 'http://192.168.3.206:8080'; // office
+const BASE_URL = 'http://192.168.0.122:8080'; //kost 
+// const BASE_URL = 'http://192.168.2.135:8080'; // office
 // const BASE_URL = 'http://192.168.209.227:8080';
 const TIMEOUT = 70000;
 

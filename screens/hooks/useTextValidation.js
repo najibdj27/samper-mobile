@@ -5,6 +5,30 @@ import { HelperText } from 'react-native-paper'
 const useTextValidation = () => {
     const [isValid, setIsValid] = useState(true)
     const [message, setMessage] = useState()
+
+    const name = (input) => {
+        const regEx1 = new RegExp(/^\S+$/g)
+        const regEx2 = new RegExp(/^[A-Za-z]+$/g)
+        if (!regEx1.test(input)) {
+            setIsValid(false)
+            setMessage(`Your name cannot contain white space`)
+        } else if (!regEx2.test(input)) {
+            setIsValid(false)
+            setMessage(`Your name must only contain alphbetic character`)
+        } else {
+            setIsValid(true)
+        }
+    }
+    
+    const nim = (input) => {
+        const regEx1 = new RegExp(/^\d{10,}$/g)
+        if (!regEx1.test(input)) {
+            setIsValid(false)
+            setMessage(`Your NIM has to be 10 digits and cannot contain non numeric characters`)
+        } else {
+            setIsValid(true)
+        }
+    }
     
     const email = (input) => {
         const regEx = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)
@@ -41,6 +65,12 @@ const useTextValidation = () => {
 
     const validate = (type, input) => {
         switch (type) {
+            case 'name':
+                name(input)
+                break;
+            case 'nim':
+                nim(input)
+                break;
             case 'email':
                 email(input)
                 break;
@@ -48,7 +78,6 @@ const useTextValidation = () => {
             case 'newPassword':
                 newPassword(input)
                 break;
-        
             default:
                 break;
         }
