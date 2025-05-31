@@ -31,6 +31,9 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "androidConfig": {
+      "minSdkVersion": 26
+    },
     "web": {
       "favicon": "./assets/favicon.png"
     },
