@@ -19,6 +19,7 @@
     },
     "android": {
       "minSdkVersion": 26,
+      "gradleCommand": ":app:clean",
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
