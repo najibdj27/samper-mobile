@@ -15,10 +15,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "minSdkVersion": 26,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA"
+      ],
       "package": "com.app.sampermobile",
       "adaptiveIcon": {
         "foregroundImage": "./assets/app-icon.png",
@@ -38,7 +43,7 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Samper App to use your location."
-        }        
+        }
       ],
       [
         "expo-camera",
@@ -46,6 +51,12 @@
           "cameraPermission": "Allow Samper App to access your camera",
           "microphonePermission": "Allow Samper App to access your microphone",
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "Samper App needs access to your Camera."
         }
       ]
     ]
