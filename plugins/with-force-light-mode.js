@@ -2,7 +2,7 @@ const { withMainActivity } = require('@expo/config-plugins');
 
 module.exports = function withForceLightMode(config) {
   return withMainActivity(config, (config) => {
-    if (config.modResults.language === 'kotlin') {
+    if (config.modResults.language === 'kt') {
       console.log('✅ Plugin is running: modifying MainActivity.kt');
       let contents = config.modResults.contents;
 
