@@ -24,13 +24,11 @@ const ScheduleAgendaCard = (props) => {
         }
     }
 
-    const params = {
-        scheduleId: props.item?.id 
-    }
 
     return (
         <TouchableHighlight
-            onPress={() => { navigation.navigate('ScheduleDetail', params) }}
+            key={props.item?.scheduleId}
+            onPress={() => { navigation.navigate('ScheduleDetail', props.item?.scheduleId) }}
             underlayColor="white"
             style={{
                 borderRadius: 10,

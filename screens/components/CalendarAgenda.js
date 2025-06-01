@@ -23,7 +23,7 @@ const CalendarAgenda = ({ items, markedDate, isRefreshing, loadItems }) => {
 
 	const renderItem = (item) => <ScheduleAgendaCard item={item} />
 
-	const renderEmptyDate = () => <EmptyAgendaCard />
+	const renderEmptyDate = (_, index) => <EmptyAgendaCard key={`empty-${index}`} />
 
 	const renderDay = (date, item) => <DayAgenda item={item} date={date} />
 
@@ -39,7 +39,6 @@ const CalendarAgenda = ({ items, markedDate, isRefreshing, loadItems }) => {
 			initialNumToRender={10}
 			markedDates={markedDate}
 			showClosingKnob
-			keyExtractor={(item) => item.id}
 			onDayPress={day => {
 				const data = day
 				setCurrentDate(data)
