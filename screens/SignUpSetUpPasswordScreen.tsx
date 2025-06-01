@@ -14,10 +14,10 @@ type InputFormRefType = {
   setError: (err: boolean) => void
 }
 
-const SignUpSetUpPasswordScreen = ({props}) => {
+const SignUpSetUpPasswordScreen = ({route}) => {
     const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
     
-    const [formData, setFormData] = useState<SignUpFormDataType>(props?.formData)
+    const [formData, setFormData] = useState<SignUpFormDataType>(route?.formData)
     const [password, setPassword] = useState<string>('')
     const [confirmPassword, setConfirmPassword] = useState<string>('')
 
@@ -40,9 +40,9 @@ const SignUpSetUpPasswordScreen = ({props}) => {
                 password: password
             }))
             navigation.navigate('SignUpFR', {
-                type: props.params?.type,
+                type: route.params?.type,
                 formData: formData,
-                token: props.params?.token
+                token: route.params?.token
             })
         }
     }, [password, confirmPassword])
