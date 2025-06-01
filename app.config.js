@@ -1,4 +1,4 @@
-const withForceLightMode = require('./plugin/with-force-light-mode');
+const withForceLightMode = require('./plugins/with-force-light-mode');
 
 module.exports = {
   "expo": {
