@@ -8,6 +8,7 @@ module.exports = function withForceLightMode(config) {
   return withMainActivity(config, (config) => {
     if (config.modResults.language === 'kotlin') {
       let contents = config.modResults.contents;
+      console.log('📝 Original MainActivity.kt:', contents);
 
       // Add import for AppCompatDelegate
       if (!contents.includes('AppCompatDelegate')) {
