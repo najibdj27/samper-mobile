@@ -36,10 +36,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
         if (authState.profile?.user?.roles.includes('STUDENT')) {
             return (
                 <>
-                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={!item.clockIn && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_IN'})}}>
+                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" textColor="white" disabled={!item.clockIn && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_IN'})}}>
                         Clock In
                     </Button>
-                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockIn && !item.clockOut && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_OUT'})}}>
+                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" textColor="white" disabled={item.clockIn && !item.clockOut && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_OUT'})}}>
                         Clock Out
                     </Button>
                 </>
@@ -47,10 +47,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
         } else {
             return (
                 <>
-                    <Button icon="door-open" mode="contained" buttonColor="#03913E" disabled={!isAbleToOpen} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'OPEN'})}}>
+                    <Button icon="door-open" mode="contained" buttonColor="#03913E" textColor="white" disabled={!isAbleToOpen} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'OPEN'})}}>
                         Open 
                     </Button>
-                    <Button icon="door-closed" mode="contained" buttonColor="#D8261D" disabled={!isAbleToClose} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'CLOSE'})}}>
+                    <Button icon="door-closed" mode="contained" buttonColor="#D8261D" textColor="white" disabled={!isAbleToClose} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'CLOSE'})}}>
                         Close
                     </Button>
                 </>
@@ -74,6 +74,14 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                         </Text>
                         <SafeAreaView style={{marginVertical: 7, alignSelf: "center"}}>
                             <SegmentedButtons
+                                // theme={{
+                                //     colors: {
+                                //         onSecondaryContainer: 'black',
+                                //         surfaceDisabled: item.isActive? 'black': null,
+                                //         onSurfaceDisabled: 'black'
+                                        
+                                //     }
+                                // }}
                                 style={{alignSelf: "center", width: 200}}
                                 buttons={
                                 [
