@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native'
 import { createRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Text, FAB, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -226,147 +226,154 @@ const SignUpFormScreen = ({ route }) => {
     }
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <Text variant='displayMedium' style={{fontWeight: "bold", marginVertical: 20, color: "black"}}>
-                Sign Up {route.params?.type === 'student'? 'Student' : 'Lecture'}
-            </Text>
-            <ScrollView style={styles.scrollView} contentContainerStyle={{paddingVertical: 20}}>
-                <InputForm
-                    ref={inputRefs.firstName}
-                    centered
-                    label="First Name"
-                    placeholder='Input your first name here'
-                    input={formData.firstName}
-                    mode='outlined'
-                    useValidation={true}
-                    validationMode="name"
-                    isRequired={true}
-                    style={styles.form}
-                    setInputObject={val => setFormData(prevData => ({
-                        ...prevData,
-                        firstName: val
-                    }))}
-                    autoCapitalize={'characters'}
-                    />
-                <InputForm
-                    ref={inputRefs.lastName}
-                    centered
-                    label="Last Name"
-                    placeholder='Input your last name here'
-                    input={formData.lastName}
-                    mode='outlined'
-                    useValidation={true}
-                    validationMode="name"
-                    isRequired={true}
-                    style={styles.form} 
-                    outlineStyle={{ borderRadius: 16 }}
-                    setInputObject={val => setFormData(prevData => ({
-                        ...prevData,
-                        lastName: val
-                    }))}
-                    autoCapitalize={'characters'} 
-                    />
-                <InputForm
-                    ref={inputRefs.dateOfBirth}
-                    right={(
-                        <TextInput.Icon
-                        icon="calendar"
-                        color='black'
-                        onPress={() => showCalendar('date')}
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} 
+            style={styles.container}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <>
+                    <Text variant='displayMedium' style={{fontWeight: "bold", marginVertical: 20, color: "black"}}>
+                        Sign Up {route.params?.type === 'student'? 'Student' : 'Lecture'}
+                    </Text>
+                    <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingVertical: 20}}>
+                        <InputForm
+                            ref={inputRefs.firstName}
+                            centered
+                            label="First Name"
+                            placeholder='Input your first name here'
+                            input={formData.firstName}
+                            mode='outlined'
+                            useValidation={true}
+                            validationMode="name"
+                            isRequired={true}
+                            style={styles.form}
+                            setInputObject={val => setFormData(prevData => ({
+                                ...prevData,
+                                firstName: val
+                            }))}
+                            autoCapitalize={'characters'}
+                            />
+                        <InputForm
+                            ref={inputRefs.lastName}
+                            centered
+                            label="Last Name"
+                            placeholder='Input your last name here'
+                            input={formData.lastName}
+                            mode='outlined'
+                            useValidation={true}
+                            validationMode="name"
+                            isRequired={true}
+                            style={styles.form} 
+                            outlineStyle={{ borderRadius: 16 }}
+                            setInputObject={val => setFormData(prevData => ({
+                                ...prevData,
+                                lastName: val
+                            }))}
+                            autoCapitalize={'characters'} 
+                            />
+                        <InputForm
+                            ref={inputRefs.dateOfBirth}
+                            right={(
+                                <TextInput.Icon
+                                icon="calendar"
+                                color='black'
+                                onPress={() => showCalendar('date')}
+                                />
+                            )}
+                            mode='outlined'
+                            label="Date of Birth"
+                            input={formData.dateOfBirth ? moment(new Date(formData.dateOfBirth)).format('DD MMMM yyyy') : null}
+                            style={styles.form}
+                            isRequired={true}
+                            centered
+                            editable={false}
                         />
-                    )}
-                    mode='outlined'
-                    label="Date of Birth"
-                    input={formData.dateOfBirth ? moment(new Date(formData.dateOfBirth)).format('DD MMMM yyyy') : null}
-                    style={styles.form}
-                    isRequired={true}
-                    centered
-                    editable={false}
-                />
-                {loadIdForm()}
-                {route.params?.type === 'student' ? classDataDropDown() : null}
-                <InputForm
-                    ref={inputRefs.username}
-                    centered
-                    label="Username"
-                    placeholder='Input your username here'
-                    input={formData.username}
-                    mode='outlined'
-                    isRequired={true}
-                    activeOutlineColor='#02a807'
-                    style={styles.form}
-                    outlineStyle={{ borderRadius: 16 }}
-                    setInputObject={val => setFormData(prevData => ({
-                        ...prevData,
-                        username: val.toLowerCase()
-                    }))}
-                />
-                <InputForm
-                    ref={inputRefs.email}
-                    centered
-                    label="Email Address"
-                    placeholder='Input your email address here'
-                    input={formData.email}
-                    mode='outlined'
-                    isRequired={true}
-                    activeOutlineColor='#02a807'
-                    style={styles.form}
-                    outlineStyle={{ borderRadius: 16 }}
-                    setInputObject={val => setFormData(prevData => ({
-                        ...prevData,
-                        email: val
-                    }))}
-                />
-                <View style={{justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
-                    <InputForm
-                        centered
-                        label="Code"
-                        input="+62"
-                        mode='outlined'
-                        editable={false}
-                        style={[styles.form, {width: 45}]}
-                        outlineStyle={{ borderRadius: 16 }}
-                    />
-                    <InputForm
-                        ref={inputRefs.phoneNumber}
-                        centered
-                        label="Phone Number"
-                        placeholder='Input your phone number here'
-                        input={formData.phoneNumber}
-                        mode='outlined'
-                        isRequired={true}
-                        activeOutlineColor='#02a807'
-                        keyboardType={'numeric'}
-                        style={[styles.form, {width: 250, marginLeft: 5}]}
-                        outlineStyle={{ borderRadius: 16 }}
-                        setInputObject={val => setFormData(prevData => ({
-                            ...prevData,
-                            phoneNumber: val
-                        }))}
-                    />
-                </View>
-            </ScrollView>
-            <View style={styles.buttonContainer}>
-                <FAB 
-                    icon='arrow-left' 
-                    mode='flat'
-                    customSize={46}
-                    style={styles.backButton}
-                    color='#ffff'
-                    onPress={() => {navigation.goBack()}}
-                />
-                <Button 
-                    style={styles.button} 
-                    labelStyle={styles.buttonLabel}
-                    mode="contained"         
-                    buttonColor="#03913E"
-                    textColor='white'
-                    onPress={handleSubmit}       
-                    elevation={1}                
-                >
-                    Next
-                </Button>
-            </View>
+                        {loadIdForm()}
+                        {route.params?.type === 'student' ? classDataDropDown() : null}
+                        <InputForm
+                            ref={inputRefs.username}
+                            centered
+                            label="Username"
+                            placeholder='Input your username here'
+                            input={formData.username}
+                            mode='outlined'
+                            isRequired={true}
+                            activeOutlineColor='#02a807'
+                            style={styles.form}
+                            outlineStyle={{ borderRadius: 16 }}
+                            setInputObject={val => setFormData(prevData => ({
+                                ...prevData,
+                                username: val.toLowerCase()
+                            }))}
+                        />
+                        <InputForm
+                            ref={inputRefs.email}
+                            centered
+                            label="Email Address"
+                            placeholder='Input your email address here'
+                            input={formData.email}
+                            mode='outlined'
+                            isRequired={true}
+                            activeOutlineColor='#02a807'
+                            style={styles.form}
+                            outlineStyle={{ borderRadius: 16 }}
+                            setInputObject={val => setFormData(prevData => ({
+                                ...prevData,
+                                email: val
+                            }))}
+                        />
+                        <View style={{justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
+                            <InputForm
+                                centered
+                                label="Code"
+                                input="+62"
+                                mode='outlined'
+                                editable={false}
+                                style={[styles.form, {width: 45}]}
+                                outlineStyle={{ borderRadius: 16 }}
+                            />
+                            <InputForm
+                                ref={inputRefs.phoneNumber}
+                                centered
+                                label="Phone Number"
+                                placeholder='Input your phone number here'
+                                input={formData.phoneNumber}
+                                mode='outlined'
+                                isRequired={true}
+                                activeOutlineColor='#02a807'
+                                keyboardType={'numeric'}
+                                style={[styles.form, {width: 250, marginLeft: 5}]}
+                                outlineStyle={{ borderRadius: 16 }}
+                                setInputObject={val => setFormData(prevData => ({
+                                    ...prevData,
+                                    phoneNumber: val
+                                }))}
+                            />
+                        </View>
+                    </ScrollView>
+                    <View style={styles.buttonContainer}>
+                        <FAB 
+                            icon='arrow-left' 
+                            mode='flat'
+                            customSize={46}
+                            style={styles.backButton}
+                            color='#ffff'
+                            onPress={() => {navigation.goBack()}}
+                        />
+                        <Button 
+                            style={styles.button} 
+                            labelStyle={styles.buttonLabel}
+                            mode="contained"         
+                            buttonColor="#03913E"
+                            textColor='white'
+                            onPress={handleSubmit}       
+                            elevation={1}                
+                        >
+                            Next
+                        </Button>
+                    </View>
+                </>
+            </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     )
 }
