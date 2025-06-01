@@ -365,7 +365,7 @@ const SignUpFormScreen = ({ route }) => {
                     onPress={handleSubmit}       
                     elevation={1}                
                 >
-                    Submit
+                    Next
                 </Button>
             </View>
         </View>
