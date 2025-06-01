@@ -73,7 +73,6 @@ const ForgetPasswordNewPassScreen = ({ route }) => {
                     input={newPassword}
                     setInput={setNewPassword}
                     placeholder="Input your new password"
-                    inputMode="password"
                     useValidation={true}
                     validationMode="newPassword"
                     centered={true}
@@ -86,7 +85,6 @@ const ForgetPasswordNewPassScreen = ({ route }) => {
                     input={confirmPassword}
                     setInput={setConfirmPassword}
                     placeholder="Confirm your new password"
-                    inputMode="password"
                     useValidation={false}
                     style={styles.form}
                     centered={true}
@@ -104,7 +102,7 @@ const ForgetPasswordNewPassScreen = ({ route }) => {
                         fontWeight: "bold"
                     }}
                 >
-                    Reset
+                    Reset Password
                 </Button>
             </KeyboardAvoidingView>
         </Pressable>
