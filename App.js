@@ -15,4 +15,4 @@ export default function App() {
 	);
 }
 
-AppRegistry.registerComponent('samper-mobile', () => App);
+AppRegistry.registerComponent('Samper Mobile', () => App);
