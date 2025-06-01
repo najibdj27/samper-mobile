@@ -154,9 +154,8 @@ const SignUpFormScreen = ({ route }) => {
         await axiosPublic.post('/registration/send-otp', reqBody)
         .then((response) => {
             console.log(`sendOtp`)
-            navigation.navigate('SignUpOTP', {type: props.type, formData: formData})
+            navigation.navigate('SignUpOTP', {type: route.params?.type, formData: formData})
         }).catch((error) => {
-            console.log(`sendOtp: failed`)
             if (error.response) {
                 showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message)
             }
