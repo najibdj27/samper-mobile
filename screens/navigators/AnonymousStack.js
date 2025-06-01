@@ -10,6 +10,7 @@ import SignUpScreen from '../SignUpScreen';
 import SignUpFormScreen from '../SignUpFormScreen';
 import SignUpOTPScreen from '../SignUpOTPScreen';
 import SignUpFRScreen from '../SignUpFRScreen';
+import SignUpSetUpPasswordScreen from '../SignUpSetUpPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +21,7 @@ const AnonymousStack = () => {
         statusBarBackgroundColor: "white",
         statusBarStyle: "dark",
         animation: "fade_from_bottom",
-    }} initialRouteName="SignUpFR">
+    }} initialRouteName="Start">
         <Stack.Screen 
             name="Redirect" 
             component={RedirectScreen}
@@ -82,6 +83,13 @@ const AnonymousStack = () => {
         <Stack.Screen 
             name="SignUpOTP" 
             component={SignUpOTPScreen}
+            options={{
+                headerShown: false
+            }} 
+        />
+        <Stack.Screen 
+            name="SignUpSetUpPassword" 
+            component={SignUpSetUpPasswordScreen}
             options={{
                 headerShown: false
             }} 

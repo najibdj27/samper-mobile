@@ -52,8 +52,9 @@ const SignUpOTPScreen = ({route}) => {
 			.then((response) => {
 				console.log(`confirmOTP: success`)
 				const validateOtpResponse = response.data
-				navigation.navigate('SignUpFR', { 
-					formData: route?.params?.formData, 
+				navigation.navigate('SignUpSetUpPassword', { 
+					type: route.params?.type,
+					formData: route.params?.formData, 
 					token: validateOtpResponse.data.token 
 				})
 			}).catch((error) => {
