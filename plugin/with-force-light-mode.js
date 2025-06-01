@@ -4,6 +4,7 @@ const { withMainActivity } = require('@expo/config-plugins');
  * Custom Expo plugin to force light mode on Android by modifying MainActivity.kt
  */
 module.exports = function withForceLightMode(config) {
+  console.log('✅ withForceLightMode plugin is running!');
   return withMainActivity(config, (config) => {
     if (config.modResults.language === 'kotlin') {
       let contents = config.modResults.contents;
