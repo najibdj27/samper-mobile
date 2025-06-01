@@ -24,7 +24,7 @@ module.exports = function withForceLightMode(config) {
 
       config.modResults.contents = contents;
     } else {
-      console.log('⚠️ MainActivity is not in Kotlin.');
+      console.log('⚠️ MainActivity is not in Kotlin.', config.modResults.language);
     }
 
     return config;
