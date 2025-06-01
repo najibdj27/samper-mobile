@@ -1,33 +1,32 @@
 const { withMainActivity } = require('@expo/config-plugins');
 
-/**
- * Custom Expo plugin to force light mode on Android by modifying MainActivity.kt
- */
 module.exports = function withForceLightMode(config) {
-  console.log('✅ withForceLightMode plugin is running!');
   return withMainActivity(config, (config) => {
     if (config.modResults.language === 'kotlin') {
+      console.log('✅ Plugin is running: modifying MainActivity.kt');
       let contents = config.modResults.contents;
-      console.log('📝 Original MainActivity.kt:', contents);
 
-      // Add import for AppCompatDelegate
+      // Ensure AppCompatDelegate is imported
       if (!contents.includes('AppCompatDelegate')) {
         contents = contents.replace(
-          'import android.os.Bundle;',
-          'import android.os.Bundle;\nimport androidx.appcompat.app.AppCompatDelegate;'
+          'import android.os.Bundle',
+          `import android.os.Bundle\nimport androidx.appcompat.app.AppCompatDelegate`
         );
       }
 
-      // Add the setDefaultNightMode call
+      // Add the line to disable dark mode
       if (!contents.includes('AppCompatDelegate.setDefaultNightMode')) {
         contents = contents.replace(
-          'super.onCreate(null);',
-          'super.onCreate(null);\n    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);'
+          'super.onCreate(null)',
+          `super.onCreate(null)\n    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)`
         );
       }
 
       config.modResults.contents = contents;
+    } else {
+      console.log('⚠️ MainActivity is not in Kotlin.');
     }
+
     return config;
   });
 };
