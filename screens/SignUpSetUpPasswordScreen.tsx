@@ -17,7 +17,7 @@ type InputFormRefType = {
 const SignUpSetUpPasswordScreen = ({route}) => {
     const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
     
-    const [formData, setFormData] = useState<SignUpFormDataType>(route?.formData)
+    const [formData, setFormData] = useState<SignUpFormDataType>(route.params?.formData)
     const [password, setPassword] = useState<string>('')
     const [confirmPassword, setConfirmPassword] = useState<string>('')
 
