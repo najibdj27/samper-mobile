@@ -1,15 +1,43 @@
-import { View, useWindowDimensions } from 'react-native'
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
-import { HelperText, TextInput, Text } from 'react-native-paper'
+import { TextStyle, View, ViewStyle, useWindowDimensions } from 'react-native'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { HelperText, TextInput, Text, TextInputProps } from 'react-native-paper'
 import useTextValidation from '../hooks/useTextValidation'
 
-const InputForm = forwardRef((props, ref) => {
+type InputFormProps = {
+  label?: string
+  input?: string
+  setInput?: (text: string) => void
+  setInputObject?: (text: string) => void
+  isRequired?: boolean
+  placeholder?: string
+  centered?: boolean
+  useValidation?: boolean
+  validationMode?: string
+  mode?: TextInputProps["mode"]
+  inputMode?: TextInputProps["inputMode"]
+  keyboardType?: TextInputProps["keyboardType"]
+  left?: React.ReactNode
+  right?: React.ReactNode
+  style?: ViewStyle
+  contentStyle?: TextStyle
+  secureTextEntry?: boolean
+  disabled?: boolean
+  editable?: boolean
+  autoCapitalize?: "none" | "sentences" | "words" | "characters"
+  maxLength?: number
+}
+
+
+const InputForm = forwardRef<any, InputFormProps>((props, ref) => {
     const {isValid, message, validate} = useTextValidation()
     const {width} = useWindowDimensions()
-    const [isError, setIsError] = useState()
+    const [isError, setIsError] = useState<boolean>(false)
+
+    const inputInternalRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
-        setError: (err) => setIsError(err)
+        setError: (err:boolean) => setIsError(err),
+        setFocus: (focus:boolean) => inputInternalRef.current?.focus()
     }))
 
     useEffect(() => {
@@ -34,7 +62,7 @@ const InputForm = forwardRef((props, ref) => {
         <View style={{alignSelf: props.centered? 'center' : null}}>
             <View style={{maxWidth: width*0.9, flexWrap:"wrap"}}>
                 <TextInput
-                    ref={ref}
+                    ref={inputInternalRef}
                     left={props.left}
                     right={props.right}
                     label={(
@@ -48,7 +76,7 @@ const InputForm = forwardRef((props, ref) => {
                     mode={props.mode}
                     error={isError ?? !isValid}
                     activeOutlineColor={props.useValidation? isValid? "#03913E" : "#D8261D" : "#03913E"}
-                    inputMode={props.inputMode === 'password' || 'newPassword' ? null : props.inputMode}
+                    inputMode={props.inputMode}
                     keyboardType={props.keyboardType}
                     style={[{
                         marginVertical: 10,
@@ -67,9 +95,9 @@ const InputForm = forwardRef((props, ref) => {
                         }else{
                             props.setInputObject(text)
                         }
-                        setIsError()
+                        setIsError(undefined)
                     }}
-                    onFocus={() => {setIsError()}}
+                    onFocus={() => {setIsError(false)}}
                     secureTextEntry={props.secureTextEntry}
                     disabled={props.disabled}
                     editable={props.editable}

@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native'
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { Text } from 'react-native-paper'
 import { Dropdown } from 'react-native-element-dropdown'
 
@@ -7,8 +7,11 @@ const DropdownComp = forwardRef(({ style, data, label, value, setValue, setValue
     const [isFocus, setIsFocus] = useState(false);
     const [isError, setIsError] = useState();
 
+    const inputInternalRef = useRef(null);
+
     useImperativeHandle(ref, () => ({
-        setError: (err) => setIsError(err)
+        setError: (err) => setIsError(err),
+        setFocus: (focus) => inputInternalRef.current?.focus(focus)
     }))
 
     const renderLabel = () => {
@@ -35,7 +38,7 @@ const DropdownComp = forwardRef(({ style, data, label, value, setValue, setValue
         <View>
             {renderLabel()}
             <Dropdown
-                ref={ref}
+                ref={inputInternalRef}
                 style={[styles.dropdown, style, isFocus ? { borderColor: '#03913E' } : isError && { borderColor: '#fab6b6', borderWidth: 2 }]}
                 selectedTextStyle={styles.selectedTextStyle}
                 data={data}
