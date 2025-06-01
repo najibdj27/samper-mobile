@@ -1,19 +1,22 @@
 const { withMainActivity } = require('@expo/config-plugins');
 
+/**
+ * Custom Expo plugin to force light mode on Android by modifying MainActivity.kt
+ */
 module.exports = function withForceLightMode(config) {
   return withMainActivity(config, (config) => {
-    if (config.modResults.language === 'java') {
+    if (config.modResults.language === 'kotlin') {
       let contents = config.modResults.contents;
 
-      // Import AppCompatDelegate
+      // Add import for AppCompatDelegate
       if (!contents.includes('AppCompatDelegate')) {
         contents = contents.replace(
           'import android.os.Bundle;',
-          `import android.os.Bundle;\nimport androidx.appcompat.app.AppCompatDelegate;`
+          'import android.os.Bundle;\nimport androidx.appcompat.app.AppCompatDelegate;'
         );
       }
 
-      // Inject the force light mode line
+      // Add the setDefaultNightMode call
       if (!contents.includes('AppCompatDelegate.setDefaultNightMode')) {
         contents = contents.replace(
           'super.onCreate(null);',
