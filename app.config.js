@@ -1,4 +1,6 @@
-{
+const withForceLightMode = require('./plugin/with-force-light-mode');
+
+module.exports = {
   "expo": {
     "name": "Samper Mobile",
     "slug": "samper-mobile",
@@ -42,6 +44,7 @@
       }
     },
     "plugins": [
+      withForceLightMode,
       [
         "expo-location",
         {
