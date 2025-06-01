@@ -291,19 +291,19 @@ const SignUpFRScreen = ({route}) => {
                     faceLandmark.faceYawAngle > 0 ?
                         (
                             <>
-                                <Icon source={'chevron-left'} size={40} />
-                                <ProgressBar theme={{colors: {primary: 'white', surfaceVariant: 'rgba(167, 167, 167, 0.35)'}}} progress={faceLandmark.faceYawAngle*2} style={ styles.yawAngleProgressBarReversed} />
-                                <ProgressBar theme={{colors: {primary: 'white', surfaceVariant: 'rgba(167, 167, 167, 0.35)'}}} progress={0} style={styles.yawAngleProgressBar} />
-                                <Icon source={'chevron-right'} size={40} />
+                                <Icon source={'chevron-left'} color='#03913E' size={40} />
+                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={faceLandmark.faceYawAngle*2} style={ styles.yawAngleProgressBarReversed} />
+                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={0} style={styles.yawAngleProgressBar} />
+                                <Icon source={'chevron-right'} color='#03913E' size={40} />
                             </>
                         )
                         :
                         (
                             <>
-                                <Icon source={'chevron-left'} size={40} />
-                                <ProgressBar theme={{colors: {primary: 'white', surfaceVariant: 'rgba(167, 167, 167, 0.35)'}}} progress={0} style={styles.yawAngleProgressBarReversed} />
-                                <ProgressBar theme={{colors: {primary: 'white', surfaceVariant: 'rgba(167, 167, 167, 0.35)'}}} progress={Math.abs(faceLandmark.faceYawAngle*2)} style={styles.yawAngleProgressBar} />
-                                <Icon source={'chevron-right'} size={40} />
+                                <Icon source={'chevron-left'} color='#03913E' size={40} />
+                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={0} style={styles.yawAngleProgressBarReversed} />
+                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={Math.abs(faceLandmark.faceYawAngle*2)} style={styles.yawAngleProgressBar} />
+                                <Icon source={'chevron-right'} color='#03913E' size={40} />
                             </>
                         )
 
