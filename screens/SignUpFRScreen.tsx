@@ -210,6 +210,11 @@ const SignUpFRScreen = ({route}) => {
                     phoneNumber: formData.phoneNumber,
                     password: formData.password,
                     faceData: formData.faceData
+                },
+                {
+                    params: {
+                        token: route.params?.token
+                    }
                 }
             ).then((response => {
                 showDialogMessage('success', response?.status , response?.data?.message, () => {
@@ -221,7 +226,14 @@ const SignUpFRScreen = ({route}) => {
             })).catch((err) => {
                 if (err.response) {
                     setValidationProgress(0)
-                    showDialogMessage('success', err.data?.error_code, err.data.error_message)
+                    showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, ()=> {
+                        if (err.response.data?.error_code === 1103) {
+                            navigation.dispatch(CommonActions.reset({
+                                index: 0,
+                                routes: [{name: 'Start'}]
+                            }))
+                        }
+                    })
                 }
             })
         })()
