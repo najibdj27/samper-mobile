@@ -1,4 +1,4 @@
-import { Keyboard, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native'
 import { createRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Text, FAB, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
@@ -227,7 +227,7 @@ const SignUpFormScreen = ({ route }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
             <Text variant='displayMedium' style={{fontWeight: "bold", marginVertical: 20, color: "black"}}>
                 Sign Up {route.params?.type === 'student'? 'Student' : 'Lecture'}
             </Text>
@@ -368,7 +368,7 @@ const SignUpFormScreen = ({ route }) => {
                     Next
                 </Button>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
