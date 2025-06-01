@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView, Platform, StatusBar } from "react-native";
 import { Text, Avatar, Icon } from "react-native-paper";
 import { useRef, useState, useEffect } from "react";
 import StudentScheduleCard from "./components/StudentScheduleCard";
@@ -136,11 +136,17 @@ function HomeScreen() {
 
     return (
         <SafeAreaView style={styles.navbarContainer} showsVerticalScrollIndicator={false}>
+            <View style={{backgroundColor: '#D8261D',  paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0, width: '100%'}} />
             {/* Welcome Header Section */}
             <View style={styles.welcomeView}>
-                <Text style={styles.welcomeText}>
-                    {`Welcome back, ${authState.profile?.user?.firstName}!`} 
-                </Text>
+                <View style={{flexDirection: 'column'}}>
+                    <Text style={styles.welcomeText}>
+                        Welcome back, 
+                    </Text>
+                    <Text style={styles.welcomeText}>
+                        {`${authState.profile?.user?.firstName} ${authState.profile?.user?.lastName}!`} 
+                    </Text>
+                </View>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                     <Pressable onPress={() => console.log('notification')} style={{marginHorizontal: 5}}>
                         <Icon source="bell" color="#fff" size={25} />
@@ -221,7 +227,7 @@ const styles = StyleSheet.create({
     
     welcomeText: {
         color: '#fff',
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: "bold",
     },
     icon: {

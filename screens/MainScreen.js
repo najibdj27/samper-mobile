@@ -5,7 +5,6 @@ import MessageScreen from './MessageScreen';
 import ScheduleScreen from './ScheduleScreen';
 import RequestScreen from './RequestScreen';
 import NotificationScreen from './NotificationScreen';
-import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 const MainScreen = ({ route }) => {
@@ -62,9 +61,6 @@ const MainScreen = ({ route }) => {
 				}}
 				barStyle={{
 					backgroundColor: '#D8261D'
-				}}
-				style={{
-					paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0
 				}}
 				activeIndicatorStyle={{
 					backgroundColor: "#F5F5F5"
