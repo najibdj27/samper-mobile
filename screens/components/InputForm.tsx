@@ -44,8 +44,11 @@ const InputForm = forwardRef<InputFormRef, InputFormProps>((props, ref) => {
         if (props.useValidation && props.isRequired) {
             if (isValid && !isError) return
         }
-        return message || errorMessage
-    }, [isValid, props.useValidation, props.isRequired, isError])
+        if (!isValid) {
+            return message
+        }
+        return errorMessage
+    }, [isValid, props.useValidation, props.isRequired, isError, message, errorMessage ])
 
     return (
         <View style={{alignSelf: props.centered? 'center' : 'flex-start', alignItems: "flex-start", maxWidth: width*0.9, flexWrap:"wrap"}}>
