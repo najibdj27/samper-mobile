@@ -16,15 +16,19 @@ import { DropDownCompRef, InputFormRef } from './type/ref'
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpOTP'>
 
 type RegistrationEligibilityFieldType = {
-    username: boolean
-    email: boolean
-    phoneNumber: boolean
+    status: string
+    message: string
+}
+
+type RegistrationEligibilityType = {
+    username?: RegistrationEligibilityFieldType
+    email?: RegistrationEligibilityFieldType
+    phoneNumber?: RegistrationEligibilityFieldType
 }
 
 const SignUpFormScreen = ({ route }) => {
-    const [formData, setFormData] = useState<SignUpFormDataType>()
+    const [formData, setFormData] = useState<SignUpFormDataType>({})
     const [classData, setClassData] = useState([])
-    const [_, forceRender] = useState(0);
 
     const navigation = useNavigation<NavigationProp>()
     const axiosPublic = usePublicCall()
@@ -67,6 +71,7 @@ const SignUpFormScreen = ({ route }) => {
     } 
 
     const checkEligibility = async (): Promise<boolean> => {
+        loaderOn()
         try {
             const response = await axiosPublic.post('/registration/eligibility-check', {
                 username: formData?.username,
@@ -76,12 +81,14 @@ const SignUpFormScreen = ({ route }) => {
             
             const checkEligibilityResponse = response.data
         
-            if (checkEligibilityResponse.data?.eligibilityStatus === false) {
-                const eligibilityField:RegistrationEligibilityFieldType | undefined = checkEligibilityResponse.data?.field
+            if (checkEligibilityResponse.data?.eligibilityStatus === 'N') {
+                const eligibilityField:RegistrationEligibilityType | undefined = checkEligibilityResponse.data?.field
                     if (eligibilityField) {
                         for (const [key, val] of Object.entries(eligibilityField)){
-                            if (val === true) {
+                            if (val.status === 'N') {
+                                console.log(`key: ${key} | status: ${val.status} | message: ${val.message}`)
                                 inputRefs[key].current?.setError(true)
+                                inputRefs[key].current?.setMessage(val.message)
                             }
                         }
                     }
@@ -93,6 +100,8 @@ const SignUpFormScreen = ({ route }) => {
                 showDialogMessage('error', error.data?.error_code, error.data?.error_message)
             }
             return false
+        } finally {
+            loaderOff()
         }
     } 
 
@@ -107,9 +116,9 @@ const SignUpFormScreen = ({ route }) => {
                     <DropdownComp
                         ref={inputRefs.class}
                         label="Class"
+                        centered
                         style={{
                             width: 0.73 * width,
-                            alignSelf: "center",
                             borderRadius: 15,
                         }}
                         data={classData}
@@ -181,24 +190,25 @@ const SignUpFormScreen = ({ route }) => {
         let hasErr = false
         for(const key of validateArr) {
             if (!formData[key]) {
-                console.log(`key[${key}]: ${JSON.stringify(typeof inputRefs[key]?.current.setError)}`)
+                console.log(`setError[${key}]: ${JSON.stringify(typeof inputRefs[key]?.current.setError)}`)
+                console.log(`setMessage[${key}]: ${JSON.stringify(typeof inputRefs[key]?.current.setMessage)}`)
                 inputRefs[key]?.current?.setError(true)
+                inputRefs[key]?.current?.setMessage('Field is required!')
                 hasErr = true
             }
         }
         if (hasErr) {
             return
         }
-        loaderOn()
         const isEligible = await checkEligibility()
         if (!isEligible) {
-            loaderOff()
             return
         }
         const reqBody = { emailAddress: formData?.email }
+        loaderOn()
         console.log(`sendOtp`)
         await axiosPublic.post('/registration/send-otp', reqBody)
-        .then((response) => {
+        .then(() => {
             console.log(`sendOtp`)
             navigation.navigate('SignUpOTP', {
                 type: route.params?.type, 
