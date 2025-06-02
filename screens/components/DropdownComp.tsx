@@ -1,6 +1,6 @@
-import { View, StyleSheet, ViewStyle } from 'react-native'
+import { View, StyleSheet, ViewStyle, useWindowDimensions } from 'react-native'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
-import { Text } from 'react-native-paper'
+import { HelperText, Text } from 'react-native-paper'
 import { Dropdown } from 'react-native-element-dropdown'
 import { DropDownCompRef } from '../type/ref'
 
@@ -14,16 +14,25 @@ type DropdownCompProps = {
     placeholder?: string
     disabled?: boolean
     isRequired?: boolean
+    centered?: boolean
 } 
+
+type DropdownItemType = {
+    label: string
+    value: any[]
+}
 
 const DropdownComp = forwardRef<DropDownCompRef, DropdownCompProps>((props, ref) => {
     const [isFocus, setIsFocus] = useState(false);
     const [isError, setIsError] = useState<boolean>();
+    const [errorMessage,  setErrorMessage] = useState<string>()
 
     const inputInternalRef = useRef(null);
+    const {width} = useWindowDimensions()
 
     useImperativeHandle(ref, () => ({
         setError: (err: boolean) => setIsError(err),
+        setMessage: (val: string) => setErrorMessage(val),
         setFocus: () => inputInternalRef.current?.focus()
     }))
 
@@ -38,21 +47,20 @@ const DropdownComp = forwardRef<DropDownCompRef, DropdownCompProps>((props, ref)
         return null
     };
 
-    const renderItem = item => {
+    const renderItem = (item: DropdownItemType) => {
         return (
             <View style={styles.item}>
                 <Text style={styles.textItem}>{item.label}</Text>
-                {item.value === props.data}
             </View>
         );
     };
 
     return (
-        <View>
+        <View style={{alignSelf: props.centered? 'center': 'flex-start', justifyContent: "center", maxWidth: width*0.9, alignItems: "flex-start"}}>
             {renderLabel()}
             <Dropdown
                 ref={inputInternalRef}
-                style={[styles.dropdown, props.style, isFocus ? { borderColor: '#03913E' } : isError && { borderColor: '#fab6b6', borderWidth: 2 }]}
+                style={[styles.dropdown, props.style, isFocus ? { borderColor: '#03913E' } : isError && { borderColor: '#ab0f0f', borderWidth: 2 }]}
                 selectedTextStyle={styles.selectedTextStyle}
                 data={props.data}
                 maxHeight={300}
@@ -67,7 +75,7 @@ const DropdownComp = forwardRef<DropDownCompRef, DropdownCompProps>((props, ref)
                 value={props.value}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
-                onChange={item => {
+                onChange={(item: DropdownItemType) => {
                     if (props.setValue) {
                         props.setValue(item.value);
                     }else {
@@ -79,6 +87,11 @@ const DropdownComp = forwardRef<DropDownCompRef, DropdownCompProps>((props, ref)
                 renderItem={renderItem}
                 disable={props.disabled}
             />
+            <View style={{ minHeight: 20 }}>
+                <HelperText type="error" style={{position: "static"}} visible={true}>
+                    {isError && errorMessage}
+                </HelperText>
+            </View>
         </View>
     )
 })
@@ -87,12 +100,12 @@ export default DropdownComp
 
 const styles = StyleSheet.create({
     dropdown: {
-        marginVertical: 10,
         height: 50,
         borderColor: "#969696",
         borderWidth: 1,
         borderRadius: 8,
         paddingHorizontal: 8,
+        marginTop: 8
     },
     label: {
         position: 'absolute',
