@@ -1,24 +1,37 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ViewStyle } from 'react-native'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { Text } from 'react-native-paper'
 import { Dropdown } from 'react-native-element-dropdown'
+import { DropDownCompRef } from '../type/ref'
 
-const DropdownComp = forwardRef(({ style, data, label, value, setValue, setValueObject, placeholder, disabled, isRequired }, ref) => {
+type DropdownCompProps = {
+    style?: ViewStyle
+    data?: any[]
+    label?: string
+    value?: any
+    setValue?: (item: any) => void
+    setValueObject?: (item: any) => void
+    placeholder?: string
+    disabled?: boolean
+    isRequired?: boolean
+} 
+
+const DropdownComp = forwardRef<DropDownCompRef, DropdownCompProps>((props, ref) => {
     const [isFocus, setIsFocus] = useState(false);
-    const [isError, setIsError] = useState();
+    const [isError, setIsError] = useState<boolean>();
 
     const inputInternalRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
-        setError: (err) => setIsError(err),
-        setFocus: (focus) => inputInternalRef.current?.focus(focus)
+        setError: (err: boolean) => setIsError(err),
+        setFocus: () => inputInternalRef.current?.focus()
     }))
 
     const renderLabel = () => {
-        if (value || isFocus) {
+        if (props.value || isFocus) {
             return (
                 <Text style={[styles.label, isFocus && { color: '#03913E' }]}>
-                    {label}
+                    {props.label}
                 </Text>
             );
         }
@@ -29,7 +42,7 @@ const DropdownComp = forwardRef(({ style, data, label, value, setValue, setValue
         return (
             <View style={styles.item}>
                 <Text style={styles.textItem}>{item.label}</Text>
-                {item.value === data}
+                {item.value === props.data}
             </View>
         );
     };
@@ -39,32 +52,32 @@ const DropdownComp = forwardRef(({ style, data, label, value, setValue, setValue
             {renderLabel()}
             <Dropdown
                 ref={inputInternalRef}
-                style={[styles.dropdown, style, isFocus ? { borderColor: '#03913E' } : isError && { borderColor: '#fab6b6', borderWidth: 2 }]}
+                style={[styles.dropdown, props.style, isFocus ? { borderColor: '#03913E' } : isError && { borderColor: '#fab6b6', borderWidth: 2 }]}
                 selectedTextStyle={styles.selectedTextStyle}
-                data={data}
+                data={props.data}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 iconColor={isError? '#D8261D' : 'black'}
-                placeholder={`${placeholder} ${isRequired? '(required)' : ''}`}
+                placeholder={`${props.placeholder} ${props.isRequired? '(required)' : ''}`}
                 placeholderStyle={{
                     color: 'black',
                     fontWeight: 'normal'
                 }}
-                value={value}
+                value={props.value}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 onChange={item => {
-                    if (setValue) {
-                        setValue(item.value);
+                    if (props.setValue) {
+                        props.setValue(item.value);
                     }else {
-                        setValueObject(item)
+                        props.setValueObject(item)
                     }
-                    setIsFocus(false);
+                    setIsFocus(false)
                     setIsError(false)
                 }}
                 renderItem={renderItem}
-                disable={disabled}
+                disable={props.disabled}
             />
         </View>
     )
