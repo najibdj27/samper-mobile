@@ -27,6 +27,7 @@ const SignUpSetUpPasswordScreen = ({route}) => {
         console.log(`confirmPassword: ${confirmPassword}`)
         if (!password || password === '') {
             inputRef.current?.setError(true)
+            inputRef.current?.setMessage("Your password cannot be empty!")
             return
         }
         if (password !== confirmPassword) {
