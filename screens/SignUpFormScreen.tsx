@@ -8,29 +8,41 @@ import useModal from './hooks/useModal'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import moment from 'moment'
 import DropdownComp from './components/DropdownComp'
+import { SignUpFormDataType } from './type/form'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from './type/navigation'
+import { DropDownCompRef, InputFormRef } from './type/ref'
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpOTP'>
+
+type RegistrationEligibilityFieldType = {
+    username: boolean
+    email: boolean
+    phoneNumber: boolean
+}
 
 const SignUpFormScreen = ({ route }) => {
-    const [formData, setFormData] = useState({})
+    const [formData, setFormData] = useState<SignUpFormDataType>()
     const [classData, setClassData] = useState([])
     const [_, forceRender] = useState(0);
 
-    const navigation = useNavigation()
+    const navigation = useNavigation<NavigationProp>()
     const axiosPublic = usePublicCall()
     const { showDialogMessage, loaderOn, loaderOff } = useModal()
     const { width } = useWindowDimensions()
 
-    const inputRefs = useRef({
-        firstName: createRef(),
-        lastName: createRef(),
-        dateOfBirth: createRef(),
-        nim: createRef(),
-        nip: createRef(),
-        username: createRef(),
-        email: createRef(),
-        phoneNumber: createRef(),
-        class: createRef(),
+    const inputRefs = {
+        firstName: useRef<InputFormRef>(),
+        lastName: useRef<InputFormRef>(),
+        dateOfBirth: useRef<InputFormRef>(),
+        nim: useRef<InputFormRef>(),
+        nip: useRef<InputFormRef>(),
+        username: useRef<InputFormRef>(),
+        email: useRef<InputFormRef>(),
+        phoneNumber: useRef<InputFormRef>(),
+        class: useRef<DropDownCompRef>(),
 
-    }).current
+    }
     
     const loadClassData = async () => {
         console.log(`loadClassData`)
@@ -54,6 +66,36 @@ const SignUpFormScreen = ({ route }) => {
         })
     } 
 
+    const checkEligibility = async (): Promise<boolean> => {
+        try {
+            const response = await axiosPublic.post('/registration/eligibility-check', {
+                username: formData?.username,
+                email: formData?.email,
+                phoneNumber: formData.phoneNumber
+            })
+            
+            const checkEligibilityResponse = response.data
+        
+            if (checkEligibilityResponse.data?.eligibilityStatus === false) {
+                const eligibilityField:RegistrationEligibilityFieldType | undefined = checkEligibilityResponse.data?.field
+                    if (eligibilityField) {
+                        for (const [key, val] of Object.entries(eligibilityField)){
+                            if (val === true) {
+                                inputRefs[key].current?.setError(true)
+                            }
+                        }
+                    }
+                return false
+            }
+            return true
+        } catch (error) {
+            if (error?.response) {
+                showDialogMessage('error', error.data?.error_code, error.data?.error_message)
+            }
+            return false
+        }
+    } 
+
     const classDataDropDown = () => {
         if (!classData) {
             return (
@@ -71,7 +113,7 @@ const SignUpFormScreen = ({ route }) => {
                             borderRadius: 15,
                         }}
                         data={classData}
-                        value={formData.class}
+                        value={formData?.class}
                         setValueObject={item => {
                             setFormData( prevData => ({
                                 ...prevData,
@@ -86,7 +128,7 @@ const SignUpFormScreen = ({ route }) => {
         }
     }
 
-    const showCalendar = (mode) => {
+    const showCalendar = (mode: 'date' | 'time') => {
         const now = new Date()
         DateTimePickerAndroid.open({
             value: moment(formData.dateOfBirth).toDate() || now,
@@ -102,7 +144,6 @@ const SignUpFormScreen = ({ route }) => {
             },
             mode: mode,
             is24Hour: true,
-            accentColor: '#D8261D',
         });
     }
 
@@ -149,15 +190,24 @@ const SignUpFormScreen = ({ route }) => {
             return
         }
         loaderOn()
+        const isEligible = await checkEligibility()
+        if (!isEligible) {
+            loaderOff()
+            return
+        }
         const reqBody = { emailAddress: formData?.email }
         console.log(`sendOtp`)
         await axiosPublic.post('/registration/send-otp', reqBody)
         .then((response) => {
             console.log(`sendOtp`)
-            navigation.navigate('SignUpOTP', {type: route.params?.type, formData: formData})
+            navigation.navigate('SignUpOTP', {
+                type: route.params?.type, 
+                formData: formData,
+                token: null
+            })
         }).catch((error) => {
             if (error.response) {
-                showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message)
+                showDialogMessage('error', error.response.data?.error_code, error.response.data?.error_message)
             }
         }).finally(() => {
             loaderOff()
@@ -181,7 +231,7 @@ const SignUpFormScreen = ({ route }) => {
                         centered
                         label="NIM"
                         placeholder='Input your NIM here'
-                        input={formData.NIM}
+                        input={formData?.nim}
                         mode='outlined'
                         useValidation={true}
                         validationMode="nim"
@@ -191,9 +241,9 @@ const SignUpFormScreen = ({ route }) => {
                         keyboardType={'numeric'}
                         style={styles.form}
                         outlineStyle={{ borderRadius: 16 }}
-                        setInputObject={val => setFormData(prevData => ({
+                        setInputObject={input => setFormData(prevData => ({
                             ...prevData,
-                            nim: val
+                            nim: input
                         }))}
                     />
                 )
@@ -204,7 +254,7 @@ const SignUpFormScreen = ({ route }) => {
                         centered
                         label="NIP"
                         placeholder='Input your NIP here'
-                        input={formData.NIM}
+                        input={formData?.nip}
                         mode='outlined'
                         useValidation={true}
                         validationMode="nim"
@@ -241,7 +291,7 @@ const SignUpFormScreen = ({ route }) => {
                             centered
                             label="First Name"
                             placeholder='Input your first name here'
-                            input={formData.firstName}
+                            input={formData?.firstName}
                             mode='outlined'
                             useValidation={true}
                             validationMode="name"
@@ -258,7 +308,7 @@ const SignUpFormScreen = ({ route }) => {
                             centered
                             label="Last Name"
                             placeholder='Input your last name here'
-                            input={formData.lastName}
+                            input={formData?.lastName}
                             mode='outlined'
                             useValidation={true}
                             validationMode="name"
@@ -282,7 +332,7 @@ const SignUpFormScreen = ({ route }) => {
                             )}
                             mode='outlined'
                             label="Date of Birth"
-                            input={formData.dateOfBirth ? moment(new Date(formData.dateOfBirth)).format('DD MMMM yyyy') : null}
+                            input={formData?.dateOfBirth ? moment(new Date(formData?.dateOfBirth)).format('DD MMMM yyyy') : null}
                             style={styles.form}
                             isRequired={true}
                             centered
@@ -295,7 +345,7 @@ const SignUpFormScreen = ({ route }) => {
                             centered
                             label="Username"
                             placeholder='Input your username here'
-                            input={formData.username}
+                            input={formData?.username}
                             mode='outlined'
                             isRequired={true}
                             activeOutlineColor='#02a807'
@@ -311,7 +361,7 @@ const SignUpFormScreen = ({ route }) => {
                             centered
                             label="Email Address"
                             placeholder='Input your email address here'
-                            input={formData.email}
+                            input={formData?.email}
                             mode='outlined'
                             isRequired={true}
                             activeOutlineColor='#02a807'
@@ -337,7 +387,7 @@ const SignUpFormScreen = ({ route }) => {
                                 centered
                                 label="Phone Number"
                                 placeholder='Input your phone number here'
-                                input={formData.phoneNumber}
+                                input={formData?.phoneNumber}
                                 mode='outlined'
                                 isRequired={true}
                                 activeOutlineColor='#02a807'

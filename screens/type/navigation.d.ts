@@ -1,9 +1,12 @@
 import { SignUpFormDataType } from "./form";
 
-export type RootStackParamList = {
-  SignUpFR: {
-    type: sting
+type SignUpParamType = {
+    type: string
     formData: SignUpFormDataType
     token: string
-  }
+}
+
+export type RootStackParamList = {
+    SignUpFR: SignUpParamType
+    SignUpOTP: SignUpParamType
 };

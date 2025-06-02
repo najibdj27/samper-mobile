@@ -1,34 +1,11 @@
-import { TextStyle, View, ViewStyle, useWindowDimensions } from 'react-native'
+import { View, useWindowDimensions } from 'react-native'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { HelperText, TextInput, Text, TextInputProps } from 'react-native-paper'
+import { HelperText, TextInput, Text } from 'react-native-paper'
 import useTextValidation from '../hooks/useTextValidation'
+import { InputFormProps } from '../type/props'
+import { InputFormRef } from '../type/ref'
 
-type InputFormProps = {
-  label?: string
-  input?: string
-  setInput?: (text: string) => void
-  setInputObject?: (text: string) => void
-  isRequired?: boolean
-  placeholder?: string
-  centered?: boolean
-  useValidation?: boolean
-  validationMode?: string
-  mode?: TextInputProps["mode"]
-  inputMode?: TextInputProps["inputMode"]
-  keyboardType?: TextInputProps["keyboardType"]
-  left?: React.ReactNode
-  right?: React.ReactNode
-  style?: ViewStyle
-  contentStyle?: TextStyle
-  secureTextEntry?: boolean
-  disabled?: boolean
-  editable?: boolean
-  autoCapitalize?: "none" | "sentences" | "words" | "characters"
-  maxLength?: number
-}
-
-
-const InputForm = forwardRef<any, InputFormProps>((props, ref) => {
+const InputForm = forwardRef<InputFormRef, InputFormProps>((props, ref) => {
     const {isValid, message, validate} = useTextValidation()
     const {width} = useWindowDimensions()
     const [isError, setIsError] = useState<boolean>(false)
@@ -37,7 +14,7 @@ const InputForm = forwardRef<any, InputFormProps>((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         setError: (err:boolean) => setIsError(err),
-        setFocus: (focus:boolean) => inputInternalRef.current?.focus()
+        setFocus: () => inputInternalRef.current?.focus()
     }))
 
     useEffect(() => {
