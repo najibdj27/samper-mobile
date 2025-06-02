@@ -7,12 +7,9 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from './type/navigation'
 import { SignUpFormDataType } from './type/form'
+import { InputFormRef } from './type/ref'
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpFR'>
-
-type InputFormRefType = {
-  setError: (err: boolean) => void
-}
 
 const SignUpSetUpPasswordScreen = ({route}) => {
     const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
@@ -23,7 +20,7 @@ const SignUpSetUpPasswordScreen = ({route}) => {
 
     const navigation = useNavigation<NavigationProp>()
     const { showDialogMessage } = useModal()
-    const inputRef = useRef<InputFormRefType>()
+    const inputRef = useRef<InputFormRef>()
 
     const handleSetPassword = useCallback(() => {
         console.log(`password: ${password}`)
