@@ -38,8 +38,11 @@ const InputForm = forwardRef<InputFormRef, InputFormProps>((props, ref) => {
     }, [isValid])
 
     const helperText = useMemo(() => {
-        if (!props.useValidation && !props.isRequired) return
-        if (props.useValidation && !props.isRequired && isValid) return
+        if (props.useValidation && !props.isRequired && isValid) {
+            if (isError) {
+                return errorMessage
+            }
+        }
         if (!props.useValidation && props.isRequired && !isError) return
         if (props.useValidation && props.isRequired) {
             if (isValid && !isError) return
