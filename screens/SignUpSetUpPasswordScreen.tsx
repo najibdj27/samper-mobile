@@ -19,19 +19,20 @@ const SignUpSetUpPasswordScreen = ({route}) => {
     const [confirmPassword, setConfirmPassword] = useState<string>('')
 
     const navigation = useNavigation<NavigationProp>()
-    const { showDialogMessage } = useModal()
-    const inputRef = useRef<InputFormRef>()
+    const passwordRef = useRef<InputFormRef>()
+    const confirmPasswordRef = useRef<InputFormRef>()
 
     const handleSetPassword = useCallback(() => {
         console.log(`password: ${password}`)
         console.log(`confirmPassword: ${confirmPassword}`)
         if (!password || password === '') {
-            inputRef.current?.setError(true)
-            inputRef.current?.setMessage("Your password cannot be empty!")
+            passwordRef.current?.setError(true)
+            passwordRef.current?.setMessage("Your password cannot be empty!")
             return
         }
         if (password !== confirmPassword) {
-            showDialogMessage('error', 'FEE005', "Your new password doesn't match!")
+            confirmPasswordRef.current?.setError(true)
+            confirmPasswordRef.current?.setMessage("Your password does not match!")
         } else {
             setFormData(prevState => ({
                 ...prevState,
@@ -58,7 +59,7 @@ const SignUpSetUpPasswordScreen = ({route}) => {
                     Set your new password!
                 </Text>
                 <InputForm
-                    ref={inputRef}
+                    ref={passwordRef}
                     mode="outlined"
                     label="Password"
                     input={password}
@@ -69,8 +70,9 @@ const SignUpSetUpPasswordScreen = ({route}) => {
                     style={styles.form}
                     centered
                     secureTextEntry
-                />
+                    />
                 <InputForm
+                    ref={confirmPasswordRef}
                     mode='outlined'
                     label="Password"
                     input={confirmPassword}
