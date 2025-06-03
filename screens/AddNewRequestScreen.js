@@ -191,15 +191,15 @@ const AddNewRequestScreen = () => {
 		}
 		await axiosPrivate.post('/request/add', reqBody)
 		.then(() => {
-			loaderOn()
 			console.log(`addRequest: success`)
 			showDialogMessage('success', "RRC202403270001", "Successfully send new request!", () => { navigation.navigate('Main', { index: 3 }) })
 		}).catch((err) => {
-			loaderOn()
 			console.log(`addRequest: failed`)
 			if (err.response) {
 				showDialogMessage('error', err.response.data.error_code, err.response.data.error_message)
 			}
+		}).finally(() => {
+			loaderOff()
 		})
 	}
 
