@@ -29,9 +29,6 @@ const usePublicCall = () => {
                 if (error.response?.status === 500) {
                     showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
                 }
-                if (error.response?.status !== 500) {
-                    showDialogMessage('error', error.response.data?.error_code, error.response.data?.error_message)
-                }
                 return Promise.reject(error)
             }
         )
