@@ -1,12 +1,10 @@
-import { BackHandler, Image, Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, Text, View } from 'react-native'
+import { BackHandler, Image, Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, Text } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import InputForm from './components/InputForm'
 import { Button } from 'react-native-paper'
-import useModal from './hooks/useModal'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from './type/navigation'
-import { SignUpFormDataType } from './type/form'
 import { InputFormRef } from './type/ref'
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpFR'>
@@ -14,7 +12,6 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpFR'>
 const SignUpSetUpPasswordScreen = ({route}) => {
     const topImg = require("../assets/845448d9-fd37-4f8c-bf66-8c8e461a1c40.png")
     
-    const [formData, setFormData] = useState<SignUpFormDataType>(route.params?.formData)
     const [password, setPassword] = useState<string>('')
     const [confirmPassword, setConfirmPassword] = useState<string>('')
 
@@ -34,10 +31,10 @@ const SignUpSetUpPasswordScreen = ({route}) => {
             confirmPasswordRef.current?.setError(true)
             confirmPasswordRef.current?.setMessage("Your password does not match!")
         } else {
-            setFormData(prevState => ({
-                ...prevState,
+            const formData = {
+                ...route.params?.formData,
                 password: password
-            }))
+            }
             navigation.navigate('SignUpFR', {
                 type: route.params?.type,
                 formData: formData,
