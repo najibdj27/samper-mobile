@@ -245,9 +245,9 @@ const AddNewRequestScreen = () => {
 					<ScrollView contentContainerStyle={{ alignItems: "center" }}>
 						<Dropdown
 							label="Request Type"
+							centered
 							style={{
 								width: width * 0.9,
-								alignSelf: "center"
 							}}
 							data={requestTypeData}
 							value={requestTypeForm}
