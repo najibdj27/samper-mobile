@@ -216,9 +216,7 @@ const SignUpFormScreen = ({ route }) => {
                 token: null
             })
         }).catch((error) => {
-            if (error.response) {
-                showDialogMessage('error', error.response.data?.error_code, error.response.data?.error_message)
-            }
+            
         }).finally(() => {
             loaderOff()
         })

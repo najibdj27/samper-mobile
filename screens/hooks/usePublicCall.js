@@ -26,8 +26,11 @@ const usePublicCall = () => {
                 if (error.request?._response === 'timeout') {
                     showDialogMessage('error', "C0001", "Server timeout!")
                 }  
-                if (error.response.status === 500) {
+                if (error.response?.status === 500) {
                     showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
+                }
+                if (error.response?.status !== 500) {
+                    showDialogMessage('error', error.response.data?.error_code, error.response.data?.error_message)
                 }
                 return Promise.reject(error)
             }

@@ -224,15 +224,13 @@ const SignUpFRScreen = ({route}) => {
                     }))
                 }) 
             })).catch((err) => {
-                if (err.response) {
+                if (err.response?.status === 500) {
                     setValidationProgress(0)
-                    showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, ()=> {
-                        if (err.response.data?.error_code === 1103) {
-                            navigation.dispatch(CommonActions.reset({
-                                index: 0,
-                                routes: [{name: 'Start'}]
-                            }))
-                        }
+                    showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`, ()=> {
+                        navigation.dispatch(CommonActions.reset({
+                            index: 0,
+                            routes: [{name: 'Start'}]
+                        }))
                     })
                 }
             })
