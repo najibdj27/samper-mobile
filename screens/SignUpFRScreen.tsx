@@ -200,9 +200,9 @@ const SignUpFRScreen = ({route}) => {
             console.log('submitting')
             await axiosPublic.post('/registration/registerstudent', 
                 {
-                    NIM: formData.nim,
+                    nim: formData.nim,
                     classId: formData.class,
-                    firstname: formData.firstName,
+                    firstName: formData.firstName,
                     lastName: formData.lastName,
                     dateOfBirth: moment(formData.dateOfBirth).format('DD-MM-YYYY'),
                     username: formData.username,
