@@ -361,7 +361,7 @@ const SignUpFormScreen = ({ route }) => {
                             outlineStyle={{ borderRadius: 16 }}
                             setInputObject={val => setFormData(prevData => ({
                                 ...prevData,
-                                username: val.toLowerCase()
+                                username: val
                             }))}
                         />
                         <InputForm
