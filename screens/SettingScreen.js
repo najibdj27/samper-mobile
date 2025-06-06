@@ -29,7 +29,7 @@ const SettingScreen = () => {
             <View>
                 <View style={styles.navbarContainer}>
                     {/* <Avatar.Image size={80} source={} /> */}
-                    <Avatar.Icon size={80} icon="account" style={{marginVertical: 10}} color="black" />
+                    <Avatar.Icon size={80} icon="account" style={{marginVertical: 10}} />
                     <Text style={styles.nameText}>
                         {authState.profile.user.firstName} {authState.profile.user.lastName}
                     </Text>
@@ -41,48 +41,48 @@ const SettingScreen = () => {
                     <Pressable>
                         <List.Item
                             title="General"
-                            left={props => <List.Icon {...props} icon="cellphone" color="black"/>}
-                            right={props => <List.Icon {...props} icon="chevron-right" color="black"/>}
+                            left={props => <List.Icon {...props} icon="cellphone"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable onPress={() => {navigation.navigate('AccountDetail', {userId: authState?.profile?.user?.id})}}>
                         <List.Item
                             title="Account"
-                            left={props => <List.Icon {...props} icon="key" color="black"/>}
-                            right={props => <List.Icon {...props} icon="chevron-right" color="black"/>}
+                            left={props => <List.Icon {...props} icon="key"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
                             title="Profile"
-                            left={props => <List.Icon {...props} icon="account" color="black"/>}
-                            right={props => <List.Icon {...props} icon="chevron-right" color="black"/>}
+                            left={props => <List.Icon {...props} icon="account"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
                             title="Personalization"
-                            left={props => <List.Icon {...props} icon="brush" color="black"/>}
-                            right={props => <List.Icon {...props} icon="chevron-right" color="black"/>}
+                            left={props => <List.Icon {...props} icon="brush"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
                             title="Help"
-                            left={props => <List.Icon {...props} icon="alert-circle-outline" color="black"/>}
-                            right={props => <List.Icon {...props} icon="chevron-right" color="black"/>}
+                            left={props => <List.Icon {...props} icon="alert-circle-outline"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable onPress={() => handleLogout()}>
                         <List.Item
                             title="Logout"
-                            left={props => <List.Icon {...props} icon="logout" color="black"/>}
-                            right={props => <List.Icon {...props} icon="chevron-right" color="black"/>}
+                            left={props => <List.Icon {...props} icon="logout"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
                         />
                     </Pressable>
