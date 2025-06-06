@@ -195,11 +195,9 @@ const SignUpFRScreen = ({route}) => {
     }, [validationProgress, formData, faceLandmark])
 
     useEffect(() => {
-        if (validationProgress !== 4 || !formData?.faceData) return 
-        ( async ()  => {
-            console.log('submitting')
-            await axiosPublic.post('/registration/registerstudent', 
-                {
+        const requestBody = () => {
+            if (route.params?.type === 'student') {
+                return {
                     nim: formData.nim,
                     classId: formData.class,
                     firstName: formData.firstName,
@@ -210,7 +208,35 @@ const SignUpFRScreen = ({route}) => {
                     phoneNumber: formData.phoneNumber,
                     password: formData.password,
                     faceData: formData.faceData
-                },
+                }
+            } else {
+                return {
+                    nip: formData.nip,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    dateOfBirth: moment(formData.dateOfBirth).format('DD-MM-YYYY'),
+                    username: formData.username,
+                    email: formData.email,
+                    phoneNumber: formData.phoneNumber,
+                    password: formData.password,
+                    faceData: formData.faceData
+                }
+            }
+        }
+
+        const registerUrl = () => {
+            if (route.params?.type === 'student') {
+                return '/registration/registerstudent'
+            } else {
+                return '/registration/registerlecture'
+            }
+        }
+
+        if (validationProgress !== 4 || !formData?.faceData) return 
+        ( async ()  => {
+            console.log('submitting')
+            await axiosPublic.post(registerUrl(), 
+                requestBody(),
                 {
                     params: {
                         token: route.params?.token
