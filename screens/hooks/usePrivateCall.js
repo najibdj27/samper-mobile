@@ -48,8 +48,8 @@ const usePrivateCall = () => {
                         showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
                     }
                 } else {
-                    if (error.request._timeout) {
-                        showDialogMessage('error', "C0001", "Server timeout!")
+                    if (error.request?._timeout || error.request?._response === 'timeout') {
+                        showDialogMessage('error', "FEE0001", "Server timeout!")
                     } 
                 }
                 return Promise.reject(error)
