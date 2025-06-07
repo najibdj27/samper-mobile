@@ -50,7 +50,7 @@ const DialogConfirmation = forwardRef((props, ref) => {
                 <BlurView intensity={10} tint="dark" style={{flex: 1,justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
                     <Dialog visible={visible} onDismiss={hideDialog} style={{backgroundColor: "#fff"}}>
                         <Dialog.Icon icon={icon} size={75} color='#212121' />
-                        <Dialog.Title style={{textAlign: "center"}}>{tittle}</Dialog.Title>
+                        <Dialog.Title style={{textAlign: "center", color: 'black'}}>{tittle}</Dialog.Title>
                         <Dialog.Content>
                             <Text style={{textAlign: "center"}} variant="titleMedium">{text}</Text>
                         </Dialog.Content>

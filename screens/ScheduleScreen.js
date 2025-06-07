@@ -2,7 +2,7 @@ import CalendarAgenda from "./components/CalendarAgenda";
 import DialogMessage from "./components/DialogMessage";
 import { useState, useRef, useCallback } from "react";
 import { Provider } from "react-native-paper";
-import { SafeAreaView } from "react-native";
+import { Platform, SafeAreaView, StatusBar, View } from "react-native";
 import usePrivateCall from "./hooks/usePrivateCall";
 import useAuth from "./hooks/useAuth";
 
@@ -62,6 +62,7 @@ const ScheduleScreen = () => {
     return (
         <Provider>
             <SafeAreaView style={{flex: 1}}>
+                <View style={{backgroundColor: '#D8261D',  paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0, width: '100%'}} />
                 <CalendarAgenda 
                     items={items}
                     markedDate={markedDate}

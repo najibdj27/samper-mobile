@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View, FlatList, Animated, SafeAreaView, Platform, StatusBar } from "react-native";
 import { Text, Avatar, Icon } from "react-native-paper";
 import { useRef, useState, useEffect } from "react";
 import StudentScheduleCard from "./components/StudentScheduleCard";
@@ -136,11 +136,17 @@ function HomeScreen() {
 
     return (
         <SafeAreaView style={styles.navbarContainer} showsVerticalScrollIndicator={false}>
+            <View style={{backgroundColor: '#D8261D',  paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0, width: '100%'}} />
             {/* Welcome Header Section */}
             <View style={styles.welcomeView}>
-                <Text style={styles.welcomeText}>
-                    {`Welcome back, ${authState.profile?.user?.firstName}!`} 
-                </Text>
+                <View style={{flexDirection: 'column'}}>
+                    <Text style={styles.welcomeText}>
+                        Welcome back, 
+                    </Text>
+                    <Text style={styles.welcomeText}>
+                        {`${authState.profile?.user?.firstName} ${authState.profile?.user?.lastName}!`} 
+                    </Text>
+                </View>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                     <Pressable onPress={() => console.log('notification')} style={{marginHorizontal: 5}}>
                         <Icon source="bell" color="#fff" size={25} />
@@ -154,7 +160,7 @@ function HomeScreen() {
                 </View>
             </View>
             {/* Today's Schedule Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
+            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color:"black"}}>
                 Today's Schedule
             </Text>
             <FlatList 
@@ -184,14 +190,14 @@ function HomeScreen() {
                 scrollX={scrollX}
             />
             {/* History Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
+            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color: 'black'}}>
                 History
             </Text>
             <ScrollView style={{marginBottom: 20, padding:10, height: 270}} showsVerticalScrollIndicator={false} >
                 {
                     presenceHistoryData.isLoading? 
                     ( <History isLoading={true} />) :
-                        presenceHistoryData.data.length == 0 ?
+                        presenceHistoryData.data?.length == 0 ?
                             ( <History isEmpty={true} /> ) : 
                             console.log(`available`)
                 }
@@ -204,7 +210,7 @@ function HomeScreen() {
 const styles = StyleSheet.create({
     navbarContainer: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "white",
     },
     welcomeView: {
         flexDirection: "row", 
@@ -221,8 +227,8 @@ const styles = StyleSheet.create({
     
     welcomeText: {
         color: '#fff',
-        fontSize: 24,
-        fontWeight: "bold"
+        fontSize: 20,
+        fontWeight: "bold",
     },
     icon: {
 

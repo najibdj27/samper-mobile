@@ -69,59 +69,59 @@ const ScheduleDetailScreen = ({route}) => {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={{alignSelf: "start", marginStart: 20}}>
-				<Text variant="titleLarge" style={{fontWeight: "bold", marginTop: 20}}>{scheduleDetailData.data.subject?.name}</Text>
-				<Text variant="titleMedium" style={{fontWeight: "bold", marginTop: 5}}>{`${format(scheduleDetailData.data?.meetingOrder)} Meeting`}</Text>
+				<Text variant="titleLarge" style={{fontWeight: "bold", marginTop: 20, color: 'black'}}>{scheduleDetailData.data.subject?.name}</Text>
+				<Text variant="titleMedium" style={{fontWeight: "bold", marginTop: 5, color: 'black'}}>{`${format(scheduleDetailData.data?.meetingOrder)} Meeting`}</Text>
 			</View>
 			<List.Section style={styles.section}>
 				{/* <List.Subheader style={{fontSize:24, fontWeight: "bold"}}>Time</List.Subheader> */}
 				<List.Item 
 					title="Date" 
-					left={() => <List.Icon icon="calendar" />} 
+					left={() => <List.Icon icon="calendar" color='black'/>} 
 					right={() => <Text style={styles.rightItemText}>{moment(scheduleDetailData.data?.timeStart).format("ddd, D MMM Y")}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 				<List.Item 
 					title="Start" 
-					left={() => <List.Icon icon="clock-outline" />} 
+					left={() => <List.Icon icon="clock-outline" color='black'/>} 
 					right={() => <Text style={styles.rightItemText}>{moment(scheduleDetailData.data?.timeStart).format("HH:mm")}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 				<List.Item
 					title="End"
-					left={() => <List.Icon icon="clock" />}
+					left={() => <List.Icon icon="clock" color='black'/>}
 					right={() => <Text style={styles.rightItemText}>{moment(scheduleDetailData.data?.timeEnd).format("HH:mm")}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 				<List.Item
 					title="Credit/SKS"
-					left={() => <List.Icon icon="newspaper-variant-multiple" />}
+					left={() => <List.Icon icon="newspaper-variant-multiple"color='black'/>}
 					right={() => <Text style={styles.rightItemText}>{scheduleDetailData.data?.creditAmount}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 				<List.Item
 					title="Class"
-					left={() => <List.Icon icon="account-group" />}
+					left={() => <List.Icon icon="account-group"color='black'/>}
 					right={() => <Text style={styles.rightItemText}>{scheduleDetailData.data.kelas?.name}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 			</List.Section>
-			<List.Section style={styles.section} title='Lecture' titleStyle={{fontSize: 18, fontWeight: 'bold'}}>
+			<List.Section style={styles.section} title='Lecture' titleStyle={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
 				<List.Item
 					title="Name"
-					left={() => <List.Icon icon="account-tie" />}
+					left={() => <List.Icon icon="account-tie" color='black'/>}
 					right={() => <Text style={styles.rightItemText}>{scheduleDetailData.data.lecture?.user.firstName} {scheduleDetailData.data.lecture?.user.lastName}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 				<List.Item
 					title="Email"
-					left={() => <List.Icon icon="email" />}
+					left={() => <List.Icon icon="email" color='black'/>}
 					right={() => <Text style={styles.rightItemText}>{scheduleDetailData.data.lecture?.user.email}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 				<List.Item
 					title="Phone Number"
-					left={() => <List.Icon icon="cellphone" />}
-					right={() => <Text style={styles.rightItemText}>{scheduleDetailData.data.lecture?.user.phoneNumber}</Text>}
+					left={() => <List.Icon icon="cellphone" color='black'/>}
+					right={() => <Text style={styles.rightItemText}>+62{scheduleDetailData.data.lecture?.user.phoneNumber}</Text>}
 					titleStyle={styles.itemTitle}
 				/>
 			</List.Section>
@@ -146,11 +146,13 @@ const styles = StyleSheet.create({
 	},
 	itemTitle: {
 		fontWeight: "bold", 
-		fontSize: 16
+		fontSize: 16,
+		color: 'black'
 	},
 	rightItemText: {
 		fontSize: 14,
 		fontWeight: "bold", 
-		alignSelf:"center"
+		alignSelf:"center", 
+		color: 'black'
 	}
 })

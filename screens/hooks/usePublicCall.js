@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import axiosCall from "../api/axios"
+import { axiosPublicCall } from "../api/axios"
 import useModal from './useModal'
 
 const usePublicCall = () => {
@@ -10,33 +10,38 @@ const usePublicCall = () => {
         let requestPublicInterceptor  
         let responsePublicInterceptor
 
-        requestPublicInterceptor = axiosCall.interceptors.request.use(
+        requestPublicInterceptor = axiosPublicCall.interceptors.request.use(
             config => config,
             (error) => {
                 return Promise.reject(error)
             }
         )
         
-        responsePublicInterceptor = axiosCall.interceptors.response.use(
+        responsePublicInterceptor = axiosPublicCall.interceptors.response.use(
             response => {
-                
                 return response
             },
             (error) => {
-                if (error.request._timeout) {
-                    showDialogMessage('error', "C0001", "Server timeout!")
-                }  
+                if (error.response){
+                    if (error.response?.status === 500) {
+                        showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
+                    }
+                }else {
+                    if (error.request?._response === 'timeout') {
+                        showDialogMessage('error', "FEE0001", "Server timeout!")
+                    }  
+                }
                 return Promise.reject(error)
             }
         )
 
         return () => {
-            axiosCall.interceptors.request.eject(requestPublicInterceptor)
-            axiosCall.interceptors.response.eject(responsePublicInterceptor)
+            axiosPublicCall.interceptors.request.eject(requestPublicInterceptor)
+            axiosPublicCall.interceptors.response.eject(responsePublicInterceptor)
         }
     }, [])
 
-    return axiosCall
+    return axiosPublicCall
 }
 
 export default usePublicCall

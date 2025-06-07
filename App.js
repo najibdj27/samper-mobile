@@ -1,8 +1,9 @@
-import { name as appName } from './app.json';
+import 'expo-dev-client';
 import { AppRegistry } from 'react-native';
 import { AuthProvider } from './screens/contexts/AuthContext';
 import AppNav from './screens/navigators/AppNav'
 import { ModalProvider } from './screens/contexts/ModalContext';
+
 
 export default function App() {
 	return (
@@ -14,4 +15,4 @@ export default function App() {
 	);
 }
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent('Samper Mobile', () => App);

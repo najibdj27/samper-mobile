@@ -1,37 +1,62 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.8.28:8080';
+const BASE_URL = 'https://samper-api-6bf01e4f0b51.herokuapp.com';
 const TIMEOUT = 70000;
 
-const axiosCall = axios.create({
+export const axiosPrivateCall = axios.create({
     baseURL: BASE_URL,
     timeout: TIMEOUT
 })
 
-axiosCall.interceptors.request.use(
+export const axiosPublicCall = axios.create({
+    baseURL: BASE_URL,
+    timeout: TIMEOUT
+})
+
+// API Call Log
+axiosPrivateCall.interceptors.request.use(
     config => config,
     (error) => {
-        console.log(`error: ${JSON.stringify(error.request)}`)
+        console.log(`[API PRIVATE CALL] error request: ${JSON.stringify(error.request)}`)
         return Promise.reject(error)
     }
 )
 
-axiosCall.interceptors.response.use(
+axiosPrivateCall.interceptors.response.use(
     (response) => {
         console.log(`success: ${JSON.stringify(response)}`)
         return response
     },
     (error) => {
         if (error.response){
-            console.log(`error: ${JSON.stringify(error.response)}`)
+            console.log(`[API PRIVATE CALL] error response: ${JSON.stringify(error.response)}`)
         }else {
-            console.log(`error: ${JSON.stringify(error.request)}`)
+            console.log(`[API PRIVATE CALL] error request: ${JSON.stringify(error.request)}`)
         }
         return Promise.reject(error)
     }
 )
 
-export default axiosCall
+axiosPublicCall.interceptors.request.use(
+    config => config,
+    (error) => {
+        console.log(`[API PUBLIC CALL] error request: ${JSON.stringify(error.request)}`)
+        return Promise.reject(error)
+    }
+)
 
-
+axiosPublicCall.interceptors.response.use(
+    (response) => {
+        console.log(`success: ${JSON.stringify(response)}`)
+        return response
+    },
+    (error) => {
+        if (error.response){
+            console.log(`[API PUBLIC CALL] error response: ${JSON.stringify(error.response)}`)
+        }else {
+            console.log(`[API PUBLIC CALL] error request: ${JSON.stringify(error.request)}`)
+        }
+        return Promise.reject(error)
+    }
+)
 

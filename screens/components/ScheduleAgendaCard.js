@@ -24,13 +24,11 @@ const ScheduleAgendaCard = (props) => {
         }
     }
 
-    const params = {
-        scheduleId: props.item?.id 
-    }
 
     return (
         <TouchableHighlight
-            onPress={() => { navigation.navigate('ScheduleDetail', params) }}
+            key={props.item?.scheduleId}
+            onPress={() => { navigation.navigate('ScheduleDetail', props.item?.scheduleId) }}
             underlayColor="white"
             style={{
                 borderRadius: 10,
@@ -46,10 +44,10 @@ const ScheduleAgendaCard = (props) => {
                         alignItems: 'center'
                     }}>
                         <View>
-                            <Text style={{ fontSize: 12 }}>Pertemuan {props.item?.meetingOrder}</Text>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{props.item?.subject.name}</Text>
-                            <Text>{moment(props.item?.timeStart).format('HH:mm')} - {moment(props.item?.timeEnd).format('HH:mm')}</Text>
-                            <Text style={{ fontSize: 12, fontWeight: 'bold' }}>{props.item?.lecture.user.name}</Text>
+                            <Text style={{ fontSize: 12, color: 'black' }}>Pertemuan {props.item?.meetingOrder}</Text>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>{props.item?.subject.name}</Text>
+                            <Text style={{color: 'black'}}>{moment(props.item?.timeStart).format('HH:mm')} - {moment(props.item?.timeEnd).format('HH:mm')}</Text>
+                            <Text style={{ fontSize: 12, fontWeight: 'bold', color: 'black' }}>{props.item?.lecture.user.name}</Text>
                         </View>
                         <Avatar.Icon icon={icon(props.item?.isRescheduled)} size={40} color='#fff' style={isActive(props.item?.isActive)} />
                     </View>

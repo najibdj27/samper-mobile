@@ -2,42 +2,9 @@ import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-n
 import React, { useMemo } from 'react'
 import { Button, Text } from 'react-native-paper'
 
-const StickyButton = ({label, onPress, disabled, buttonColor}) => {
+const StickyButton = ({label, onPress, disabled, buttonColor, textColor}) => {
 
-    const {width} = useWindowDimensions()
-
-    // React Native Paper
-    // const disabledButton = useMemo(() => (
-    //         <Button 
-    //             labelStyle={styles.buttonLabel}
-    //             style={styles.button}
-    //             mode="contained"
-    //             buttonColor={buttonColor || '#03913E'}
-    //             contentStyle={{
-    //                 paddingVertical: 3
-    //             }}
-    //             onPress={onPress}
-    //             disabled={true}
-    //         >
-    //             {label}
-    //         </Button>
-    // ), [label, onPress, buttonColor])
-
-    // const enabledButton = useMemo(() => (
-    //     <Button 
-    //         labelStyle={styles.buttonLabel}
-    //         style={styles.button}
-    //         mode="contained"
-    //         buttonColor={buttonColor || '#03913E'}
-    //         contentStyle={{
-    //             paddingVertical: 3
-    //         }}
-    //         onPress={onPress}
-    //     >
-    //         {label}
-    //     </Button>
-    // ), [label, onPress, buttonColor])
-    
+    const {width} = useWindowDimensions() 
     
     return (
         <View style={[styles.container, {width: width}]}>
@@ -46,7 +13,7 @@ const StickyButton = ({label, onPress, disabled, buttonColor}) => {
                 style={[styles.button, !disabled? {backgroundColor: buttonColor} : {backgroundColor: '#EEEEEE'}]}
                 disabled={disabled}
             >
-                <Text style={[styles.buttonLabel, !disabled? {color: '#FFFFFF'}: {color: '#BDBDBD'}]}>
+                <Text style={[styles.buttonLabel, !disabled? {color: textColor}: {color: '#BDBDBD'}]}>
 
                     {label}
 
@@ -62,6 +29,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "center",
         alignItems: "center",
+        // position: 'absolute',
         bottom: 0,
         paddingHorizontal: 20,
         paddingVertical: 10,

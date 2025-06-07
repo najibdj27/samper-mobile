@@ -41,50 +41,56 @@ const SettingScreen = () => {
                     <Pressable>
                         <List.Item
                             title="General"
-                            left={props => <List.Icon {...props} icon="cellphone" />}
-                            right={props => <List.Icon {...props} icon="chevron-right" />}
+                            left={props => <List.Icon {...props} icon="cellphone"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
+                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable onPress={() => {navigation.navigate('AccountDetail', {userId: authState?.profile?.user?.id})}}>
                         <List.Item
                             title="Account"
-                            left={props => <List.Icon {...props} icon="key" />}
-                            right={props => <List.Icon {...props} icon="chevron-right" />}
+                            left={props => <List.Icon {...props} icon="key"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
+                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
                             title="Profile"
-                            left={props => <List.Icon {...props} icon="account" />}
-                            right={props => <List.Icon {...props} icon="chevron-right" />}
+                            left={props => <List.Icon {...props} icon="account"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
+                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
                             title="Personalization"
-                            left={props => <List.Icon {...props} icon="brush" />}
-                            right={props => <List.Icon {...props} icon="chevron-right" />}
+                            left={props => <List.Icon {...props} icon="brush"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
+                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
                             title="Help"
-                            left={props => <List.Icon {...props} icon="alert-circle-outline" />}
-                            right={props => <List.Icon {...props} icon="chevron-right" />}
+                            left={props => <List.Icon {...props} icon="alert-circle-outline"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
+                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable onPress={() => handleLogout()}>
                         <List.Item
                             title="Logout"
-                            left={props => <List.Icon {...props} icon="logout" />}
-                            right={props => <List.Icon {...props} icon="chevron-right" />}
+                            left={props => <List.Icon {...props} icon="logout"/>}
+                            right={props => <List.Icon {...props} icon="chevron-right"/>}
+                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                 </View>
             </View>
             <View style={{alignItems: "center", marginBottom: 50}}>
-                <Text style={{fontSize: 20, fontWeight:"bold"}}>
-                    2024 © Samper Mobile
+                <Text style={{fontSize: 20, fontWeight:"bold", color: 'black'}}>
+                    2025 © Samper Mobile
                 </Text>
             </View>
         </View>
@@ -105,11 +111,13 @@ const styles = StyleSheet.create({
     },
     nameText : {
         fontSize: 24,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        color: 'black'
     },
     nimText : {
         fontSize: 18,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        color: 'black'
     }
 })
 

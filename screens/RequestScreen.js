@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View, useWindowDimensions, StatusBar, RefreshControl } from 'react-native'
+import { FlatList, StyleSheet, View, useWindowDimensions, StatusBar, RefreshControl, Platform } from 'react-native'
 import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import { AnimatedFAB, Appbar, FAB, Icon } from 'react-native-paper'
 import SortingChip from './components/Chip'
@@ -221,7 +221,8 @@ const RequestScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]} />
+            <View style={{backgroundColor: '#D8261D',  paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0, width: '100%'}} />
+            <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]}  />
             <AnimatedFAB
                 icon="plus"
                 label='New Request'
@@ -240,7 +241,7 @@ export default RequestScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: "white",
     },
     fab: {
         position: 'absolute',

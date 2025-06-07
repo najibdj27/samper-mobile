@@ -31,7 +31,7 @@ const DayAgenda = (props) => {
 
     if (props.date) {
         return (
-            <View style={{ width: width * 0.15, justifyContent: "center", alignItems: "center" }}>
+            <View key={parseInt(moment(new Date(props.date.toString())).format('YYYY-MM-DD'))} style={{ width: width * 0.15, justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ fontSize: 24, fontWeight: "bold", color: weekendColor() }}>
                     {moment(new Date(props.date.toString())).format("D")}
                 </Text>

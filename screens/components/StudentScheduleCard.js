@@ -1,21 +1,45 @@
 import { View, SafeAreaView, useWindowDimensions, Image, StyleSheet } from "react-native";
 import { Surface, Button, SegmentedButtons, Text} from "react-native-paper";
-import moment from "moment";
+import moment, { now } from "moment";
 import Skeleton from "./Skeleton";
 import { useMemo } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
     const { width } = useWindowDimensions();
     const freeClassImg = require("../../assets/students_09.jpg");
 
+    const navigation = useNavigation()
+
+    const isAbleToOpen = useMemo(() => {
+        if (moment(Date.now()).isBetween(moment(item?.timeStart), moment(item?.timeEnd))) {
+            if (item?.openTime) {
+                return false
+            } else {
+
+                return true
+            }
+        } else {
+            return false
+        }
+    }, [item])
+
+    const isAbleToClose = useMemo(() => {
+        if (item?.openTime && !item?.closeTime) {
+            return true
+        } else {
+            return false
+        }
+    }, [item])
+
     const actionButton = () => {
         if (authState.profile?.user?.roles.includes('STUDENT')) {
             return (
                 <>
-                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" textColor="white" disabled={!item.clockIn && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_IN'})}}>
                         Clock In
                     </Button>
-                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockOut == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" textColor="white" disabled={item.clockIn && !item.clockOut && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_OUT'})}}>
                         Clock Out
                     </Button>
                 </>
@@ -23,10 +47,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
         } else {
             return (
                 <>
-                    <Button icon="clock-in" mode="contained" buttonColor="#03913E" disabled={item.clockIn == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="door-open" mode="contained" buttonColor="#03913E" textColor="white" disabled={!isAbleToOpen} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'OPEN'})}}>
                         Open 
                     </Button>
-                    <Button icon="clock-out" mode="contained" buttonColor="#D8261D" disabled={item.clockOut == '' && item.isActive ? false : true } style={styles.bannerButton} onPress={() => console.log('Pressed')}>
+                    <Button icon="door-closed" mode="contained" buttonColor="#D8261D" textColor="white" disabled={!isAbleToClose} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'CLOSE'})}}>
                         Close
                     </Button>
                 </>
@@ -50,19 +74,29 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                         </Text>
                         <SafeAreaView style={{marginVertical: 7, alignSelf: "center"}}>
                             <SegmentedButtons
+                                // theme={{
+                                //     colors: {
+                                //         onSecondaryContainer: 'black',
+                                //         surfaceDisabled: item.isActive? 'black': null,
+                                //         onSurfaceDisabled: 'black'
+                                        
+                                //     }
+                                // }}
                                 style={{alignSelf: "center", width: 200}}
-                                buttons={[
-                                {
-                                    value: 'walk',
-                                    label: item.clockIn == ''? '-' : item.clockIn,
-                                    disabled: true
-                                },
-                                {
-                                    value: 'train',
-                                    label: item.clockOut == ''? '-' : item.clockOut,
-                                    disabled: true
-                                }
-                                ]}
+                                buttons={
+                                [
+                                    {
+                                        value: 'clockIn',
+                                        label: authState.profile?.user?.roles.includes('STUDENT')? item.clockIn? moment(item.clockIn).format('HH:mm') : '-' : item.openTime? moment(item.openTime).format('HH:mm') : '-',
+                                        disabled: item.clockIn? false : true
+                                    },
+                                    {
+                                        value: 'clockOut',
+                                        label: authState.profile?.user?.roles.includes('STUDENT')? item.clockOut? moment(item.clockOut).format('HH:mm') : '-': item.closeTime? moment(item.closeTime).format('HH:mm') : '-',
+                                        disabled: item.clockOut? false : true
+                                    }
+                                ]
+                            }
                             />
                         </SafeAreaView>
                     </View>
@@ -101,7 +135,7 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                 <Surface style={[styles.bannerView, {justifyContent: "center", alignItems: "center"}]} elevation={1}>
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%" }}>
                         <Image source={freeClassImg} style={{height: 150, width: 200, alignSelf: "center"}} />
-                        <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold"}}>
+                        <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold", color: 'black'}}>
                             No class today!
                         </Text>
                     </View>
@@ -129,7 +163,8 @@ const styles = StyleSheet.create({
         height: 200,
         marginVertical: 5,
         marginHorizontal: 10,
-        borderRadius: 30
+        borderRadius: 30,
+        
     },
     bannerButton: {
         marginHorizontal: 5,

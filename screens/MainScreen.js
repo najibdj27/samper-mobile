@@ -5,6 +5,7 @@ import MessageScreen from './MessageScreen';
 import ScheduleScreen from './ScheduleScreen';
 import RequestScreen from './RequestScreen';
 import NotificationScreen from './NotificationScreen';
+import { StatusBar } from 'expo-status-bar';
 
 const MainScreen = ({ route }) => {
 	const [index, setIndex] = React.useState(route.params?.index || 2);
@@ -16,14 +17,6 @@ const MainScreen = ({ route }) => {
 		{ key: 'request', title: 'Request', focusedIcon: 'clipboard-text-clock', unfocusedIcon: 'clipboard-text-clock-outline' },
 		{ key: 'notification', title: 'Notification', focusedIcon: 'bell', unfocusedIcon: 'bell-outline' },
 	]);
-
-	// const renderScene = BottomNavigation.SceneMap({
-	// 	message: MessageScreen,
-	// 	schedule: ScheduleScreen,
-	// 	home: HomeScreen,
-	// 	request: RequestScreen,
-	// 	notification: NotificationScreen,
-	// });
 
 	const renderScene = ({route, jumpTo}) => {
 		switch(route.key) {
@@ -68,9 +61,6 @@ const MainScreen = ({ route }) => {
 				}}
 				barStyle={{
 					backgroundColor: '#D8261D'
-				}}
-				style={{
-					// paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0
 				}}
 				activeIndicatorStyle={{
 					backgroundColor: "#F5F5F5"

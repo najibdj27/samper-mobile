@@ -9,6 +9,7 @@ import Loader from './components/Loader';
 import usePublicCall from './hooks/usePublicCall';
 import useAuth from './hooks/useAuth';
 import useModal from './hooks/useModal';
+import InputForm from './components/InputForm';
 
 function LoginScreen() {
     const [username, setUsername] = React.useState("");
@@ -108,26 +109,22 @@ function LoginScreen() {
                     <Text variant="titleLarge" style={styles.welcomeText}>
                         Welcome to Samper!
                     </Text>
-                    <TextInput
+                    <InputForm
                         label="Username"
                         placeholder='Input your username here'
-                        value={username}
+                        input={username}
                         mode='outlined'
-                        activeOutlineColor='#02a807'
                         style={styles.form}
-                        outlineStyle={{ borderRadius: 16 }}
-                        onChangeText={text => setUsername(text)}
+                        setInput={text => setUsername(text)}
                     />
-                    <TextInput
+                    <InputForm
                         label="Password"
                         placeholder='Input your password here'
-                        value={password}
+                        input={password}
                         mode='outlined'
-                        activeOutlineColor='#02a807'
                         style={styles.form}
-                        right={<TextInput.Icon icon={iconEye} onPress={() => { handleEyePressed() }} />}
-                        outlineStyle={{ borderRadius: 16 }}
-                        onChangeText={text => setPassword(text)}
+                        right={<TextInput.Icon icon={iconEye} color='black' onPress={() => { handleEyePressed() }} />}
+                        setInput={text => setPassword(text)}
                         secureTextEntry={isPasswordInvisible}
                     />
                     <Pressable
@@ -150,7 +147,8 @@ function LoginScreen() {
                         onPress={handleLogin}
                         labelStyle={{
                             fontSize: 18,
-                            fontWeight: "bold"
+                            fontWeight: "bold",
+                            color: 'white'
                         }}
                     >
                         Login
@@ -173,12 +171,14 @@ const styles = StyleSheet.create({
     welcomeText: {
         fontWeight: "bold",
         alignSelf: "center",
-        marginBottom: 10
+        marginBottom: 10,
+        color: 'black'
     },
     form: {
         alignSelf: "center",
         marginVertical: 3,
-        width: 300
+        width: 300,
+        backgroundColor: 'white',
     },
     button: {
         alignSelf: "center",

@@ -69,6 +69,7 @@ function OtpForm({setPinReady, code, setCode, maxlength}){
                 value={code}
                 onChangeText={setCode}
                 maxLength={4}
+                contextMenuHidden
                 keyboardType="number-pad"
                 returnKeyType="done"
                 textContentType="oneTimeCode"
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
         opacity: 0
     },
     otpInput: {
-        borderColor: "#DADADA",
+        borderColor: "#03913E",
         backgroundColor: "#fff",
         minWidth: "13%",
         borderWidth: 3,
@@ -106,6 +107,6 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         textAlign: "center",
-        // color: "#fff"
+        color: "black"
     }
 })

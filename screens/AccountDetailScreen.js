@@ -36,10 +36,9 @@ const AccountDetailScreen = () => {
                     keyboardType="default"
                     useValidation={false}
                     secureTextEntry={false}
-                    contentStyle={{
-                        textTransform: "uppercase"
-                    }}
-                />
+                    autoCapitalize="sentences"
+                    editable={false}
+                    />
                 <InputForm 
                     mode="flat"
                     label="Last Name"
@@ -50,10 +49,9 @@ const AccountDetailScreen = () => {
                     keyboardType="default"
                     useValidation={false}
                     secureTextEntry={false}
-                    contentStyle={{
-                        textTransform: "uppercase"
-                    }}
-                />
+                    autoCapitalize="sentences"
+                    editable={false}
+                    />
                 <InputForm 
                     mode="flat"
                     label="Email"
@@ -64,6 +62,7 @@ const AccountDetailScreen = () => {
                     keyboardType="default"
                     useValidation={false}
                     secureTextEntry={false}
+                    editable={false}
                 />
                 <InputForm 
                     mode="flat"
@@ -90,7 +89,6 @@ const AccountDetailScreen = () => {
                     keyboardType="default"
                     useValidation={false}
                     secureTextEntry={false}
-                    editable={false}
                     contentStyle={{
                         textTransform: "lowercase"
                     }}

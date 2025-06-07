@@ -1,5 +1,5 @@
-import { Image, Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, View } from "react-native";
-import { Text, Button, PaperProvider } from "react-native-paper";
+import { Image, Keyboard, KeyboardAvoidingView, Pressable, StyleSheet } from "react-native";
+import { Text, Button } from "react-native-paper";
 import OtpForm from "./components/OtpForm";
 import * as React from "react";
 import useCountDown from "./hooks/useCountDown"
@@ -7,9 +7,8 @@ import { useNavigation } from "@react-navigation/native";
 import usePublicCall from "./hooks/usePublicCall";
 import useModal from "./hooks/useModal";
 
-function ForgetPasswordOtpScreen({ route }) {
-
-	const [code, setCode] = React.useState("")
+const SignUpOTPScreen = ({route}) => {
+  const [code, setCode] = React.useState("")
 	const [pinReady, setPinReady] = React.useState(false)
 	const MAX_CODE_LENGTH = 4;
 
@@ -23,45 +22,50 @@ function ForgetPasswordOtpScreen({ route }) {
 	const sendOtp = async () => {
 		Keyboard.dismiss()
 		loaderOn()
-		const reqBody = { emailAddress: route.params.emailAddress }
-		console.log(`sendForgetPasswordOTP`)
-		await axiosPublic.post('/auth/forgetpassword', reqBody)
+		const reqBody = { emailAddress: route?.params?.formData?.email ?? null }
+		console.log(`sendOtp`)
+		await axiosPublic.post('/registration/send-otp', reqBody)
 			.then((response) => {
-				console.log(`sendForgetPasswordOTP`)
-				loaderOff()
+				console.log(`sendOtp`)
 				const sendForgetPasswordOTPResponse = response.data
-				console.log(`sendForgetPasswordOTP: success`)
+				console.log(`sendOtp: success`)
 				console.log(`counter: start`)
 				start(30)
 				showDialogMessage('success', '0000', sendForgetPasswordOTPResponse.message)
 			}).catch((error) => {
-				console.log(`sendForgetPasswordOTP: failed`)
-				loaderOff()
+				console.log(`sendOtp: failed`)
 				if (error.response) {
 					showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message)
 				}
+			}).finally(() => {
+				loaderOff()
 			})
 	}
 
 	const handleValidateOtp = async () => {
 		Keyboard.dismiss()
 		loaderOn()
-		const intCode = parseInt(code)
-		const reqBody = { emailAddress: route.params.emailAddress, otp: intCode }
 		console.log(`confirmOTP`)
-		await axiosPublic.post('/auth/confirmotp', reqBody)
+		const intCode = parseInt(code)
+		const reqBody = { key: route?.params?.formData?.email ?? null, otp: intCode }
+		await axiosPublic.post('/registration/validate-otp', reqBody)
 			.then((response) => {
 				console.log(`confirmOTP: success`)
-				loaderOff()
 				const validateOtpResponse = response.data
-				setCode("")
-				navigation.navigate('ForgetPasswordNewPass', { emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken })
+				navigation.navigate('SignUpSetUpPassword', { 
+					type: route.params?.type,
+					formData: route.params?.formData, 
+					token: validateOtpResponse.data.token 
+				})
 			}).catch((error) => {
 				console.log(`confirmOTP: failed`)
-				loaderOff()
 				if (error.response) {
-					showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message)
+					showDialogMessage('error', error.response.data?.error_code, error.response.data?.error_message)
+					console.log(`confirmOTP: failed response`)
 				}
+			}).finally(() => {
+				loaderOff()
+				setCode("")
 			})
 	}
 
@@ -75,7 +79,7 @@ function ForgetPasswordOtpScreen({ route }) {
 				<Image source={topImg} style={{ width: 320, height: 260, alignSelf: "center" }} />
 				<Text style={styles.headerText}>Enter your OTP</Text>
 				<Text style={styles.informationText}>
-					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
+					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 3 minutes.
 				</Text>
 				<OtpForm
 					setPinReady={setPinReady}
@@ -113,7 +117,7 @@ function ForgetPasswordOtpScreen({ route }) {
 	);
 }
 
-export default ForgetPasswordOtpScreen;
+export default SignUpOTPScreen
 
 const styles = StyleSheet.create({
 	container: {

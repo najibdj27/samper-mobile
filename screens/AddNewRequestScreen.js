@@ -6,9 +6,7 @@ import moment from 'moment'
 import { PaperProvider, Text, TextInput } from 'react-native-paper'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import StickyButton from './components/StickyButton'
-import DialogMessage from './components/DialogMessage'
 import { useNavigation } from '@react-navigation/native'
-import Loader from './components/Loader'
 import usePrivateCall from './hooks/usePrivateCall'
 import useAuth from './hooks/useAuth'
 import useModal from './hooks/useModal'
@@ -19,34 +17,40 @@ const AddNewRequestScreen = () => {
 	const [scheduleForm, setScheduleForm] = useState()
 	const [reasonForm, setReasonForm] = useState(null)
 	const [additionalDataForm, setAdditionalDataForm] = useState({})
-	const [schedule, setSchedule] = useState({ data: [], isLoading: false })
+	const [schedule, setSchedule] = useState([])
 	const [disableSubmit, setDisableSubmit] = useState(true)
+
 	const { width } = useWindowDimensions()
 
 	const axiosPrivate = usePrivateCall()
-	const { loaderOn, showDialogMessage } = useModal()
+	const { showDialogMessage, loaderOn, loaderOff } = useModal()
 	const {authState} = useAuth()
 	const navigation = useNavigation()
 
 	const scheduleData = useMemo(() => {
 		let data = {}
-		schedule.data.map(value => {
-			if (value.id === scheduleForm) {
-				data = value
-			}
-		})
+		if (schedule.length > 0) {
+			schedule.map(value => {
+				if (value.id === scheduleForm) {
+					data = value
+				}
+			})
+		}
 		return data
 	}, [scheduleForm])
 
 	const schedulesData = useMemo(() => {
 		const arrData = []
-		console.log("memoize schedule data")
-		schedule.data.map((value) => {
-			arrData.push({
-				label: `${value.subject.name} Pertemuan ${value.meetingOrder}`,
-				value: value.id
+		console.log(`schedule.length: ${schedule.length}`)
+		if (schedule.length > 0) {
+			schedule.map((value) => {
+				arrData.push({
+					label: `${value.subject.name} Pertemuan ${value.meetingOrder}`,
+					value: value.id
+				})
 			})
-		})
+		}
+		console.log(`arrData: ${JSON.stringify(arrData)}`)
 		return arrData
 	}, [schedule])
 
@@ -80,13 +84,17 @@ const AddNewRequestScreen = () => {
 	}, []);
 
 	const handleScheduleDateChange = (event, selectedDate) => {
-		const date = moment(new Date(selectedDate)).toDate()
-		setDateForm(date)
+		if (event.type === 'set' && selectedDate) {
+			const date = moment(new Date(selectedDate)).toDate()
+			setDateForm(date)
+		}
 	}
 
 	const handleRescheduleTimeChange = (event, selectedTime) => {
 		const currentTime = selectedTime
-		const duration = 50 * scheduleData.creditAmount
+		const startTime = moment(scheduleData.timeStart)
+		const endTime = moment(scheduleData.timeEnd)
+		const duration = endTime.diff(startTime, 'minutes')
 		setAdditionalDataForm({
 			timeStart: moment(new Date(currentTime)).format("YYYY-MM-DD HH:mm:ss.sss"),
 			timeEnd: moment(new Date(currentTime)).add(duration, "minute").format("YYYY-MM-DD HH:mm:ss.sss")
@@ -150,11 +158,7 @@ const AddNewRequestScreen = () => {
 	}
 
 	const loadSchedule = useCallback(async () => {
-		console.log(`schedule`)
-		setSchedule((prevState) => ({
-			...prevState,
-			isLoading: true
-		}))
+		loaderOn()
 		await axiosPrivate.get(loadScheduleURI,
 			{
 				params: {
@@ -164,22 +168,14 @@ const AddNewRequestScreen = () => {
 			}
 		)
 		.then((response) => {
-			console.log(`schedule: success`)
 			const scheduleData = response.data
-			setSchedule({
-				data: scheduleData.data,
-				isLoading: false
-			})
+			setSchedule(scheduleData.data)
 		}).catch((err) => {
-			console.log(`schedule: failed`)
 			if (err.response) {
-				setSchedule({
-					data: [],
-					isLoading: false
-				})
-			} else if (err.request) {
-				showDialogMessage('error', "C0001", "Server timeout!")
+				showDialogMessage('error', err.response.data.error_code, err.response.data.error_message, () => {showScheduleDate('date')})
 			}
+		}).finally(() => {
+			loaderOff()
 		})
 	}, [dateForm])
 
@@ -193,15 +189,15 @@ const AddNewRequestScreen = () => {
 		}
 		await axiosPrivate.post('/request/add', reqBody)
 		.then(() => {
-			loaderOn()
 			console.log(`addRequest: success`)
 			showDialogMessage('success', "RRC202403270001", "Successfully send new request!", () => { navigation.navigate('Main', { index: 3 }) })
 		}).catch((err) => {
-			loaderOn()
 			console.log(`addRequest: failed`)
 			if (err.response) {
-				showDialogMessage('error', err.response.data.error_code, err.response.data.error_message, loaderRef.current?.hideLoader())
+				showDialogMessage('error', err.response.data.error_code, err.response.data.error_message)
 			}
+		}).finally(() => {
+			loaderOff()
 		})
 	}
 
@@ -214,7 +210,7 @@ const AddNewRequestScreen = () => {
 	useEffect(() => {
 		switch (requestTypeForm) {
 			case 'RESCHEDULE':
-				if (requestTypeForm && dateForm && additionalDataForm && reasonForm) {
+				if (requestTypeForm && scheduleForm && dateForm && additionalDataForm && reasonForm) {
 					setDisableSubmit(false)
 				} else {
 					setDisableSubmit(true)
@@ -222,7 +218,7 @@ const AddNewRequestScreen = () => {
 				break;
 
 			case 'LATE_RECORD':
-				if (requestTypeForm && dateForm && reasonForm) {
+				if (requestTypeForm && scheduleForm && dateForm && reasonForm) {
 					setDisableSubmit(false)
 				} else {
 					setDisableSubmit(true)
@@ -230,7 +226,7 @@ const AddNewRequestScreen = () => {
 				break;
 
 			case 'PERMIT':
-				if (requestTypeForm && dateForm && reasonForm) {
+				if (requestTypeForm && scheduleForm && dateForm && reasonForm) {
 					setDisableSubmit(false)
 				} else {
 					setDisableSubmit(true)
@@ -249,9 +245,9 @@ const AddNewRequestScreen = () => {
 					<ScrollView contentContainerStyle={{ alignItems: "center" }}>
 						<Dropdown
 							label="Request Type"
+							centered
 							style={{
 								width: width * 0.9,
-								alignSelf: "center"
 							}}
 							data={requestTypeData}
 							value={requestTypeForm}
@@ -267,15 +263,17 @@ const AddNewRequestScreen = () => {
 											right={(
 												<TextInput.Icon
 													icon="calendar"
+													color='black'													
 													onPress={() => showScheduleDate('date')}
 												/>
 											)}
-											label="Select date"
+											label={<Text style={{color: 'black'}}>Select Date</Text>}
 											value={dateForm ? moment(dateForm).format('D MMM YYYY') : dateForm}
 											style={{
 												width: width * 0.9,
 												backgroundColor: 'white'
 											}}
+											textColor='black'
 											editable={false}
 										/>
 									</View>
@@ -308,32 +306,35 @@ const AddNewRequestScreen = () => {
 														<View style={{ flexDirection: 'row' }}>
 															<TextInput
 																left={(
-																	<TextInput.Icon icon="calendar"></TextInput.Icon>
+																	<TextInput.Icon icon="calendar" color='black'></TextInput.Icon>
 																)}
-																label="Date"
+																label={<Text style={{color: 'black'}}>Date</Text>}
 																value={moment(scheduleData.timeStart).format('D MMM YYYY')}
 																style={{
 																	width: width * 0.5,
 																	backgroundColor: 'white',
 																}}
+																textColor='black'
 																disabled
 															/>
 															<TextInput
-																label="Start"
+																label={<Text style={{color: 'black'}}>Start</Text>}
 																value={moment(scheduleData.timeStart).format('HH:mm')}
 																style={{
 																	width: width * 0.2,
 																	backgroundColor: 'white',
 																}}
+																textColor='black'
 																disabled
 															/>
 															<TextInput
-																label="End"
+																label={<Text style={{color: 'black'}}>End</Text>}
 																value={moment(scheduleData.timeEnd).format('HH:mm')}
 																style={{
 																	width: width * 0.2,
 																	backgroundColor: 'white',
 																}}
+																textColor='black'
 																disabled
 															/>
 														</View>
@@ -346,14 +347,16 @@ const AddNewRequestScreen = () => {
 																	<TextInput.Icon
 																		icon="calendar"
 																		onPress={() => showRescheduleTime('date')}
+																		color='black'
 																	/>
 																)}
-																label="Date"
+																label={<Text style={{color: 'black'}}>Date</Text>}
 																value={additionalDataForm.timeStart ? moment(new Date(additionalDataForm.timeStart)).format('D MMM YYYY') : null}
 																style={{
 																	width: width * 0.9,
 																	backgroundColor: 'white'
 																}}
+																textColor='black'
 																editable={false}
 															/>
 														</View>
@@ -364,14 +367,16 @@ const AddNewRequestScreen = () => {
 																		<TextInput.Icon
 																			icon="clock-time-ten-outline"
 																			onPress={() => showRescheduleTime('time')}
+																			color='black'
 																		/>
 																	)}
-																	label="Start"
+																	label={<Text style={{color: 'black'}}>Start</Text>}
 																	value={additionalDataForm.timeStart ? moment(new Date(additionalDataForm.timeStart)).format('HH:mm') : null}
 																	style={{
 																		width: width * 0.45,
 																		backgroundColor: 'white'
 																	}}
+																	textColor='black'
 																	editable={false}
 																/>
 															</View>
@@ -380,14 +385,16 @@ const AddNewRequestScreen = () => {
 																	right={(
 																		<TextInput.Icon
 																			icon="clock-time-two-outline"
+																			color='black'
 																		/>
 																	)}
-																	label="End"
+																	label={<Text style={{color: 'black'}}>End</Text>}
 																	value={additionalDataForm.timeEnd ? moment(new Date(additionalDataForm.timeEnd)).format('HH:mm') : null}
 																	style={{
 																		width: width * 0.45,
 																		backgroundColor: 'white'
 																	}}
+																	textColor='black'
 																	editable={false}
 																/>
 															</View>
@@ -416,8 +423,9 @@ const AddNewRequestScreen = () => {
 					</ScrollView>
 				</TouchableWithoutFeedback>
 				<StickyButton
-					label="Submit"
-					buttonColor="#D8261D"
+					label="Submit Request"
+					buttonColor="#03913E"
+					textColor='white'
 					onPress={() => { handleSubmit() }}
 					disabled={disableSubmit}
 				/>
@@ -438,6 +446,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		fontWeight: "bold",
 		marginStart: 5,
-		marginTop: 15
+		marginTop: 15,
+		color: 'black'
 	}
 })
