@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-// const BASE_URL = 'http://192.168.0.122:8080'; //kost 
-const BASE_URL = 'http://192.168.207.227:8080'; //kost 
-// const BASE_URL = 'http://192.168.2.161:8080'; // office
-// const BASE_URL = 'http://192.168.209.227:8080';
+const BASE_URL = 'https://samper-api-6bf01e4f0b51.herokuapp.com';
 const TIMEOUT = 70000;
 
 export const axiosPrivateCall = axios.create({
