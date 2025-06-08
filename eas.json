@@ -1,10 +1,7 @@
 {
   "cli": {
     "version": ">= 1.0.0",
-    "appVersionSource": "remote",
-    "android": {
-      "versionCode": 4
-    }
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
