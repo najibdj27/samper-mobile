@@ -11,7 +11,7 @@ import AnonymousStack from './navigators/AnonymousStack';
 
 
 const InitialLoadingScreen = () => {
-    const spalshImg = require('../assets/splash.jpg')
+    const spalshImg = require('../assets/splash.png')
 
     const { authState, setAuthState, getAsyncStorage, logout } = useAuth()
     const { loaderOn, loaderOff } = useModal()

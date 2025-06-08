@@ -2,7 +2,7 @@ const withForceLightMode = require('./plugins/with-force-light-mode');
 
 module.exports = {
   name: "Samper",
-  slug: "samper",
+  slug: "samper-mobile",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/app-icon.png",
@@ -12,9 +12,6 @@ module.exports = {
     resizeMode: "contain",
     backgroundColor: "#ffffff"
   },
-  android: {
-      versionCode: 4
-  },
   assetBundlePatterns: [
     "**/*"
   ],
@@ -22,6 +19,7 @@ module.exports = {
     supportsTablet: false
   },
   android: {
+    versionCode: 4,
     minSdkVersion: 26,
     permissions: [
       "ACCESS_FINE_LOCATION",
