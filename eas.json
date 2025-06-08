@@ -2,7 +2,9 @@
   "cli": {
     "version": ">= 1.0.0",
     "appVersionSource": "remote",
-    "versionCode": 4
+    "android": {
+      "versionCode": 4
+    }
   },
   "build": {
     "development": {
