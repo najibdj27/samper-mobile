@@ -27,7 +27,7 @@ const usePublicCall = () => {
                         showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
                     }
                 }else {
-                    if (error.request?._response === 'timeout') {
+                    if (error.request?._timeout || error.request?._response === 'timeout') {
                         showDialogMessage('error', "FEE0001", "Server timeout!")
                     }  
                 }
