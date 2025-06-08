@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://samper-api-6bf01e4f0b51.herokuapp.com';
-const TIMEOUT = 70000;
+// const BASE_URL = 'https://samper-api-6bf01e4f0b51.herokuapp.com';
+const BASE_URL = 'http://192.168.48.227:8081';
+const TIMEOUT = 70
 
 export const axiosPrivateCall = axios.create({
     baseURL: BASE_URL,
