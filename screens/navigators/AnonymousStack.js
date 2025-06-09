@@ -33,8 +33,8 @@ const AnonymousStack = () => {
             name="Start" 
             component={StartScreen}
             options={{
-                statusBarBackgroundColor: "#03913E",
-                statusBarStyle: "light-content",
+                statusBarBackgroundColor: "#F8C301",
+                statusBarStyle: "dark",
                 headerShown: false
             }} 
         />

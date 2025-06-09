@@ -1,7 +1,8 @@
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, useWindowDimensions, View } from 'react-native'
 import React, { useState } from 'react'
 import { Button, FAB, SegmentedButtons, Text } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const SignUpScreen = () => {
     const studentImage = require("../assets/12699126_Happy students learning in college flat vector illustration.jpg")
@@ -10,22 +11,24 @@ const SignUpScreen = () => {
 
     const navigation = useNavigation()
 
+    const {width, height} = useWindowDimensions()
+
     const handleNext = () => {
         navigation.navigate('SignUpForm', {type: buttonValue})
     }
 
     return (
         <View style={styles.container}>
-            <Text variant='displayMedium' style={{fontWeight: "bold", paddingBottom: "80", position: "absolute", top: 150, color: 'black'}}>
+            <Text variant='displayMedium' style={{fontWeight: "bold", paddingBottom: "80", color: 'black'}}>
                 Sign Up
             </Text>
             <Image
                 source={studentImage}
                 style={{
-                    marginVertical: 50,
-                    width: 360,
-                    height: 200
+                    width: scale(width),
+                    height: verticalScale(height * 0.25)
                 }}
+                resizeMode='contain'
             />
             <SegmentedButtons 
                 theme={
@@ -40,14 +43,15 @@ const SignUpScreen = () => {
                 value={buttonValue}
                 onValueChange={setButtonValue}
                 style= {{
-                    width: "80%"
+                    width: scale(200),
+                    height: verticalScale(50)
                 }}
                 buttons={[
                     {
                         value: 'student',
                         label: 'Student',
                         labelStyle: { 
-                            "fontSize": 36,
+                            "fontSize": scale(18),
                             "fontWeight": "400",
                             "letterSpacing": 0,
                             "lineHeight": 44,
@@ -58,7 +62,7 @@ const SignUpScreen = () => {
                         value: 'lecture',
                         label: 'Lecture',
                         labelStyle: { 
-                            "fontSize": 36,
+                            "fontSize": scale(18),
                             "fontWeight": "400",
                             "letterSpacing": 0,
                             "lineHeight": 44,
@@ -87,12 +91,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#ffff",
         paddingTop: 50,
-        justifyContent: "center",
+        justifyContent: "space-around",
         alignItems: "center"
     },
     nextButton: {
-        position: 'absolute',
-        bottom: 50,
         height: 50,
         width: 50,
         borderRadius: 25,
