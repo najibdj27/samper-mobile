@@ -22,6 +22,8 @@ import RNFS from 'react-native-fs';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { SignUpFormDataType } from './type/form';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import CameraRequest from './components/CameraRequest';
+import CameraDenied from './components/CameraDenied';
 
 
 const { width, height } = Dimensions.get('window');
@@ -359,14 +361,14 @@ const SignUpFRScreen = ({ route }) => {
     if (!hasPermission) {
         return (
             <SafeAreaView style={styles.container}>
-                <Text>You must grant camera permissions.</Text>
+                <CameraRequest />
             </SafeAreaView>
         );
     }
     if (!device) {
         return (
             <SafeAreaView style={styles.container}>
-                <Text>Loading camera...</Text>
+                <CameraRequest/>
             </SafeAreaView>
         );
     }
