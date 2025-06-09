@@ -1,5 +1,5 @@
 import { AppState, BackHandler, Dimensions, SafeAreaView, StyleSheet, View } from 'react-native'
-import { useCallback, useEffect,  useRef,  useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import useModal from './hooks/useModal'
 import { ActivityIndicator, Icon, ProgressBar, Text } from 'react-native-paper';
 import {
@@ -10,9 +10,9 @@ import {
     useFrameProcessor,
 } from 'react-native-vision-camera';
 import {
-  Face,
-  FaceDetectionOptions,
-  useFaceDetector,
+    Face,
+    FaceDetectionOptions,
+    useFaceDetector,
 } from 'react-native-vision-camera-face-detector';
 import { Worklets } from 'react-native-worklets-core'
 import { BlurView } from 'expo-blur';
@@ -21,19 +21,21 @@ import moment from 'moment';
 import RNFS from 'react-native-fs';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { SignUpFormDataType } from './type/form';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 const { width, height } = Dimensions.get('window');
 
 interface FaceLandmark {
-    faceYawAngle:number
-    rightEyeOpenProb:number
-    leftEyeOpenProb:number
-    smilingProb:number
+    faceYawAngle: number
+    rightEyeOpenProb: number
+    leftEyeOpenProb: number
+    smilingProb: number
 }
 
-const SignUpFRScreen = ({route}) => {
-    const [formData,  setFormData] = useState<SignUpFormDataType>(route.params?.formData)
+const SignUpFRScreen = ({ route }) => {
+    const [hasPermission, setHasPermission] = useState<boolean>(false);
+    const [formData, setFormData] = useState<SignUpFormDataType>(route.params?.formData)
     const [facesDetected, setFacesDetected] = useState<number>()
     const [faceLandmark, setFaceLandmark] = useState<FaceLandmark>({
         faceYawAngle: 0,
@@ -51,37 +53,37 @@ const SignUpFRScreen = ({route}) => {
         'blink': 'Blink',
         'smile': 'Smile'
     }
-    
+
     const cameraRef = useRef<Camera>(null)
-    const faceDetectionOptions = useRef<FaceDetectionOptions>( {
+    const faceDetectionOptions = useRef<FaceDetectionOptions>({
         landmarkMode: 'all',
         performanceMode: 'accurate',
         classificationMode: 'all',
         contourMode: 'all',
         minFaceSize: 0.9,
-    } ).current
+    }).current
 
     const navigation = useNavigation()
     const device = useCameraDevice("front")
-    const format = useCameraFormat(device, 
+    const format = useCameraFormat(device,
         [
-            { 
-                photoResolution: { width: 1280, height: 720 }
+            {
+                photoResolution: { height: 1280, width: 720 }
             }
         ]
     )
     const { showDialogMessage } = useModal()
     const axiosPublic = usePublicCall()
-    const { detectFaces } = useFaceDetector( faceDetectionOptions )
+    const { detectFaces } = useFaceDetector(faceDetectionOptions)
 
 
-    const handleDetectedFaces = Worklets.createRunOnJS( (
+    const handleDetectedFaces = Worklets.createRunOnJS((
         faces: Face[]
-    ) => { 
-        const yawAngle = (Math.floor(faces[0]?.yawAngle * 10) / 10)/100
-        const leftEyeOpenProb = (Math.floor(faces[0]?.leftEyeOpenProbability *10) / 10)
-        const rightEyeOpenProb = (Math.floor(faces[0]?.rightEyeOpenProbability *10) / 10)
-        const smilingProb = (Math.floor(faces[0]?.smilingProbability *10) / 10)
+    ) => {
+        const yawAngle = (Math.floor(faces[0]?.yawAngle * 10) / 10) / 100
+        const leftEyeOpenProb = (Math.floor(faces[0]?.leftEyeOpenProbability * 10) / 10)
+        const rightEyeOpenProb = (Math.floor(faces[0]?.rightEyeOpenProbability * 10) / 10)
+        const smilingProb = (Math.floor(faces[0]?.smilingProbability * 10) / 10)
         setFacesDetected(faces.length)
         setFaceLandmark(prevState => ({
             ...prevState,
@@ -108,30 +110,30 @@ const SignUpFRScreen = ({route}) => {
             'blink',
             'smile'
         ]
-        let validate:string = validation[validationProgress]
+        let validate: string = validation[validationProgress]
         setValidationMessage(validationMessageMap[validate])
         switch (validate) {
             case 'turnRight':
-                if (Math.abs(faceLandmark.faceYawAngle*2) >= 1) {
-                    setValidationProgress(prev => prev+1)
+                if (Math.abs(faceLandmark.faceYawAngle * 2) >= 1) {
+                    setValidationProgress(prev => prev + 1)
                 }
                 break;
-                case 'turnLeft':
-                    if (faceLandmark.faceYawAngle*2 >= 1) {
-                    setValidationProgress(prev => prev+1)
-                    }
+            case 'turnLeft':
+                if (faceLandmark.faceYawAngle * 2 >= 1) {
+                    setValidationProgress(prev => prev + 1)
+                }
                 break;
-                case 'blink':
+            case 'blink':
                 if (faceLandmark.rightEyeOpenProb < 0.2 && faceLandmark.leftEyeOpenProb < 0.2) {
-                    setValidationProgress(prev => prev+1)
-                    }
-                break;
-                case 'smile':
-                if (faceLandmark.smilingProb > 0.7) {
-                    setValidationProgress(prev => prev+1)
+                    setValidationProgress(prev => prev + 1)
                 }
                 break;
-        
+            case 'smile':
+                if (faceLandmark.smilingProb > 0.7) {
+                    setValidationProgress(prev => prev + 1)
+                }
+                break;
+
             default:
                 break;
         }
@@ -141,19 +143,25 @@ const SignUpFRScreen = ({route}) => {
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', () => true)
     }, [])
-    
+
     useEffect(() => {
-        ( async () => {
-            const cameraPermission = await Camera.requestCameraPermission()
-            if (cameraPermission !== 'granted') {
-                showDialogMessage('error', 'FEE0003', 'Samper App has no permission to access device camera!')
+        (async () => {
+            const status = await Camera.getCameraPermissionStatus();
+            if (status !== 'granted') {
+                const request = await Camera.requestCameraPermission();
+                if (request !== 'granted') {
+                    showDialogMessage('error', 'FEE0003', 'Camera permission denied.');
+                    setHasPermission(false);
+                    return;
+                }
             }
-        })()
+            setHasPermission(true);
+        })();
     }, [device])
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
-        setAppState(nextAppState);
+            setAppState(nextAppState);
         });
 
         if (appState !== 'active' || device == null) {
@@ -161,26 +169,25 @@ const SignUpFRScreen = ({route}) => {
         }
 
         return () => {
-        subscription.remove();
+            subscription.remove();
         };
     }, []);
 
     useEffect(() => {
-        if (validationProgress ===  4) return
+        if (validationProgress === 4) return
         handleValidate()
     }, [validationProgress, faceLandmark])
 
     useEffect(() => {
         if (validationProgress !== 4 || formData?.faceData) return
         const { faceYawAngle, smilingProb, leftEyeOpenProb, rightEyeOpenProb } = faceLandmark;
-        ( async () => {
+        (async () => {
             if (
                 Math.abs(faceYawAngle) <= 0.1 &&
                 smilingProb <= 0.1 &&
                 leftEyeOpenProb >= 0.9 &&
                 rightEyeOpenProb >= 0.9
-            ) 
-            {
+            ) {
                 const photo = await cameraRef.current.takeSnapshot({
                     quality: 30,
                 })
@@ -232,10 +239,10 @@ const SignUpFRScreen = ({route}) => {
             }
         }
 
-        if (validationProgress !== 4 || !formData?.faceData) return 
-        ( async ()  => {
+        if (validationProgress !== 4 || !formData?.faceData) return
+        (async () => {
             console.log('submitting')
-            await axiosPublic.post(registerUrl(), 
+            await axiosPublic.post(registerUrl(),
                 requestBody(),
                 {
                     params: {
@@ -243,19 +250,19 @@ const SignUpFRScreen = ({route}) => {
                     }
                 }
             ).then((response => {
-                showDialogMessage('success', response?.status , response?.data?.message, () => {
+                showDialogMessage('success', response?.status, response?.data?.message, () => {
                     navigation.dispatch(CommonActions.reset({
                         index: 0,
-                        routes: [{name: 'Login'}]
+                        routes: [{ name: 'Login' }]
                     }))
-                }) 
+                })
             })).catch((err) => {
                 if (err.response?.status === 500) {
                     setValidationProgress(0)
-                    showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`, ()=> {
+                    showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`, () => {
                         navigation.dispatch(CommonActions.reset({
                             index: 0,
-                            routes: [{name: 'Start'}]
+                            routes: [{ name: 'Start' }]
                         }))
                     })
                 }
@@ -264,28 +271,28 @@ const SignUpFRScreen = ({route}) => {
     }, [validationProgress, formData])
 
     useEffect(() => {
-        if (facesDetected !== 1 &&validationProgress !== 4) {
+        if (facesDetected !== 1 && validationProgress !== 4) {
             setValidationProgress(0)
         }
     }, [facesDetected, validationProgress])
 
     const faceDetectedView = () => {
-        if(validationProgress === 4) {
+        if (validationProgress === 4) {
             return (
                 <BlurView style={styles.blurView}>
                     {
                         formData?.faceData
-                        ? 
+                            ?
                             (
                                 <>
-                                    <Text variant="displayMedium" style={{fontSize: 26}}>Submitting your registration!</Text>
-                                    <ActivityIndicator animating color='white' style={{marginLeft: 10}} />
+                                    <Text variant="displayMedium" style={{ fontSize: 26 }}>Submitting your registration!</Text>
+                                    <ActivityIndicator animating color='white' style={{ marginLeft: 10 }} />
                                 </>
                             )
-                            : 
+                            :
                             (
                                 <>
-                                    <Text variant="displayMedium" style={{fontSize: 18, textAlign: 'center'}}>Look straight at the camera, keep a neutral face, eyes open, and don't turn your head!</Text>
+                                    <Text variant="displayMedium" style={{ fontSize: 18, textAlign: 'center' }}>Look straight at the camera, keep a neutral face, eyes open, and don't turn your head!</Text>
                                 </>
                             )
                     }
@@ -295,15 +302,15 @@ const SignUpFRScreen = ({route}) => {
             if (facesDetected === 1) {
                 return (
                     <BlurView style={styles.blurView}>
-                        <Text variant="displayMedium" style={{fontSize: 26}}>
-                            {validationMessage }
+                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18) }}>
+                            {validationMessage}
                         </Text>
                     </BlurView>
                 )
-            }  else if (facesDetected > 1){
+            } else if (facesDetected > 1) {
                 return (
                     <BlurView style={styles.blurView}>
-                        <Text variant="displayMedium" style={{fontSize: 26}}>
+                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18) }}>
                             Multiple faces detected!
                         </Text>
                     </BlurView>
@@ -311,7 +318,7 @@ const SignUpFRScreen = ({route}) => {
             } else {
                 return (
                     <BlurView style={styles.blurView}>
-                        <Text variant="displayMedium" style={{fontSize: 26}}>
+                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18) }}>
                             No face detected!
                         </Text>
                     </BlurView>
@@ -322,14 +329,14 @@ const SignUpFRScreen = ({route}) => {
 
     const yawAngleView = () => {
         return (
-            <View style={{position: 'absolute', top: 180, flexDirection: 'row', justifyContent: "center", alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', justifyContent: "center", alignItems: 'center' }}>
                 {
                     faceLandmark.faceYawAngle > 0 ?
                         (
                             <>
                                 <Icon source={'chevron-left'} color='#03913E' size={40} />
-                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={faceLandmark.faceYawAngle*2} style={ styles.yawAngleProgressBarReversed} />
-                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={0} style={styles.yawAngleProgressBar} />
+                                <ProgressBar theme={{ colors: { primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)' } }} progress={faceLandmark.faceYawAngle * 2} style={styles.yawAngleProgressBarReversed} />
+                                <ProgressBar theme={{ colors: { primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)' } }} progress={0} style={styles.yawAngleProgressBar} />
                                 <Icon source={'chevron-right'} color='#03913E' size={40} />
                             </>
                         )
@@ -337,8 +344,8 @@ const SignUpFRScreen = ({route}) => {
                         (
                             <>
                                 <Icon source={'chevron-left'} color='#03913E' size={40} />
-                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={0} style={styles.yawAngleProgressBarReversed} />
-                                <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)'}}} progress={Math.abs(faceLandmark.faceYawAngle*2)} style={styles.yawAngleProgressBar} />
+                                <ProgressBar theme={{ colors: { primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)' } }} progress={0} style={styles.yawAngleProgressBarReversed} />
+                                <ProgressBar theme={{ colors: { primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.7)' } }} progress={Math.abs(faceLandmark.faceYawAngle * 2)} style={styles.yawAngleProgressBar} />
                                 <Icon source={'chevron-right'} color='#03913E' size={40} />
                             </>
                         )
@@ -347,7 +354,23 @@ const SignUpFRScreen = ({route}) => {
             </View>
         )
     }
-    
+
+    // Render camera only if ready
+    if (!hasPermission) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <Text>You must grant camera permissions.</Text>
+            </SafeAreaView>
+        );
+    }
+    if (!device) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <Text>Loading camera...</Text>
+            </SafeAreaView>
+        );
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Camera
@@ -357,19 +380,20 @@ const SignUpFRScreen = ({route}) => {
                 isActive={appState === 'active'}
                 frameProcessor={frameProcessor}
                 photo
+                format={format}
             />
             <View style={styles.overlay}>
                 {
                     yawAngleView()
                 }
                 <View style={styles.faceGuide} />
-                <Text style={styles.instruction}>Align your face in the frame!</Text>
+                <Text style={styles.instruction}>Posisikan wajah ke dalam bingkai!</Text>
                 {
                     faceDetectedView()
                 }
-                <View style={{position: 'absolute', bottom: 50, justifyContent: "center", alignItems: 'center'}}>
-                    <Text style={styles.vallidationProgressText}>Vaidation Progress {validationProgress/4*100}%</Text>
-                    <ProgressBar theme={{colors: {primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.9)'}}} progress={validationProgress/4} style={styles.validationProgressBar} />
+                <View style={{ justifyContent: "center", alignItems: 'center' }}>
+                    <Text style={styles.vallidationProgressText}>Proses Validasi {validationProgress / 4 * 100}%</Text>
+                    <ProgressBar theme={{ colors: { primary: '#03913E', surfaceVariant: 'rgba(255, 255, 255, 0.9)' } }} progress={validationProgress / 4} style={styles.validationProgressBar} />
                 </View>
             </View>
         </SafeAreaView>
@@ -391,7 +415,7 @@ const styles = StyleSheet.create({
         width: width,
         height: height,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: "space-around",
         backgroundColor: 'transparent',
     },
     faceGuide: {
@@ -405,31 +429,29 @@ const styles = StyleSheet.create({
     instruction: {
         marginTop: 20,
         color: 'white',
-        fontSize: 34,
+        fontSize: scale(18),
         fontWeight: 'bold',
     },
     blurView: {
-        position: "absolute", 
-        maxWidth: width*0.8, 
-        bottom: 150, 
-        paddingHorizontal: 10, 
+        maxWidth: width * 0.8,
+        paddingHorizontal: 10,
         flexDirection: 'row'
     },
-    yawAngleProgressBar : {
-        width: width*0.35,
+    yawAngleProgressBar: {
+        width: width * 0.35,
         height: 10,
         borderTopRightRadius: 5,
         borderBottomRightRadius: 5,
     },
-    yawAngleProgressBarReversed : {
+    yawAngleProgressBarReversed: {
         transform: [{ scaleX: -1 }],
-        width: width*0.35,
+        width: width * 0.35,
         height: 10,
         borderTopRightRadius: 5,
         borderBottomRightRadius: 5,
     },
     validationProgressBar: {
-        width: width*0.9,
+        width: width * 0.9,
         height: 5,
         borderRadius: 3
     },
