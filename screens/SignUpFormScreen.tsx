@@ -115,7 +115,7 @@ const SignUpFormScreen = ({ route }) => {
             return (
                 <>
                     <ModalPicker
-                        ref={inputRefs.nim}
+                        ref={inputRefs.class}
                         centered
                         label="Class"
                         placeholder='Select your class here'
@@ -200,6 +200,9 @@ const SignUpFormScreen = ({ route }) => {
                 inputRefs[key]?.current?.setError(true)
                 inputRefs[key]?.current?.setMessage('Field is required!')
                 hasErr = true
+            } else {
+                console.log(`Available: ${key}`)
+
             }
         }
         if (hasErr) {
