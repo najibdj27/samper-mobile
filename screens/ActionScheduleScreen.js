@@ -16,7 +16,7 @@ const { width, height } = Dimensions.get('window');
 const ActionScheduleScreen = ({ route }) => {
     const [scheduleDetailData, setScheduleDetailData] = useState({})
     const [currentTime, setCurrentTime] = useState()
-    const [isGeolocationOn, setIsGeolocationOn] = useState(true)
+    const [geoOption, setGeoOption] = useState('offline')
     
     const [permission, requestPermission] = useCameraPermissions()
     const axiosPrivate = usePrivateCall()
@@ -98,7 +98,7 @@ const ActionScheduleScreen = ({ route }) => {
             default:
                 return ''
         }
-    }, [route.params.action])
+    }, [route.params.action, geoOption])
 
     const loadScheduleDetail = async () => {
         console.log(`loadScheduleDetail`)
@@ -111,21 +111,21 @@ const ActionScheduleScreen = ({ route }) => {
         })
     }
     
-    const openClass = async () => {
+    const openClass = useCallback(async () => {
         const {facesData, imageBase64} = await detectFaces()
         if (facesData.length > 1) {
             showDialogMessage('error', 'FEE0003', 'Multiple faces detected. Please ensure only one face is visible in the frame!')
         } else if (facesData.length < 1) {
             showDialogMessage('error', 'FEE0002', 'No face detected. Please ensure your face is clearly visible in the frame!')
         } else {
-            console.log('openClass')
+            console.log(`openClass`)
             loaderOn()
             await axiosPrivate.patch('/schedule/activate', 
                 {
                     scheduleId: route.params?.scheduleId,
                     longitude: longRef.current,
                     latitude: latRef.current,
-                    geolocationFlag: isGeolocationOn,
+                    geolocationFlag: geoOption === 'offline',
                     imageBase64: imageBase64
                 }
             ).then(() => {
@@ -140,7 +140,7 @@ const ActionScheduleScreen = ({ route }) => {
                 loaderOff()
             })
         }
-    }
+    }, [geoOption])
     
     const clockInClass = async () => {
         const {facesData, imageBase64} = await detectFaces()
@@ -303,20 +303,20 @@ const ActionScheduleScreen = ({ route }) => {
                                         marginTop: 10,
                                         width: width * 0.9
                                     }}
-                                    value={isGeolocationOn}
-                                    onValueChange={setIsGeolocationOn}
+                                    value={geoOption}
+                                    onValueChange={(val) => {setGeoOption(val)}}
                                     buttons={[
                                         {
                                             icon: 'wifi-off',
                                             label: 'Offline Class',
-                                            value: true,
+                                            value: 'offline',
                                             checkedColor: "#D8261D",
                                             uncheckedColor: '#000'
                                         },
                                         {
                                             icon: 'wifi',
                                             label: 'Online Class',
-                                            value: false,
+                                            value: 'online',
                                             checkedColor: "#03913E",
                                             uncheckedColor: '#000'
                                         }
