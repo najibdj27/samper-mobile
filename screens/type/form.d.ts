@@ -8,6 +8,12 @@ export type SignUpFormDataType = {
     email?: string
     phoneNumber?: number
     password?: string
-    class?: number
+    class?: any
     faceData?: string
+}
+
+export type ModalPickerDataType = {
+  title: string,
+  subtitle: string,
+  value: any
 }
