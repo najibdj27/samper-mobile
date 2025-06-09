@@ -293,7 +293,7 @@ const SignUpFormScreen = ({ route }) => {
 
     return (
         <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
             style={styles.container}
         >
             <Text variant='displayMedium' style={{fontWeight: "bold", marginVertical: 20, color: "black"}}>
@@ -380,6 +380,7 @@ const SignUpFormScreen = ({ route }) => {
                     isRequired={true}
                     activeOutlineColor='#02a807'
                     style={styles.form}
+                    keyboardType="email-address"
                     outlineStyle={{ borderRadius: 16 }}
                     setInputObject={val => setFormData(prevData => ({
                         ...prevData,
