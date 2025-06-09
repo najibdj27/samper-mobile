@@ -304,7 +304,7 @@ const ActionScheduleScreen = ({ route }) => {
                                         width: width * 0.9
                                     }}
                                     value={isGeolocationOn}
-                                    onValueChange={() => {setIsGeolocationOn(!isGeolocationOn)}}
+                                    onValueChange={setIsGeolocationOn}
                                     buttons={[
                                         {
                                             icon: 'wifi-off',
