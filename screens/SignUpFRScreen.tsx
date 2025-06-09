@@ -198,28 +198,28 @@ const SignUpFRScreen = ({route}) => {
         const requestBody = () => {
             if (route.params?.type === 'student') {
                 return {
-                    nim: formData.nim,
-                    classId: formData.class,
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    dateOfBirth: moment(formData.dateOfBirth).format('DD-MM-YYYY'),
-                    username: formData.username,
-                    email: formData.email,
-                    phoneNumber: formData.phoneNumber,
-                    password: formData.password,
-                    faceData: formData.faceData
+                    nim: formData?.nim,
+                    classId: formData.class?.value,
+                    firstName: formData?.firstName,
+                    lastName: formData?.lastName,
+                    dateOfBirth: moment(formData?.dateOfBirth).format('DD-MM-YYYY'),
+                    username: formData?.username,
+                    email: formData?.email,
+                    phoneNumber: formData?.phoneNumber,
+                    password: formData?.password,
+                    faceData: formData?.faceData
                 }
             } else {
                 return {
-                    nip: formData.nip,
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    dateOfBirth: moment(formData.dateOfBirth).format('DD-MM-YYYY'),
-                    username: formData.username,
-                    email: formData.email,
-                    phoneNumber: formData.phoneNumber,
-                    password: formData.password,
-                    faceData: formData.faceData
+                    nip: formData?.nip,
+                    firstName: formData?.firstName,
+                    lastName: formData?.lastName,
+                    dateOfBirth: moment(formData?.dateOfBirth).format('DD-MM-YYYY'),
+                    username: formData?.username,
+                    email: formData?.email,
+                    phoneNumber: formData?.phoneNumber,
+                    password: formData?.password,
+                    faceData: formData?.faceData
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native'
-import { createRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Text, FAB, TextInput } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import InputForm from './components/InputForm'
@@ -7,11 +7,11 @@ import usePublicCall from './hooks/usePublicCall'
 import useModal from './hooks/useModal'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import moment from 'moment'
-import DropdownComp from './components/DropdownComp'
 import { SignUpFormDataType } from './type/form'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from './type/navigation'
 import { DropDownCompRef, InputFormRef } from './type/ref'
+import ModalPicker from './components/ModalPicker'
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpOTP'>
 
@@ -56,7 +56,8 @@ const SignUpFormScreen = ({ route }) => {
             let classArr = []
             response.data?.data.forEach( data => {
                 const newClass = {
-                    label: `${data.name} | ${data.major?.name}`, 
+                    title: data?.name,
+                    subtitle: data.major?.name,
                     value: data.id, 
                 } 
                 classArr.push(newClass)
@@ -113,24 +114,28 @@ const SignUpFormScreen = ({ route }) => {
         } else {
             return (
                 <>
-                    <DropdownComp
-                        ref={inputRefs.class}
-                        label="Class"
+                    <ModalPicker
+                        ref={inputRefs.nim}
                         centered
-                        style={{
-                            width: 0.73 * width,
-                            borderRadius: 15,
-                        }}
-                        data={classData}
-                        value={formData?.class}
-                        setValueObject={item => {
-                            setFormData( prevData => ({
+                        label="Class"
+                        placeholder='Select your class here'
+                        input={formData?.class?.title}
+                        mode='outlined'
+                        useValidation={true}
+                        validationMode="nim"
+                        isRequired={true}
+                        maxLength={10}
+                        activeOutlineColor='#02a807'
+                        style={styles.form}
+                        outlineStyle={{ borderRadius: 16 }}
+                        setInput={val => {
+                            setFormData(prevData => ({
                                 ...prevData,
-                                class: item.value
+                                class: val
                             }))
                         }}
-                        placeholder="Select Class"
-                        isRequired
+                        editable={false}
+                        data={classData}
                     />
                 </>
             )
