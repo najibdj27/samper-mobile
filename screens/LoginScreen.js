@@ -110,18 +110,22 @@ function LoginScreen() {
                         Welcome to Samper!
                     </Text>
                     <InputForm
+                        centered
                         label="Username"
                         placeholder='Input your username here'
                         input={username}
                         mode='outlined'
+                        inputMode="text"
                         style={styles.form}
                         setInput={text => setUsername(text)}
                     />
                     <InputForm
+                        centered
                         label="Password"
                         placeholder='Input your password here'
                         input={password}
                         mode='outlined'
+                        inputMode="text"
                         style={styles.form}
                         right={<TextInput.Icon icon={iconEye} color='black' onPress={() => { handleEyePressed() }} />}
                         setInput={text => setPassword(text)}
