@@ -143,7 +143,7 @@ function HomeScreen() {
                     <Text style={styles.welcomeText}>
                         Welcome back, 
                     </Text>
-                    <Text style={styles.welcomeText}>
+                    <Text style={styles.welcomeNameText}>
                         {`${authState.profile?.user?.firstName} ${authState.profile?.user?.lastName}!`} 
                     </Text>
                 </View>
@@ -229,6 +229,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         fontWeight: "bold",
+    },
+    welcomeNameText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: "bold",
+        textTransform: "capitalize"
     },
     icon: {
 
