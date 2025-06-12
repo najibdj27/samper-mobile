@@ -23,13 +23,13 @@ const MainScreen = ({ route }) => {
 			case 'message' : 
 				return <MessageScreen jumpTo={jumpTo} />
 			case 'schedule' : 
-				if (index === 1) {
-					return <ScheduleScreen jumpTo={jumpTo} />
+			return <ScheduleScreen jumpTo={jumpTo} />
+			case 'home' : 
+				if (index === 2) {
+					return <HomeScreen jumpTo={jumpTo} />
 				} else {
 					return null
 				}
-			case 'home' : 
-				return <HomeScreen jumpTo={jumpTo} />
 			case 'request' : 
 				return <RequestScreen jumpTo={jumpTo} />
 			case 'notification' : 
