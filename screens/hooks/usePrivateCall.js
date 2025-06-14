@@ -6,7 +6,7 @@ import useModal from './useModal'
 
 const usePrivateCall = () => {
 
-    const {authState, logout} = useAuth()
+    const {authState} = useAuth()
     const { showDialogMessage } = useModal()
     const refresh = useRefreshToken()
     let requestPrivateInterceptor  
@@ -36,13 +36,9 @@ const usePrivateCall = () => {
                     if (error?.response?.status === 401 && !prevRequest?.sent) {
                         prevRequest.sent = true
                         const newToken = await refresh()
-                        if (newToken === undefined) {
-                            return logout()
-                        } else {
-                            console.log(`new generated token: ${newToken}`)
-                            prevRequest.headers['Authorization'] = `Bearer ${newToken}`
-                            return axiosPrivateCall(prevRequest)
-                        }
+                        console.log(`new generated token: ${newToken}`)
+                        prevRequest.headers['Authorization'] = `Bearer ${newToken}`
+                        return axiosPrivateCall(prevRequest)
                     }
                     if (error.response.status === 500) {
                         showDialogMessage('error', 'ERR500', `Sorry, there is a technical problem currently.\nPlease try again later!`)
