@@ -19,7 +19,7 @@ function LoginScreen() {
 
     const axiosPublic = usePublicCall()
     const { setAuthState, setProfile, setRoles, setAccessToken, setRefreshToken } = useAuth()
-    const { loaderOn, loaderOff } = useModal()
+    const { loaderOn, loaderOff, showDialogMessage } = useModal()
     
     //refs
     const dialogRef = React.useRef()
@@ -81,11 +81,8 @@ function LoginScreen() {
             }
         }).catch((err) => {
             console.log(`login: failed`)
-            if (err.response) {
-                console.log(`err response: ${JSON.stringify(err.response)}`)
-                dialogRef.current.showDialog('error', err.response.data?.error_code, err.response.data?.error_message)
-            } else if (err.request) {
-                dialogRef.current.showDialog('error', "C0001", "Server timeout!")
+            if (err?.response?.status === 400) {
+                showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, null)
             }
         })
         loaderOff()
