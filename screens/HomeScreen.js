@@ -6,9 +6,9 @@ import Paginator from "./components/Paginator";
 import History from "./components/History";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import Loader from "./components/Loader";
 import usePrivateCall from "./hooks/usePrivateCall";
 import useAuth from "./hooks/useAuth";
+import DashboardTools from "./components/DashboardTools";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -146,6 +146,47 @@ function HomeScreen() {
         }
     }
 
+    const renderTools = () => {
+        if (authState?.profile?.user?.roles.includes('LECTURE')) {
+            return (
+                <>
+                    <Text style={styles.sectionTitle}>
+                        Tools
+                    </Text>
+                    <FlatList 
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={[
+                            {
+                                name: 'Statistik Kehadiran',
+                                icon: 'chart-bar',
+                                redirectScreen: 'PresenceStatistic'
+                            },
+                            {
+                                name: 'Data Absensi',
+                                icon: 'file-clock-outline',
+                                redirectScreen: 'PresenceData'
+                            },
+                            {
+                                name: 'Pengaturan Absensi',
+                                icon: 'file-cog',
+                                redirectScreen: 'PresenceManagement'
+                            },
+                            {
+                                name: 'Pengaturan Kelas',
+                                icon: 'store-cog',
+                                redirectScreen: 'ClassManagement'
+                            },
+
+                        ]}
+                        renderItem={(item) => <DashboardTools item={item.item} />}
+                        style={{maxHeight: 120}}
+                    />
+                </>
+            )
+        }
+    }
+
     useEffect(() => {
         loadScheduleData();
         loadHistory();
@@ -179,7 +220,7 @@ function HomeScreen() {
                 </View>
             </View>
             {/* Today's Schedule Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold"}}>
+            <Text style={styles.sectionTitle}>
                 Today's Schedule
             </Text>
             <FlatList 
@@ -211,8 +252,12 @@ function HomeScreen() {
                 data={scheduleData.data}
                 scrollX={scrollX}
             />
+            {/* Tools Section */}
+            {
+                renderTools()
+            }
             {/* History Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color: 'black'}}>
+            <Text style={styles.sectionTitle}>
                 History
             </Text>
             <FlatList 
@@ -227,7 +272,9 @@ function HomeScreen() {
                     }
                     return <History isEmpty />
                 }}
-                style={{maxHeight: 250}}
+                style={{
+                    flex: 1
+                }}
             />
         </SafeAreaView>
     );
@@ -263,8 +310,10 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textTransform: "capitalize"
     },
-    icon: {
-
+    sectionTitle: {
+        paddingStart: 12, 
+        fontSize: 18, 
+        fontWeight: "bold"
     },
 })
 

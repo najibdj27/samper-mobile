@@ -7,6 +7,10 @@ import RequestDetailScreen from '../RequestDetailScreen';
 import AccountDetailScreen from '../AccountDetailScreen';
 import ScheduleDetailScreen from '../ScheduleDetailScreen';
 import ActionScheduleScreen from '../ActionScheduleScreen';
+import PresenceStatisticScreen from '../PresenceStatisticScreen';
+import ClassManagementScreen from '../ClassManagementScreen';
+import PresenceDataScreen from '../PresenceDataScreen';
+import StudentDetailScreen from '../StudentDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -115,6 +119,78 @@ const AuthStack = () => {
                 headerShown: true,
                 headerTitleAlign: "left",
                 title: 'Schedule Action',
+                headerStyle: {
+                    backgroundColor: "#D8261D"
+                },
+                headerTitleStyle:{
+                    fontWeight: "bold",
+                    color: "#fff"
+                },
+                headerTintColor: "#fff",
+                navigationBarColor: "#ffff",
+            })} 
+        />
+        <Stack.Screen 
+            name="PresenceStatistic" 
+            component={PresenceStatisticScreen}
+            options={({route}) => ({
+                headerShown: true,
+                headerTitleAlign: "left",
+                title: 'Statistik Kehadiran',
+                headerStyle: {
+                    backgroundColor: "#D8261D"
+                },
+                headerTitleStyle:{
+                    fontWeight: "bold",
+                    color: "#fff"
+                },
+                headerTintColor: "#fff",
+                navigationBarColor: "#ffff",
+            })} 
+        />
+        <Stack.Screen 
+            name="ClassManagement" 
+            component={ClassManagementScreen}
+            options={({route}) => ({
+                headerShown: true,
+                headerTitleAlign: "left",
+                title: 'Pengaturan Kelas',
+                headerStyle: {
+                    backgroundColor: "#D8261D"
+                },
+                headerTitleStyle:{
+                    fontWeight: "bold",
+                    color: "#fff"
+                },
+                headerTintColor: "#fff",
+                navigationBarColor: "#ffff",
+            })} 
+        />
+        <Stack.Screen 
+            name="StudentDetail" 
+            component={StudentDetailScreen}
+            options={({route}) => ({
+                headerShown: true,
+                headerTitleAlign: "left",
+                title: 'Detail Mahasiswa',
+                headerStyle: {
+                    backgroundColor: "#D8261D"
+                },
+                headerTitleStyle:{
+                    fontWeight: "bold",
+                    color: "#fff"
+                },
+                headerTintColor: "#fff",
+                navigationBarColor: "#ffff",
+            })} 
+        />
+        <Stack.Screen 
+            name="PresenceData" 
+            component={PresenceDataScreen}
+            options={({route}) => ({
+                headerShown: true,
+                headerTitleAlign: "left",
+                title: 'Statistik Kehadiran',
                 headerStyle: {
                     backgroundColor: "#D8261D"
                 },

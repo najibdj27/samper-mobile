@@ -1,4 +1,5 @@
 import { SignUpFormDataType } from "./form";
+import { StudentDetailScreenRoute } from "./route";
 
 type SignUpParamType = {
     type: string
@@ -9,4 +10,7 @@ type SignUpParamType = {
 export type RootStackParamList = {
     SignUpFR: SignUpParamType
     SignUpOTP: SignUpParamType
+    StudentDetail: {
+        studentId: number 
+    }
 };

@@ -20,13 +20,15 @@ const ModalPicker = forwardRef<InputFormRef, ModalPickerProps>((props, ref) => {
 
     const inputInternalRef = useRef(null);
 
-    const filteredData = props.data.filter(item => {
-        const query = search.toLowerCase();
-        return (
-            item.title.toLowerCase().includes(query) ||
-            item.subtitle.toLowerCase().includes(query)
-        );
-    });
+    const filteredData = useMemo(() => {
+        return props?.data?.filter((value) => {
+            console.log(`value ${JSON.stringify(value)}`)
+            const query = search.toLowerCase();
+            return (
+                value.title.toLowerCase().includes(query) || value?.subtitle?.toLowerCase().includes(query)
+            );
+        });
+    }, [search, props?.data])
 
     return (
         <>
@@ -67,7 +69,7 @@ const ModalPicker = forwardRef<InputFormRef, ModalPickerProps>((props, ref) => {
                     outlineStyle={{ borderRadius: 16 }}
                     secureTextEntry={props.secureTextEntry}
                     disabled={props.disabled}
-                    editable={props.editable}
+                    editable={false}
                     autoCapitalize={props.autoCapitalize}
                     maxLength={props.maxLength}
                 />

@@ -14,6 +14,6 @@ export type SignUpFormDataType = {
 
 export type ModalPickerDataType = {
   title: string,
-  subtitle: string,
+  subtitle?: string,
   value: any
 }

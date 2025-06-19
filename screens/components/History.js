@@ -10,7 +10,7 @@ const History = ({item, isEmpty, isLoading, type}) => {
 
     const loadingHistory = () =>{
         const element = [];
-        const loopLength = 10;
+        const loopLength = 4;
         for (let index = 0; index < loopLength; index++) {
             element.push(
                 <View key={index}>
@@ -36,7 +36,6 @@ const History = ({item, isEmpty, isLoading, type}) => {
     
     const historyAvailable = () => {
         if (type === 'lecture-schedule-history'){
-            console.log(`item: ${JSON.stringify(item)}`)
             return (
                 <View>
                     <Pressable onPress={() => {console.log('History button pressed')}}>
