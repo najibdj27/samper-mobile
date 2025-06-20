@@ -168,12 +168,7 @@ function HomeScreen() {
                                 redirectScreen: 'PresenceData'
                             },
                             {
-                                name: 'Pengaturan Absensi',
-                                icon: 'file-cog',
-                                redirectScreen: 'PresenceManagement'
-                            },
-                            {
-                                name: 'Pengaturan Kelas',
+                                name: 'Kelas',
                                 icon: 'google-classroom',
                                 redirectScreen: 'ClassManagement'
                             },
