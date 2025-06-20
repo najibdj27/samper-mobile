@@ -75,3 +75,8 @@ export type DataSurfaceProps = {
 export type StudentListProps = {
   item: ClassManagementStudentDataType
 }
+
+export type PilotingModalProps = {
+  isVisible: boolean,
+  redirectScreen: string
+}
