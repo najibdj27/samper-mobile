@@ -174,7 +174,7 @@ function HomeScreen() {
                             },
                             {
                                 name: 'Pengaturan Kelas',
-                                icon: 'store-cog',
+                                icon: 'google-classroom',
                                 redirectScreen: 'ClassManagement'
                             },
 
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     
     welcomeText: {
         color: '#fff',
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "bold",
     },
     welcomeNameText: {
