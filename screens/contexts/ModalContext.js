@@ -24,16 +24,8 @@ export const ModalProvider = ({ children }) => {
         dialogConfirmationRef.current?.showDialog(icon, tittle, text, positiveFunc, negativeFunc)
     }
 
-    const hideDialogConfirmation = (isConfirmed) => {
-        dialogConfirmationRef.current?.hideDialog(isConfirmed)
-    }
-
     const showDialogMessage = (type, code, message, func) => {
         dialogMessageRef.current?.showDialog(type, code, message, func)
-    }
-
-    const hideDialogMessage = () => {
-        dialogMessageRef.current?.hideDialog()
     }
 
     return (
@@ -42,9 +34,7 @@ export const ModalProvider = ({ children }) => {
                 loaderOn,
                 loaderOff,
                 showDialogConfirmation,
-                hideDialogConfirmation,
                 showDialogMessage,
-                hideDialogMessage
             }}
         >
             <Provider>

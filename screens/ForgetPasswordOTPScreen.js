@@ -25,7 +25,7 @@ function ForgetPasswordOtpScreen({ route }) {
 		loaderOn()
 		const reqBody = { emailAddress: route.params.emailAddress }
 		console.log(`sendForgetPasswordOTP`)
-		await axiosPublic.post('/auth/forgetpassword', reqBody)
+		await axiosPublic.post('/auth/forgetpassword/sendotp', reqBody)
 			.then((response) => {
 				console.log(`sendForgetPasswordOTP`)
 				loaderOff()
@@ -47,15 +47,15 @@ function ForgetPasswordOtpScreen({ route }) {
 		Keyboard.dismiss()
 		loaderOn()
 		const intCode = parseInt(code)
-		const reqBody = { emailAddress: route.params.emailAddress, otp: intCode }
+		const reqBody = { key: route.params.emailAddress, otp: intCode }
 		console.log(`confirmOTP`)
-		await axiosPublic.post('/auth/confirmotp', reqBody)
+		await axiosPublic.post('/auth/forgetpassword/confirmotp', reqBody)
 			.then((response) => {
 				console.log(`confirmOTP: success`)
 				loaderOff()
 				const validateOtpResponse = response.data
 				setCode("")
-				navigation.navigate('ForgetPasswordNewPass', { emailAddress: route.params.emailAddress, token: validateOtpResponse.data.resetPasswordToken })
+				navigation.navigate('ForgetPasswordNewPass', { emailAddress: route.params.emailAddress, token: validateOtpResponse.data.token })
 			}).catch((error) => {
 				console.log(`confirmOTP: failed`)
 				loaderOff()

@@ -6,14 +6,15 @@ import Paginator from "./components/Paginator";
 import History from "./components/History";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import Loader from "./components/Loader";
 import usePrivateCall from "./hooks/usePrivateCall";
 import useAuth from "./hooks/useAuth";
+import DashboardTools from "./components/DashboardTools";
 
 function HomeScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [scheduleData, setScheduleData] = useState({data: [], isLoading: true});
     const [presenceHistoryData, setPresenceHistoryData] = useState({data: [], isLoading: true})
+    const [scheduleHistoryData, setScheduleHistoryData] = useState({data: [], isLoading: true})
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
@@ -91,45 +92,99 @@ function HomeScreen() {
         }
     }
 
-    const loadPresenceHistory = async () => {
+    const loadHistory = async () => {
         console.log(`presenceHistory`)
-        setPresenceHistoryData(prevData => ({
-            ...prevData,
-            isLoading: false
-        }))      
-        await axiosPrivate.get('/presence/getallbystudent',
-            {
-                params: {
-                    studentId: authState.profile?.id,
-                    limit: 10
-                }
-            }
-        )
-        .then((response) => {
-            console.log(`presenceHistory: success`)
-            const responsePresenceHistory = response.data
-            setPresenceHistoryData({
-                data: responsePresenceHistory?.data,
-                isLoading: false
-            })      
-        }).catch((err) => {
-            console.log(`presenceHistory: failed`)
-            if (err.response) {
-                setPresenceHistoryData({
-                    data: [],
+        if (authState.profile.user.roles.includes("LECTURE")) {
+            setScheduleHistoryData(prevData => ({
+                ...prevData,
+                isLoading: true
+            }))      
+            await axiosPrivate.get('/schedule/history')
+            .then(response => {
+                setScheduleHistoryData({
+                    data: response.data.data,
                     isLoading: false
                 })
-            } else if (err.request) {
-                dialogRef.current.showDialog('error', "C0001", "Server timeout!")
-            }
-        })
+            }).catch(err => {
+                if (err.response) {
+                    console.log(`404 NOT_FOUND`)
+                    setScheduleHistoryData({
+                        data: [],
+                        isLoading: false
+                    })
+                }
+            })
+        } else {
+            setPresenceHistoryData(prevData => ({
+                ...prevData,
+                isLoading: true
+            }))      
+            await axiosPrivate.get('/presence/getallbystudent',
+                {
+                    params: {
+                        studentId: authState.profile?.id,
+                        limit: 10
+                    }
+                }
+            )
+            .then((response) => {
+                console.log(`presenceHistory: success`)
+                const responsePresenceHistory = response.data
+                setPresenceHistoryData({
+                    data: responsePresenceHistory?.data,
+                    isLoading: false
+                })      
+            }).catch((err) => {
+                console.log(`presenceHistory: failed`)
+                if (err.response) {
+                    setPresenceHistoryData({
+                        data: [],
+                        isLoading: false
+                    })
+                }
+            })
+        }
     }
 
-    
+    const renderTools = () => {
+        if (authState?.profile?.user?.roles.includes('LECTURE')) {
+            return (
+                <>
+                    <Text style={styles.sectionTitle}>
+                        Tools
+                    </Text>
+                    <FlatList 
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={[
+                            {
+                                name: 'Statistik Kehadiran',
+                                icon: 'chart-bar',
+                                redirectScreen: 'PresenceStatistic'
+                            },
+                            {
+                                name: 'Data Absensi',
+                                icon: 'file-clock-outline',
+                                redirectScreen: 'PresenceData'
+                            },
+                            {
+                                name: 'Kelas',
+                                icon: 'google-classroom',
+                                redirectScreen: 'ClassManagement'
+                            },
+
+                        ]}
+                        renderItem={(item) => <DashboardTools item={item.item} />}
+                        style={{maxHeight: 120}}
+                    />
+                </>
+            )
+        }
+    }
 
     useEffect(() => {
         loadScheduleData();
-        loadPresenceHistory();
+        loadHistory();
     }, [])
 
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
@@ -143,7 +198,7 @@ function HomeScreen() {
                     <Text style={styles.welcomeText}>
                         Welcome back, 
                     </Text>
-                    <Text style={styles.welcomeText}>
+                    <Text style={styles.welcomeNameText}>
                         {`${authState.profile?.user?.firstName} ${authState.profile?.user?.lastName}!`} 
                     </Text>
                 </View>
@@ -160,7 +215,7 @@ function HomeScreen() {
                 </View>
             </View>
             {/* Today's Schedule Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color:"black"}}>
+            <Text style={styles.sectionTitle}>
                 Today's Schedule
             </Text>
             <FlatList 
@@ -177,6 +232,9 @@ function HomeScreen() {
                     }
                 }}
                 bounces={false}
+                style={{
+                    maxHeight: 250
+                }}
                 scrollEventThrottle={32}
                 onViewableItemsChanged={viewableItemChanged}
                 viewabilityConfig={viewConfig}
@@ -189,20 +247,30 @@ function HomeScreen() {
                 data={scheduleData.data}
                 scrollX={scrollX}
             />
+            {/* Tools Section */}
+            {
+                renderTools()
+            }
             {/* History Section */}
-            <Text style={{paddingStart: 12, fontSize: 18, fontWeight: "bold", color: 'black'}}>
+            <Text style={styles.sectionTitle}>
                 History
             </Text>
-            <ScrollView style={{marginBottom: 20, padding:10, height: 270}} showsVerticalScrollIndicator={false} >
-                {
-                    presenceHistoryData.isLoading? 
-                    ( <History isLoading={true} />) :
-                        presenceHistoryData.data?.length == 0 ?
-                            ( <History isEmpty={true} /> ) : 
-                            console.log(`available`)
-                }
-            </ScrollView>
-            <Loader />
+            <FlatList 
+                keyExtractor={(item) => item?.id}
+                data={authState.profile.user.roles.includes("LECTURE")? scheduleHistoryData.data: presenceHistoryData.data}
+                renderItem={({item}) => <History item={item} type='lecture-schedule-history' />}
+                ListEmptyComponent={() => {
+                    if (authState.profile.user.roles.includes("LECTURE")) {
+                        if (scheduleHistoryData.isLoading) return <History isLoading />
+                    } else {
+                        if (presenceHistoryData.isLoading) return <History isLoading />
+                    }
+                    return <History isEmpty />
+                }}
+                style={{
+                    flex: 1
+                }}
+            />
         </SafeAreaView>
     );
 }
@@ -210,6 +278,7 @@ function HomeScreen() {
 const styles = StyleSheet.create({
     navbarContainer: {
         flex: 1,
+        justifyContent: "flex-start",
         backgroundColor: "white",
     },
     welcomeView: {
@@ -227,11 +296,19 @@ const styles = StyleSheet.create({
     
     welcomeText: {
         color: '#fff',
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "bold",
     },
-    icon: {
-
+    welcomeNameText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: "bold",
+        textTransform: "capitalize"
+    },
+    sectionTitle: {
+        paddingStart: 12, 
+        fontSize: 18, 
+        fontWeight: "bold"
     },
 })
 

@@ -153,7 +153,6 @@ const styles = StyleSheet.create({
         alignItems: "center", 
         justifyContent: "center", 
         marginBottom: 20, 
-        height:250
     },
     bannerView: {
         flexDirection: "row",
@@ -161,7 +160,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         justifyContent: "center",
         height: 200,
-        marginVertical: 5,
         marginHorizontal: 10,
         borderRadius: 30,
         

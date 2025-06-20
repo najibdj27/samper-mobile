@@ -24,8 +24,9 @@ const ForgetPasswordNewPassScreen = ({ route }) => {
         loaderOn()
         if (newPassword === confirmPassword) {
             console.log(`resetPassword`)
-            await axiosPublic.patch('/auth/reset_password',
+            await axiosPublic.patch('/auth/forgetpassword/resetpassword',
                 {
+                    emailAddress: route.params?.emailAddress,
                     newPassword: newPassword
                 },
                 {

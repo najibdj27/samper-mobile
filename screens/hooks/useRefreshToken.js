@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import useAuth from './useAuth'
 import usePublicCall from './usePublicCall'
+import useModal from './useModal'
 
 const useRefreshToken = () => {
 
     const axiosPublic = usePublicCall()
-    const {authState, setAuthState, setAccessToken } = useAuth()
+    const {authState, setAuthState, setAccessToken, logout } = useAuth()
+    const {showDialogMessage} = useModal()
 
     const refresh = async () => {
         let refreshToken
@@ -39,7 +41,9 @@ const useRefreshToken = () => {
     
             return response.data?.data?.accessToken 
         } catch (error) {
-            console.log(JSON.stringify(error))
+            if (error.response.status === 401) {
+                showDialogMessage('error', 'ERR401001', 'Your login session is expired, please login again!', () => {logout()})
+            }
             return
         }
     }

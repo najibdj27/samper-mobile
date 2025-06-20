@@ -5,7 +5,7 @@ import Skeleton from './Skeleton'
 import moment from 'moment'
 
 
-const History = ({item, isEmpty, isLoading}) => {
+const History = ({item, isEmpty, isLoading, type}) => {
     const noHistoryImg = require("../../assets/16846110_41Z_2107.w009.n001.6A.p15.6.jpg");
 
     const loadingHistory = () =>{
@@ -35,6 +35,22 @@ const History = ({item, isEmpty, isLoading}) => {
     }
     
     const historyAvailable = () => {
+        if (type === 'lecture-schedule-history'){
+            return (
+                <View>
+                    <Pressable onPress={() => {console.log('History button pressed')}}>
+                        <List.Item
+                            title={[item.schedule?.kelas?.name, " (" ,item.schedule?.subject?.name, ")"]}
+                            titleStyle={{fontWeight: "bold"}}
+                            description={[moment(item?.openTime, 'YYYY-MM-DD HH:mm:ss').format('D MMM YYYY HH:mm'), " | ", item?.closeTime ? moment(item?.closeTime, 'YYYY-MM-DD HH:mm:ss').format('D MMM YYYY HH:mm') : ""]}
+                            left={props => <List.Icon {...props} icon="door-open" color="black" />}
+                            right={props => <List.Icon {...props} icon={item?.schedule?.geolocationFlag ? "wifi-on" : "wifi-off"} color={item?.schedule?.geolocationFlag ? "#03913E" : "#D8261D"} />}
+                        />
+                    </Pressable>
+                    <Divider />
+                </View>
+            )
+        }
         return (
             <View>
                 <Pressable onPress={() => {console.log('History button pressed')}}>
@@ -60,7 +76,14 @@ const History = ({item, isEmpty, isLoading}) => {
         )
     }
   
-    return isLoading ? loadingHistory() : isEmpty? historyUnvailable() : historyAvailable() 
+    if (isLoading) return loadingHistory()
+    if (isEmpty) return historyUnvailable()
+    
+    return (
+        historyAvailable()
+    )
+    
+    
   
 }
 

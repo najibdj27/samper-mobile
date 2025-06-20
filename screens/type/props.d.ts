@@ -2,6 +2,7 @@ import React from "react"
 import { TextStyle, ViewStyle } from "react-native"
 import { TextInputProps } from "react-native-paper"
 import { ModalPickerDataType } from "./form"
+import { ClassManagementStudentDataType } from "./data"
 
 export type InputFormProps = {
   label: string
@@ -53,4 +54,29 @@ export type ModalPickerProps = {
   activeOutlineColor?: string
   outlineStyle?: ViewStyle
   data: ModalPickerDataType[]
+}
+
+export type DashboardToolsProps = {
+  item: {
+    name: string,
+    icon: string,
+    redirectScreen: never
+  },
+  isLoading?: boolean,
+  isEmpty?: boolean
+}
+
+export type DataSurfaceProps = {
+  icon: string,
+  title: string,
+  value: string | number
+}
+
+export type StudentListProps = {
+  item: ClassManagementStudentDataType
+}
+
+export type PilotingModalProps = {
+  isVisible: boolean,
+  redirectScreen: string
 }
