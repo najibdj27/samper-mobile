@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Image, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, Image, StatusBar, View } from 'react-native'
 import useAuth from './hooks/useAuth';
 import useModal from './hooks/useModal';
 import useRefreshToken from './hooks/useRefreshToken';
@@ -8,11 +8,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './navigators/AuthStack';
 import AnonymousStack from './navigators/AnonymousStack';
+import Modal from 'react-native-modal';
+import { Text } from 'react-native-paper';
+ './reac'
 
+const spalshImg = require('../assets/splash.png')
+const maintenanceImg = require('../assets/phone-maintenance-concept-illustration.png')
+const {width, height} = Dimensions.get('window')
 
 const InitialLoadingScreen = () => {
-    const spalshImg = require('../assets/splash.png')
-
+    const [isMaintenance, setIsmaintenance] = useState(false)
     const { authState, setAuthState, getAsyncStorage, logout } = useAuth()
     const { loaderOn, loaderOff } = useModal()
 
@@ -51,8 +56,10 @@ const InitialLoadingScreen = () => {
                         isAuthenticated: true
                     }))
                 }
-            }).catch(() => {
-                console.log(`checkToken: failed`)
+            }).catch((error) => {
+                if (error.response?.status === 503) {
+                    setIsmaintenance(true)
+                }
             })
         } else {
             console.log('logging out...')
@@ -76,7 +83,27 @@ const InitialLoadingScreen = () => {
                 authState.isAuthenticated === undefined? 
                 (
                     <View style={{flex: 1, backgroundColor: 'white', justifyContent: "center", alignItems: "center"}}>
+                        <StatusBar barStyle="dark-content" />
                         <Image style={{width: 200, height: 200}} source={spalshImg} />
+                        <Modal 
+                            isVisible={isMaintenance}
+                            animationIn="slideInUp"
+                            animationOut="slideOutDown"
+                            deviceWidth={width}
+                            deviceHeight={height}
+                            backdropOpacity={0.4}
+                            style={{
+                                justifyContent: "flex-end",
+                                margin: 0
+                            }}
+                        >
+                            <View style={{paddingVertical: 20, paddingHorizontal: 10, justifyContent: "space-between", backgroundColor: "#ffffff", alignItems: "center", borderTopLeftRadius: 20, borderTopRightRadius: 20,}}>
+                                <Image source={maintenanceImg} style={{width: 300, height: 300,}} resizeMode="contain" />
+                                <Text variant="titleMedium" style={{textAlign: "center"}}>
+                                    Sedang ada pemeliharaan sistem, mohon coba kembali beberapa saat lagi!
+                                </Text>
+                            </View>
+                        </Modal>
                     </View>
                 ) 
                 :
