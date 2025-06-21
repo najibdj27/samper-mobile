@@ -3,7 +3,7 @@ const withForceLightMode = require('./plugins/with-force-light-mode');
 module.exports = {
   name: "Samper",
   slug: "samper-mobile",
-  version: "1.0.0",
+  version: "1.0.1",
   orientation: "portrait",
   icon: "./assets/app-icon.png",
   userInterfaceStyle: "light",
