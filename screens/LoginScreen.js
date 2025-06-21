@@ -10,15 +10,17 @@ import usePublicCall from './hooks/usePublicCall';
 import useAuth from './hooks/useAuth';
 import useModal from './hooks/useModal';
 import InputForm from './components/InputForm';
+import usePrivateCall from './hooks/usePrivateCall';
 
 function LoginScreen() {
-    const [username, setUsername] = React.useState("");
+    const [usernameOrEmail, setUsernameOrEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [isPasswordInvisible, setIsPasswordInvisible] = React.useState(true);
     const [iconEye, setIconEye] = React.useState("eye");
 
     const axiosPublic = usePublicCall()
-    const { setAuthState, setProfile, setRoles, setAccessToken, setRefreshToken } = useAuth()
+    const axiosPrivate = usePrivateCall()
+    const { logout, setAuthState, setProfile, setRoles, setAccessToken, setRefreshToken } = useAuth()
     const { loaderOn, loaderOff, showDialogMessage } = useModal()
     
     //refs
@@ -33,9 +35,10 @@ function LoginScreen() {
         Keyboard.dismiss()
         console.log(`login`)
         loaderOn()
+        let loginResponse = {};
         await axiosPublic.post('/auth/signin',
             {
-                username: username,
+                usernameOrEmail: usernameOrEmail,
                 password: password
             },
             {
@@ -45,47 +48,43 @@ function LoginScreen() {
         .then(async (response) => {
             console.log(`login: success`)
             const responseLogin = response.data
-            try {
-                console.log(`getProfileSummary`)
-                await axiosPublic.get('/user/profilesummary',
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${responseLogin.data?.accessToken}`
-                        },
-                        params: {
-                            userId: responseLogin.data?.userId
-                        }
-                    }
-                )
-                    .then(async (response) => {
-                        console.log(`getProfileSummary: success`)
-                        const responseProfileSummary = response?.data
-                        await setProfile(responseProfileSummary.data)
-                        await setRoles(responseLogin.data?.roles)
-                        await setAccessToken(responseLogin.data?.accessToken)
-                        await setRefreshToken(responseLogin.data?.refreshToken)
-                        setAuthState(prevState => ({
-                            ...prevState,
-                            accessToken: responseLogin.data?.accessToken,
-                            refreshToken: responseLogin.data?.refreshToken,
-                            profile: responseProfileSummary.data,
-                            roles: responseLogin.data?.roles,
-                            isAuthenticated: true
-                        }))
-                    }).catch((error) => {
-                        console.log(`getProfileSummary: failed`)
-                        console.log(error)
-                    })
-            } catch (error) {
-                console.log(error)
-            }
+            await setAccessToken(responseLogin.data?.accessToken)
+            await setRefreshToken(responseLogin.data?.refreshToken)
+            loginResponse = responseLogin 
+            
         }).catch((err) => {
             console.log(`login: failed`)
             if (err?.response?.status === 400) {
                 showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, null)
             }
         })
-        loaderOff()
+        console.log(`getProfileSummary`)
+        await axiosPrivate.get('/user/profilesummary',
+            {
+                params: {
+                    userId: loginResponse?.data?.userId
+                }
+            }
+        )
+        .then(async (response) => {
+            console.log(`getProfileSummary: success`)
+            const responseProfileSummary = response?.data
+            await setProfile(responseProfileSummary.data)
+            await setRoles(loginResponse.data?.roles)
+            setAuthState(prevState => ({
+                ...prevState,
+                accessToken: loginResponse.data?.accessToken,
+                refreshToken: loginResponse.data?.refreshToken,
+                profile: responseProfileSummary.data,
+                roles: loginResponse.data?.roles,
+                isAuthenticated: true
+            }))
+            loaderOff()
+        }).catch((error) => {
+            console.log(`getProfileSummary: failed`)
+            logout()
+            loaderOff()
+        })        
     }
 
     const handleEyePressed = () => {
@@ -108,13 +107,13 @@ function LoginScreen() {
                     </Text>
                     <InputForm
                         centered
-                        label="Username"
+                        label="Username or Email"
                         placeholder='Input your username here'
-                        input={username}
+                        input={usernameOrEmail}
                         mode='outlined'
                         inputMode="text"
                         style={styles.form}
-                        setInput={text => setUsername(text)}
+                        setInput={text => setUsernameOrEmail(text)}
                     />
                     <InputForm
                         centered

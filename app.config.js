@@ -19,7 +19,7 @@ module.exports = {
     supportsTablet: false
   },
   android: {
-    versionCode: 5,
+    versionCode: 1,
     minSdkVersion: 26,
     permissions: [
       "ACCESS_FINE_LOCATION",
