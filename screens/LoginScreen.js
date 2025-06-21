@@ -56,25 +56,25 @@ function LoginScreen() {
                         }
                     }
                 )
-                    .then(async (response) => {
-                        console.log(`getProfileSummary: success`)
-                        const responseProfileSummary = response?.data
-                        await setProfile(responseProfileSummary.data)
-                        await setRoles(responseLogin.data?.roles)
-                        await setAccessToken(responseLogin.data?.accessToken)
-                        await setRefreshToken(responseLogin.data?.refreshToken)
-                        setAuthState(prevState => ({
-                            ...prevState,
-                            accessToken: responseLogin.data?.accessToken,
-                            refreshToken: responseLogin.data?.refreshToken,
-                            profile: responseProfileSummary.data,
-                            roles: responseLogin.data?.roles,
-                            isAuthenticated: true
-                        }))
-                    }).catch((error) => {
-                        console.log(`getProfileSummary: failed`)
-                        console.log(error)
-                    })
+                .then(async (response) => {
+                    console.log(`getProfileSummary: success`)
+                    const responseProfileSummary = response?.data
+                    await setProfile(responseProfileSummary.data)
+                    await setRoles(responseLogin.data?.roles)
+                    await setAccessToken(responseLogin.data?.accessToken)
+                    await setRefreshToken(responseLogin.data?.refreshToken)
+                    setAuthState(prevState => ({
+                        ...prevState,
+                        accessToken: responseLogin.data?.accessToken,
+                        refreshToken: responseLogin.data?.refreshToken,
+                        profile: responseProfileSummary.data,
+                        roles: responseLogin.data?.roles,
+                        isAuthenticated: true
+                    }))
+                }).catch((error) => {
+                    console.log(`getProfileSummary: failed`)
+                    console.log(error)
+                })
             } catch (error) {
                 console.log(error)
             }
