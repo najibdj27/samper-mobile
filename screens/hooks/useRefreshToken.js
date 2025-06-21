@@ -18,6 +18,10 @@ const useRefreshToken = () => {
         }else {
             console.log('refreshToken: get from storage')
             refreshToken = await AsyncStorage.getItem('refreshToken')
+            if (refreshToken === null) {
+                showDialogMessage('error', 'ERR401001', 'Your login session is expired, please login again!', () => {logout()})
+                return
+            }
         }
         
         console.log(`refreshToken: ${refreshToken}`)
