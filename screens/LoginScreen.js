@@ -51,40 +51,43 @@ function LoginScreen() {
             await setAccessToken(responseLogin.data?.accessToken)
             await setRefreshToken(responseLogin.data?.refreshToken)
             loginResponse = responseLogin 
-            
-        }).catch((err) => {
+        }).then(async () => {
+            console.log(`getProfileSummary`)
+            await axiosPrivate.get('/user/profilesummary',
+                {
+                    params: {
+                        userId: loginResponse?.data?.userId
+                    }
+                }
+            )
+            .then(async (response) => {
+                console.log(`getProfileSummary: success`)
+                const responseProfileSummary = response?.data
+                await setProfile(responseProfileSummary.data)
+                await setRoles(loginResponse.data?.roles)
+                setAuthState(prevState => ({
+                    ...prevState,
+                    accessToken: loginResponse.data?.accessToken,
+                    refreshToken: loginResponse.data?.refreshToken,
+                    profile: responseProfileSummary.data,
+                    roles: loginResponse.data?.roles,
+                    isAuthenticated: true
+                }))
+                loaderOff()
+            }).catch((error) => {
+                console.log(`getProfileSummary: failed`)
+                logout()
+                loaderOff()
+            })    
+        })
+        .catch((err) => {
+            loaderOff()
             console.log(`login: failed`)
             if (err?.response?.status === 400) {
                 showDialogMessage('error', err.response.data?.error_code, err.response.data?.error_message, null)
             }
+            return
         })
-        console.log(`getProfileSummary`)
-        await axiosPrivate.get('/user/profilesummary',
-            {
-                params: {
-                    userId: loginResponse?.data?.userId
-                }
-            }
-        )
-        .then(async (response) => {
-            console.log(`getProfileSummary: success`)
-            const responseProfileSummary = response?.data
-            await setProfile(responseProfileSummary.data)
-            await setRoles(loginResponse.data?.roles)
-            setAuthState(prevState => ({
-                ...prevState,
-                accessToken: loginResponse.data?.accessToken,
-                refreshToken: loginResponse.data?.refreshToken,
-                profile: responseProfileSummary.data,
-                roles: loginResponse.data?.roles,
-                isAuthenticated: true
-            }))
-            loaderOff()
-        }).catch((error) => {
-            console.log(`getProfileSummary: failed`)
-            logout()
-            loaderOff()
-        })        
     }
 
     const handleEyePressed = () => {
