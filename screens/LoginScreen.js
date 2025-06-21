@@ -10,6 +10,7 @@ import usePublicCall from './hooks/usePublicCall';
 import useAuth from './hooks/useAuth';
 import useModal from './hooks/useModal';
 import InputForm from './components/InputForm';
+import usePrivateCall from './hooks/usePrivateCall';
 
 function LoginScreen() {
     const [username, setUsername] = React.useState("");
@@ -18,6 +19,7 @@ function LoginScreen() {
     const [iconEye, setIconEye] = React.useState("eye");
 
     const axiosPublic = usePublicCall()
+    const axiosPrivate = usePrivateCall()
     const { setAuthState, setProfile, setRoles, setAccessToken, setRefreshToken } = useAuth()
     const { loaderOn, loaderOff, showDialogMessage } = useModal()
     
@@ -47,11 +49,8 @@ function LoginScreen() {
             const responseLogin = response.data
             try {
                 console.log(`getProfileSummary`)
-                await axiosPublic.get('/user/profilesummary',
+                await axiosPrivate.get('/user/profilesummary',
                     {
-                        headers: {
-                            'Authorization': `Bearer ${responseLogin.data?.accessToken}`
-                        },
                         params: {
                             userId: responseLogin.data?.userId
                         }
