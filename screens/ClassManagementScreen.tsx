@@ -134,7 +134,7 @@ const ClassManagementScreen: React.FC = () => {
             <View style={styles.dataSurfaceSection}>
                 <DataSurface icon='store' title='Jumlah Kelas' value={metaData?.classSum} />
                 <DataSurface icon='account-group' title='Jumlah Mahasisswa' value={metaData?.studentSum} />
-                <DataSurface icon='account-off' title='Jumlah Mahasisswa Aktif' value={metaData.activeStudentCount} />
+                <DataSurface icon='account-off' title='Jumlah Mahasisswa Aktif' value={metaData?.activeStudentCount} />
             </View>
             <View style={styles.studentListSection}>
                 <ModalPicker 
