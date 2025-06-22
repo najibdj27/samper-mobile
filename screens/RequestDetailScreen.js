@@ -137,6 +137,8 @@ const RequestDetailScreen = ({ route }) => {
                         contentStyle={{
                             textTransform: "capitalize"
                         }}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1}
                         textColor='black'
                         underlineColor='black'
                         editable={false}
@@ -154,6 +156,8 @@ const RequestDetailScreen = ({ route }) => {
                         contentStyle={{
                             textTransform: "capitalize"
                         }}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1}
                         textColor='black'
                         underlineColor='black'
                         editable={false}
@@ -168,6 +172,8 @@ const RequestDetailScreen = ({ route }) => {
                             width: width * 0.8,
                             backgroundColor: 'white'
                         }}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1}
                         textColor='black'
                         underlineColor='black'
                         editable={false}
@@ -182,6 +188,8 @@ const RequestDetailScreen = ({ route }) => {
                             width: width * 0.8,
                             backgroundColor: 'white'
                         }}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1}
                         textColor='black'
                         underlineColor='black'
                         editable={false}
@@ -196,6 +204,8 @@ const RequestDetailScreen = ({ route }) => {
                             width: width * 0.8,
                             backgroundColor: 'white'
                         }}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1}
                         textColor='black'
                         underlineColor='black'
                         editable={false}
@@ -214,6 +224,8 @@ const RequestDetailScreen = ({ route }) => {
                                 width: width * 0.8,
                                 backgroundColor: 'white'
                             }}
+                            allowFontScaling
+                            maxFontSizeMultiplier={1}
                             textColor='black'
                             underlineColor='black'
                             editable={false}
@@ -229,6 +241,8 @@ const RequestDetailScreen = ({ route }) => {
                                     width: width * 0.4,
                                     backgroundColor: 'white'
                                 }}
+                                allowFontScaling
+                                maxFontSizeMultiplier={1}
                                 textColor='black'
                                 underlineColor='black'
                                 editable={false}
@@ -243,6 +257,8 @@ const RequestDetailScreen = ({ route }) => {
                                     width: width * 0.4,
                                     backgroundColor: 'white'
                                 }}
+                                allowFontScaling
+                                maxFontSizeMultiplier={1}
                                 textColor='black'
                                 underlineColor='black'
                                 editable={false}
@@ -258,6 +274,8 @@ const RequestDetailScreen = ({ route }) => {
                                 width: width * 0.8,
                                 backgroundColor: 'white'
                             }}
+                            allowFontScaling
+                            maxFontSizeMultiplier={1}
                             textColor='black'
                             underlineColor='black'
                             editable={false}
@@ -278,6 +296,8 @@ const RequestDetailScreen = ({ route }) => {
                                     width: width * 0.4,
                                     backgroundColor: 'white'
                                 }}
+                                allowFontScaling
+                                maxFontSizeMultiplier={1}
                                 textColor='black'
                                 underlineColor='black'
                                 editable={false}
@@ -292,6 +312,8 @@ const RequestDetailScreen = ({ route }) => {
                                     width: width * 0.4,
                                     backgroundColor: 'white'
                                 }}
+                                allowFontScaling
+                                maxFontSizeMultiplier={1}
                                 textColor='black'
                                 underlineColor='black'
                                 editable={false}

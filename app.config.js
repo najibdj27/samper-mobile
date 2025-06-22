@@ -1,7 +1,39 @@
 const withForceLightMode = require('./plugins/with-force-light-mode');
 
+const getPackageName = (variant) => {
+  switch (variant) {
+    case 'sit':
+      return 'com.app.samper.sit';
+    case 'uat':
+      return 'com.app.samper.uat';
+    case 'dev':
+      return 'com.app.samper.dev';
+    case 'review':
+      return 'com.app.samper.review';
+    default:
+      return 'com.app.samper'; // production
+  }
+};
+
+const getAppName = (variant) => {
+  switch (variant) {
+    case 'sit':
+      return 'Samper SIT';
+    case 'uat':
+      return 'Samper UAT';
+    case 'dev':
+      return 'Samper Dev';
+    case 'review':
+      return 'Samper Review';
+    default:
+      return 'Samper';
+  }
+};
+
+const variant = process.env.APP_VVARIANT || 'production';
+
 module.exports = {
-  name: "Samper",
+  name: getAppName(variant),
   slug: "samper-mobile",
   version: "1.0.1",
   orientation: "portrait",
@@ -16,17 +48,18 @@ module.exports = {
     "**/*"
   ],
   ios: {
-    supportsTablet: false
+    supportsTablet: false,
+    bundleIdenntifier: getPackageName(variant)
   },
   android: {
-    versionCode: 2,
+    versionCode: 3,
     minSdkVersion: 26,
     permissions: [
       "ACCESS_FINE_LOCATION",
       "ACCESS_COARSE_LOCATION",
       "CAMERA"
     ],
-    package: "com.app.sampermobile",
+    package: getPackageName(variant),
     adaptiveIcon: {
       foregroundImage: "./assets/app-icon.png",
       backgroundColor: "#ffffff"

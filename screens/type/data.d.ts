@@ -25,5 +25,6 @@ export type StudentDetailStudentDataType = {
 
 export type ClassManagementMetaDataType = {
     classSum: number,
-    studentSum: number
+    studentSum: number,
+    activeStudentCount: number
 }

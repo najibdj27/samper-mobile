@@ -86,7 +86,8 @@ const ClassManagementScreen: React.FC = () => {
             })
             setMetaData({
                 classSum: response.data?.meta_data?._totalClass, 
-                studentSum: response.data?.meta_data?._totalStudent 
+                studentSum: response.data?.meta_data?._totalStudent,
+                activeStudentCount: response.data?.meta_data?._totalActiveStudent
             })
             setClassData(arrClassData)
             setStudentsData(arrStudentData)
@@ -133,7 +134,7 @@ const ClassManagementScreen: React.FC = () => {
             <View style={styles.dataSurfaceSection}>
                 <DataSurface icon='store' title='Jumlah Kelas' value={metaData?.classSum} />
                 <DataSurface icon='account-group' title='Jumlah Mahasisswa' value={metaData?.studentSum} />
-                <DataSurface icon='account-off' title='Jumlah Mahasisswa Aktif' value={18} />
+                <DataSurface icon='account-off' title='Jumlah Mahasisswa Aktif' value={metaData.activeStudentCount} />
             </View>
             <View style={styles.studentListSection}>
                 <ModalPicker 

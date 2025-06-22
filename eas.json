@@ -9,6 +9,9 @@
       "distribution": "internal",
       "android" : {
         "buildType": "apk"
+      },
+      "env": {
+        "APP_VVARIANT": "dev"
       }
     },
     "SIT": {
@@ -16,6 +19,9 @@
       "distribution": "internal",
       "android" : {
         "buildType": "apk"
+      },
+      "env": {
+        "APP_VVARIANT": "sit"
       }
     },
     "UAT": {
@@ -23,6 +29,9 @@
       "distribution": "internal",
       "android" : {
         "buildType": "apk"
+      },
+      "env": {
+        "APP_VVARIANT": "uat"
       }
     },
     "review": {
@@ -30,6 +39,9 @@
       "distribution": "internal",
       "android" : {
         "buildType": "apk"
+      },
+      "env": {
+        "APP_VVARIANT": "review"
       }
     },
     "production": {
