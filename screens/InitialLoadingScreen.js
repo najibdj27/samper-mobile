@@ -10,6 +10,7 @@ import AuthStack from './navigators/AuthStack';
 import AnonymousStack from './navigators/AnonymousStack';
 import Modal from 'react-native-modal';
 import { Text } from 'react-native-paper';
+import usePrivateCall from './hooks/usePrivateCall';
  './reac'
 
 const spalshImg = require('../assets/splash.png')
@@ -18,11 +19,42 @@ const {width, height} = Dimensions.get('window')
 
 const InitialLoadingScreen = () => {
     const [isMaintenance, setIsmaintenance] = useState(false)
-    const { authState, setAuthState, getAsyncStorage, logout } = useAuth()
+    const { authState, setAuthState, setProfile, getAsyncStorage, logout } = useAuth()
     const { loaderOn, loaderOff } = useModal()
 
     const axiosPublic = usePublicCall()
+    const axiosPrivate = usePrivateCall()
     const refresh = useRefreshToken()
+    
+    const syncProfile = async (authToken) => {
+        const profile = await AsyncStorage.getItem('profile')
+        console.log(`currentProfile: ${profile.user?.id}`)
+        console.log(`syncProfile`)
+        loaderOn()
+        await axiosPrivate.get('/user/profilesummary',
+            {
+                params: {
+                    userId: JSON.parse(profile).user?.id
+                },
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            }
+        )
+        .then(async (response) => {
+            console.log(`syncProfile: success`)
+            const responseProfileSummary = response?.data
+            await setProfile(responseProfileSummary.data)
+            setAuthState(prevState => ({
+                ...prevState,
+                profile: responseProfileSummary.data,
+            }))
+            loaderOff()
+        }).catch((error) => {
+            console.log(`syncProfile: success`)
+            loaderOff()
+        })   
+    }
 
     const initialized = async () => {
         console.log('initializing...')
@@ -43,6 +75,7 @@ const InitialLoadingScreen = () => {
                 if (responseCheckToken.data?.isActive) {
                     console.log(`token: active`)
                     console.log('logging in...')
+                    await syncProfile(accessToken) 
                     setAuthState(prevState => ({
                         ...prevState,
                         isAuthenticated: true
@@ -50,6 +83,8 @@ const InitialLoadingScreen = () => {
                 }else{
                     console.log(`token: inactive`)
                     await refresh()
+                    const newAccessToken = await AsyncStorage.getItem('accessToken')
+                    await syncProfile(newAccessToken) 
                     console.log('logging in...')
                     setAuthState(prevState => ({
                         ...prevState,
