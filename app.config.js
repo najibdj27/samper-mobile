@@ -52,7 +52,7 @@ module.exports = {
     bundleIdenntifier: getPackageName(variant)
   },
   android: {
-    versionCode: 2,
+    versionCode: 3,
     minSdkVersion: 26,
     permissions: [
       "ACCESS_FINE_LOCATION",
