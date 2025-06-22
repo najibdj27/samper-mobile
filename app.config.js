@@ -3,15 +3,15 @@ const withForceLightMode = require('./plugins/with-force-light-mode');
 const getPackageName = (variant) => {
   switch (variant) {
     case 'sit':
-      return 'com.app.sampermobile.sit';
+      return 'com.app.samper.sit';
     case 'uat':
-      return 'com.app.sampermobile.uat';
+      return 'com.app.samper.uat';
     case 'dev':
-      return 'com.app.sampermobile.dev';
+      return 'com.app.samper.dev';
     case 'review':
-      return 'com.app.sampermobile.review';
+      return 'com.app.samper.review';
     default:
-      return 'com.app.sampermobile'; // production
+      return 'com.app.samper'; // production
   }
 };
 
