@@ -20,7 +20,7 @@ const ActionScheduleScreen = ({ route }) => {
     
     const [permission, requestPermission] = useCameraPermissions()
     const axiosPrivate = usePrivateCall()
-    const { loaderOn, loaderOff, showDialogConfirmation, showDialogMessage, hideDialogMessage } = useModal()
+    const { loaderOn, loaderOff, showDialogConfirmation, showDialogMessage } = useModal()
     const navigation = useNavigation()
     const { width } = useWindowDimensions()
     const {longitudeCoords, latitudeCoords} = useGeolocation()
@@ -81,6 +81,15 @@ const ActionScheduleScreen = ({ route }) => {
         return {facesData, imageBase64}
     }
 
+    const navigateHome = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Main'}]
+            })
+        )
+    }
+
     const handleButtonAction = useCallback(() => {
         switch (route.params.action) {
             case 'OPEN':
@@ -129,15 +138,14 @@ const ActionScheduleScreen = ({ route }) => {
                     imageBase64: imageBase64
                 }
             ).then(() => {
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [{name: 'Main'}]
-                    })
-                )
-            }).catch(err => {
-            }).finally(() => {
                 loaderOff()
+                navigateHome()
+            }).catch((error) => {
+                loaderOff()
+                if (error?.response?.status === 406) {
+                    const err =  error?.response?.data
+                    showDialogMessage('error', err?.error_code, err?.error_message, () => navigateHome())
+                }
             })
         }
     }, [geoOption])
@@ -159,12 +167,14 @@ const ActionScheduleScreen = ({ route }) => {
                     imageBase64: imageBase64
                 }
             ).then(() => {
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [{name: 'Main'}]
-                    })
-                )
+                loaderOff()
+                navigateHome()
+            }).catch((error) => {
+                loaderOff()
+                if (error?.response?.status === 406) {
+                    const err =  error?.response?.data
+                    showDialogMessage('error', err?.error_code, err?.error_message, () => navigateHome())
+                }
             })
         }
     }
@@ -187,12 +197,13 @@ const ActionScheduleScreen = ({ route }) => {
                 }
             ).then(() => {
                 loaderOff()
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [{name: 'Main'}]
-                    })
-                )
+                navigateHome()
+            }).catch((error) => {
+                loaderOff()
+                if (error?.response?.status === 406) {
+                    const err =  error?.response?.data
+                    showDialogMessage('error', err?.error_code, err?.error_message, () => navigateHome())
+                }
             })
         }
     }
@@ -215,12 +226,13 @@ const ActionScheduleScreen = ({ route }) => {
                 }
             ).then(() => {
                 loaderOff()
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [{name: 'Main'}]
-                    })
-                )
+                navigateHome()
+            }).catch((error) => {
+                loaderOff()
+                if (error?.response?.status === 406) {
+                    const err =  error?.response?.data
+                    showDialogMessage('error', err?.error_code, err?.error_message, () => navigateHome())
+                }
             })
         }
     }
