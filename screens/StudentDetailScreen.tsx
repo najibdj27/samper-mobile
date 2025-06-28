@@ -138,7 +138,7 @@ const StudentDetailScreen: React.FC<Props> = ({ route }) => {
                 case 'SUSPEND':
                     return {
                         icon: 'account-cancel',
-                        title: 'Deaktivasi',
+                        title: 'Skors',
                         text: 'Apakah anda yakin untuk menskors akun mahasiswa ini?',
                         positiveFunc: () => submitAction(),
                         negativeFunc: null
