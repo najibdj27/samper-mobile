@@ -105,13 +105,10 @@ function LoginScreen() {
             <Pressable style={styles.container} onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView behavior='position'>
                     <Image source={topImg} style={{ width: 320, height: 260 }} />
-                    <Text variant="titleLarge" style={styles.welcomeText}>
-                        Welcome to Samper!
-                    </Text>
                     <InputForm
                         centered
-                        label="Username or Email"
-                        placeholder='Input your username here'
+                        label="Username atau Email"
+                        placeholder='Masukkan username atau email'
                         input={usernameOrEmail}
                         mode='outlined'
                         inputMode="text"
@@ -121,7 +118,7 @@ function LoginScreen() {
                     <InputForm
                         centered
                         label="Password"
-                        placeholder='Input your password here'
+                        placeholder='Masukkan password'
                         input={password}
                         mode='outlined'
                         inputMode="text"
@@ -138,7 +135,7 @@ function LoginScreen() {
                         onPress={() => navigation.navigate("ForgetPassword")}
                     >
                         <Text style={styles.forgetText}>
-                            Forget your password?
+                            Lupa password
                         </Text>
                     </Pressable>
                     <Button
@@ -154,7 +151,7 @@ function LoginScreen() {
                             color: 'white'
                         }}
                     >
-                        Login
+                        Masuk
                     </Button>
                 </KeyboardAvoidingView>
             </Pressable>
@@ -175,7 +172,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         alignSelf: "center",
         marginBottom: 10,
-        color: 'black'
+        color: 'black',
+        textAlign: "center"
     },
     form: {
         alignSelf: "center",

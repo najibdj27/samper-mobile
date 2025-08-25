@@ -28,7 +28,7 @@ const AccountDetailScreen = () => {
             <View style={styles.container}>
                 <InputForm 
                     mode="flat"
-                    label="First Name"
+                    label="Nama Depan"
                     input={accountDetailForm?.firstName || null}
                     setInput={(text) => {setAccountDetailForm(prevData => ({...prevData, firstName: text}))}}
                     placeholder="Type your reason ..."
@@ -41,7 +41,7 @@ const AccountDetailScreen = () => {
                     />
                 <InputForm 
                     mode="flat"
-                    label="Last Name"
+                    label="Nama Belakang"
                     input={accountDetailForm?.lastName || null}
                     setInput={(text) => {setAccountDetailForm(prevData => ({...prevData, lastName: text}))}}
                     placeholder="Type your reason ..."
@@ -81,7 +81,7 @@ const AccountDetailScreen = () => {
                 />
                 <InputForm 
                     mode="flat"
-                    label="Phone Number"
+                    label="Nomor HP"
                     input={accountDetailForm.phoneNumber}
                     setInput={(text) => {setAccountDetailForm(prevData => ({...prevData, firstName: text}))}}
                     placeholder="Type your reason ..."

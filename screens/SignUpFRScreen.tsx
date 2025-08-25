@@ -287,14 +287,14 @@ const SignUpFRScreen = ({ route }) => {
                             ?
                             (
                                 <>
-                                    <Text variant="displayMedium" style={{ fontSize: 26 }}>Submitting your registration!</Text>
+                                    <Text variant="displayMedium" style={{ fontSize: 26, color: "#ffffff" }}>Mengirim data pendaftaran!</Text>
                                     <ActivityIndicator animating color='white' style={{ marginLeft: 10 }} />
                                 </>
                             )
                             :
                             (
                                 <>
-                                    <Text variant="displayMedium" style={{ fontSize: 18, textAlign: 'center' }}>Look straight at the camera, keep a neutral face, eyes open, and don't turn your head!</Text>
+                                    <Text variant="displayMedium" style={{ fontSize: 18, textAlign: 'center', color: "#ffffff" }}>Lihat lurus ke kamera, ekspresi wajah natural, mata terbuka!</Text>
                                 </>
                             )
                     }
@@ -304,7 +304,7 @@ const SignUpFRScreen = ({ route }) => {
             if (facesDetected === 1) {
                 return (
                     <BlurView style={styles.blurView}>
-                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18) }}>
+                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18), color: "#ffffff" }}>
                             {validationMessage}
                         </Text>
                     </BlurView>
@@ -312,16 +312,16 @@ const SignUpFRScreen = ({ route }) => {
             } else if (facesDetected > 1) {
                 return (
                     <BlurView style={styles.blurView}>
-                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18) }}>
-                            Multiple faces detected!
+                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18), color: "#ffffff" }}>
+                            Lebih dari satu wajah terdeteksi!
                         </Text>
                     </BlurView>
                 )
             } else {
                 return (
                     <BlurView style={styles.blurView}>
-                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18) }}>
-                            No face detected!
+                        <Text variant="displayMedium" style={{ fontSize: verticalScale(18), color: "#ffffff" }}>
+                            Wajah tidak tereteksi!
                         </Text>
                     </BlurView>
                 )

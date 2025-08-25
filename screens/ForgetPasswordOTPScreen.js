@@ -73,9 +73,9 @@ function ForgetPasswordOtpScreen({ route }) {
 		<Pressable style={styles.container} onPress={Keyboard.dismiss}>
 			<KeyboardAvoidingView behavior="position">
 				<Image source={topImg} style={{ width: 320, height: 260, alignSelf: "center" }} />
-				<Text style={styles.headerText}>Enter your OTP</Text>
+				<Text style={styles.headerText}>Masukkan kode OTP</Text>
 				<Text style={styles.informationText}>
-					Please enter the 4-digits verification code that was sent to your email. The code will be valid for 5 minutes.
+					Silakan masukkan kode verifikasi 4 digit yang telah dikirim ke email Anda. Kode tersebut berlaku selama 3 menit.
 				</Text>
 				<OtpForm
 					setPinReady={setPinReady}
@@ -89,7 +89,7 @@ function ForgetPasswordOtpScreen({ route }) {
 					onPress={sendOtp}
 				>
 					<Text style={[styles.resendOtpText, { color: `${timeLeft ? "#c6c6c6" : "#02a807"}` }]}>
-						Resend OTP {timeLeft ? `(${timeLeft})` : ""}
+						Kirim Ulang {timeLeft ? `(${timeLeft})` : ""}
 					</Text>
 				</Pressable>
 				<Button
@@ -106,7 +106,7 @@ function ForgetPasswordOtpScreen({ route }) {
 					}}
 					disabled={!pinReady}
 				>
-					Validate OTP
+					Validasi kode OTP
 				</Button>
 			</KeyboardAvoidingView>
 		</Pressable>

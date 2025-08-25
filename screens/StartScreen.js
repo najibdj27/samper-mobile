@@ -34,7 +34,7 @@ function StartScreen() {
                         color: 'white'
                     }}
                     >
-                    Sign In
+                    Masuk
                 </Button>
                 <Button 
                     icon="account-plus" 
@@ -49,7 +49,7 @@ function StartScreen() {
                         color: 'white'
                     }}
                     >
-                    Sign Up
+                    Daftar
                 </Button>
             </View>
             <ImageBackground
