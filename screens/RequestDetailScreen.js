@@ -328,12 +328,12 @@ const RequestDetailScreen = ({ route }) => {
                 actions={[
                     {
                         icon: 'note-check',
-                        label: 'Approve',
+                        label: 'Terima',
                         onPress: () => handleApprove()
                     },
                     {
                         icon: 'note-remove',
-                        label: 'Reject',
+                        label: 'Tolak',
                         onPress: () => handleReject()
                     },
                 ]}
