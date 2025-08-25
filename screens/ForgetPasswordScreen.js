@@ -43,14 +43,14 @@ function ForgetPasswordScreen(){
             <KeyboardAvoidingView behavior='position' style={styles.container}>
                 <Image source={topImg} style={{width: 320, height: 260, alignSelf:'center'}} />
                 <Text variant="titleLarge" style={styles.titleText}>
-                    We will send OTP code to your email!
+                    Kode OTP akan dikirimkan melalui email!
                 </Text>
                 <InputForm 
                     label="Email"
                     mode="outlined"
                     input={email}
                     setInput={setEmail}
-                    placeholder="Input your email here"
+                    placeholder="Masukkan email"
                     inputMode="email"
                     keyboardType="email-address"
                     useValidation={true}
@@ -71,7 +71,7 @@ function ForgetPasswordScreen(){
                         fontWeight: "bold"
                     }}
                 >
-                    Send OTP
+                    Kirim kode OTP
                 </Button>
             </KeyboardAvoidingView>
         </Pressable> 

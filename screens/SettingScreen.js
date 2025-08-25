@@ -40,31 +40,28 @@ const SettingScreen = () => {
                 <View style={{justifyContent: "center", marginVertical: 10}}>
                     <Pressable>
                         <List.Item
-                            title="General"
+                            title="Umum"
                             left={props => <List.Icon {...props} icon="cellphone"/>}
                             right={props => <List.Icon {...props} icon="chevron-right"/>}
-                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable onPress={() => {navigation.navigate('AccountDetail', {userId: authState?.profile?.user?.id})}}>
                         <List.Item
-                            title="Account"
+                            title="Akun"
                             left={props => <List.Icon {...props} icon="key"/>}
                             right={props => <List.Icon {...props} icon="chevron-right"/>}
-                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
-                            title="Profile"
+                            title="Profil"
                             left={props => <List.Icon {...props} icon="account"/>}
                             right={props => <List.Icon {...props} icon="chevron-right"/>}
-                            titleStyle={{color: 'black'}}
                         />
                     </Pressable>
                     <Pressable>
                         <List.Item
-                            title="Personalization"
+                            title="Tampilan"
                             left={props => <List.Icon {...props} icon="brush"/>}
                             right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
@@ -72,7 +69,7 @@ const SettingScreen = () => {
                     </Pressable>
                     <Pressable>
                         <List.Item
-                            title="Help"
+                            title="Bantuan"
                             left={props => <List.Icon {...props} icon="alert-circle-outline"/>}
                             right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
@@ -80,7 +77,7 @@ const SettingScreen = () => {
                     </Pressable>
                     <Pressable onPress={() => handleLogout()}>
                         <List.Item
-                            title="Logout"
+                            title="Keluar"
                             left={props => <List.Icon {...props} icon="logout"/>}
                             right={props => <List.Icon {...props} icon="chevron-right"/>}
                             titleStyle={{color: 'black'}}
@@ -112,7 +109,8 @@ const styles = StyleSheet.create({
     nameText : {
         fontSize: 24,
         fontWeight: "bold",
-        color: 'black'
+        color: 'black',
+        textTransform: "capitalize"
     },
     nimText : {
         fontSize: 18,

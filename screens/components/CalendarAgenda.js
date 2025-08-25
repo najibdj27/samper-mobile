@@ -4,6 +4,50 @@ import moment from 'moment/moment';
 import ScheduleAgendaCard from './ScheduleAgendaCard';
 import DayAgenda from './DayAgenda';
 import EmptyAgendaCard from './EmptyAgendaCard';
+import { LocaleConfig } from 'react-native-calendars';
+
+LocaleConfig.locales['id'] = {
+	monthNames: [
+		'Januari',
+		'Februari',
+		'Maret',
+		'April',
+		'Mei',
+		'Juni',
+		'Juli',
+		'Agustus',
+		'September',
+		'Oktober',
+		'Novermber',
+		'Desember',
+	],
+	monthNamesShort: [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'Mei',
+		'Jun',
+		'Jul',
+		'Agu',
+		'Sep',
+		'Okt',
+		'Nov',
+		'Déc',
+	],
+	dayNames: [
+		'Minggu',
+		'Senin',
+		'Selasa',
+		'Rabu',
+		'Kamis',
+		'Jumat',
+		'Sabtu',
+	],
+	dayNamesShort: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+	today: "Hari Ini",
+};
+LocaleConfig.defaultLocale = 'id';
 
 const CalendarAgenda = ({ items, markedDate, isRefreshing, loadItems }) => {
 

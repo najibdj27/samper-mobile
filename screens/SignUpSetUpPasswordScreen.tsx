@@ -61,7 +61,7 @@ const SignUpSetUpPasswordScreen = ({route}) => {
                     label="Password"
                     input={password}
                     setInput={setPassword}
-                    placeholder="Input your new password"
+                    placeholder="Buat password baru"
                     useValidation={true}
                     validationMode="newPassword"
                     style={styles.form}
@@ -74,7 +74,7 @@ const SignUpSetUpPasswordScreen = ({route}) => {
                     label="Password"
                     input={confirmPassword}
                     setInput={setConfirmPassword}
-                    placeholder="Confirm your new password"
+                    placeholder="Konfirmasi password"
                     style={styles.form}
                     centered
                     secureTextEntry
