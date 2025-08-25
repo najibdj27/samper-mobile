@@ -70,10 +70,10 @@ const ForgetPasswordNewPassScreen = ({ route }) => {
                 </Text>
                 <InputForm
                     mode="outlined"
-                    label="New Password"
+                    label="Password Baru"
                     input={newPassword}
                     setInput={setNewPassword}
-                    placeholder="Input your new password"
+                    placeholder="Masukkan password baru"
                     useValidation={true}
                     validationMode="newPassword"
                     centered={true}
@@ -82,10 +82,10 @@ const ForgetPasswordNewPassScreen = ({ route }) => {
                 />
                 <InputForm
                     mode="outlined"
-                    label="Confirm New Password"
+                    label="Konfirmasi password"
                     input={confirmPassword}
                     setInput={setConfirmPassword}
-                    placeholder="Confirm your new password"
+                    placeholder="Konfirmasi password baru"
                     useValidation={false}
                     style={styles.form}
                     centered={true}

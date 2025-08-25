@@ -130,13 +130,15 @@ const styles = StyleSheet.create({
     textItem: {
         flex: 1,
         fontSize: 16,
-        color: 'black'
+        color: 'black',
+        textTransform: "capitalize"
     },
     placeholderStyle: {
         fontSize: 16,
     },
     selectedTextStyle: {
         fontSize: 16,
+        textTransform: "capitalize"
     },
     iconStyle: {
         width: 20,

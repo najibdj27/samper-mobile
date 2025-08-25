@@ -20,7 +20,7 @@ const SignUpScreen = () => {
     return (
         <View style={styles.container}>
             <Text variant='displayMedium' style={{fontWeight: "bold", paddingBottom: "80", color: 'black'}}>
-                Sign Up
+                Pendaftaran
             </Text>
             <Image
                 source={studentImage}
@@ -43,13 +43,13 @@ const SignUpScreen = () => {
                 value={buttonValue}
                 onValueChange={setButtonValue}
                 style= {{
-                    width: scale(200),
+                    width: scale(300),
                     height: verticalScale(50)
                 }}
                 buttons={[
                     {
                         value: 'student',
-                        label: 'Student',
+                        label: 'Mahasiswa',
                         labelStyle: { 
                             "fontSize": scale(18),
                             "fontWeight": "400",
@@ -60,7 +60,7 @@ const SignUpScreen = () => {
                     },
                     {
                         value: 'lecture',
-                        label: 'Lecture',
+                        label: 'Dosen',
                         labelStyle: { 
                             "fontSize": scale(18),
                             "fontWeight": "400",

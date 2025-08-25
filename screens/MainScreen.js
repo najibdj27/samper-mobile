@@ -11,11 +11,11 @@ const MainScreen = ({ route }) => {
 	const [index, setIndex] = React.useState(route.params?.index || 2);
 
 	const [routes] = React.useState([
-		{ key: 'message', title: 'Message', focusedIcon: 'message-text', unfocusedIcon: 'message-text-outline' },
-		{ key: 'schedule', title: 'Schedule', focusedIcon: 'calendar-month', unfocusedIcon: 'calendar-month-outline' },
-		{ key: 'home', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home-outline' },
-		{ key: 'request', title: 'Request', focusedIcon: 'clipboard-text-clock', unfocusedIcon: 'clipboard-text-clock-outline' },
-		{ key: 'notification', title: 'Notification', focusedIcon: 'bell', unfocusedIcon: 'bell-outline' },
+		{ key: 'message', title: 'Pesan', focusedIcon: 'message-text', unfocusedIcon: 'message-text-outline' },
+		{ key: 'schedule', title: 'Jadwal', focusedIcon: 'calendar-month', unfocusedIcon: 'calendar-month-outline' },
+		{ key: 'home', title: 'Beranda', focusedIcon: 'home', unfocusedIcon: 'home-outline' },
+		{ key: 'request', title: 'Permintaan', focusedIcon: 'clipboard-text-clock', unfocusedIcon: 'clipboard-text-clock-outline' },
+		{ key: 'notification', title: 'Notifikasi', focusedIcon: 'bell', unfocusedIcon: 'bell-outline' },
 	]);
 
 	const renderScene = ({route, jumpTo}) => {

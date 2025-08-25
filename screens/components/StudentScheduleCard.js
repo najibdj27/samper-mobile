@@ -37,10 +37,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
             return (
                 <>
                     <Button icon="clock-in" mode="contained" buttonColor="#03913E" textColor="white" disabled={!item.clockIn && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_IN'})}}>
-                        Clock In
+                        Masuk
                     </Button>
                     <Button icon="clock-out" mode="contained" buttonColor="#D8261D" textColor="white" disabled={item.clockIn && !item.clockOut && item.isActive ? false : true } style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, clockIn: item?.clockIn, clockOut: item?.clockOut, action: 'CLOCK_OUT'})}}>
-                        Clock Out
+                        Keluar
                     </Button>
                 </>
             )
@@ -48,10 +48,10 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
             return (
                 <>
                     <Button icon="door-open" mode="contained" buttonColor="#03913E" textColor="white" disabled={!isAbleToOpen} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'OPEN'})}}>
-                        Open 
+                        Buka 
                     </Button>
                     <Button icon="door-closed" mode="contained" buttonColor="#D8261D" textColor="white" disabled={!isAbleToClose} style={styles.bannerButton} onPress={() => {navigation.navigate('ActionSchedule', {scheduleId: item?.id, openTime: item?.openTime, closeTime: item?.closeTime, action: 'CLOSE'})}}>
-                        Close
+                        Tutup
                     </Button>
                 </>
             )
@@ -66,7 +66,7 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                         <Button icon="account" mode="contained" buttonColor="#F8C301" disabled={item.isActive? false : true} contentStyle={styles.bannerLectureContent} style={{width: 180, borderRadius: 8}} labelStyle={[styles.bannerLectureLabel, {color: item.isActive? "black" : "grey"}]} onPress={() => console.log('Pressed')}>
                             {`${item.lecture?.user?.firstName} ${item.lecture?.user?.lastName}`}
                         </Button>
-                        <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey"}]}>
+                        <Text style={[styles.bannerSubjectText, {color: item.isActive? "black" : "grey", textTransform: "capitalize"}]}>
                             {item.subject?.name}
                         </Text>
                         <Text style={[styles.bannerTimeText, {color: item.isActive? "black" : "grey"}]}>
@@ -136,7 +136,7 @@ const StudentScheduleCard = ({item, isEmpty, isLoading, authState}) => {
                     <View style={{alignSelf: "flex-start", paddingTop: 10, width: "100%" }}>
                         <Image source={freeClassImg} style={{height: 150, width: 200, alignSelf: "center"}} />
                         <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold", color: 'black'}}>
-                            No class today!
+                            Tidak ada untuk kelas hari ini!
                         </Text>
                     </View>
                 </Surface>

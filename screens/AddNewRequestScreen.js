@@ -57,14 +57,14 @@ const AddNewRequestScreen = () => {
 	const requestTypeData = useMemo(() => {
 		if (authState.profile?.user.roles.includes('LECTURE')) {
 			return [
-				{ label: 'Reschedule', value: 'RESCHEDULE' }
+				{ label: 'Perubahan Jadwal', value: 'RESCHEDULE' }
 			]
 		} else {
 			if (authState.profile?.isLeader) {
 				return [
-					{ label: 'Reschedule', value: 'RESCHEDULE' },
-					{ label: 'Late Record', value: 'LATE_RECORD' },
-					{ label: 'Permit', value: 'PERMIT' }
+					{ label: 'Perubahan Jadwal', value: 'RESCHEDULE' },
+					{ label: 'Telat Rekam', value: 'LATE_RECORD' },
+					{ label: 'Izin', value: 'PERMIT' }
 				]
 			} else {
 				return [
@@ -190,7 +190,7 @@ const AddNewRequestScreen = () => {
 		await axiosPrivate.post('/request/add', reqBody)
 		.then(() => {
 			console.log(`addRequest: success`)
-			showDialogMessage('success', "RRC202403270001", "Successfully send new request!", () => { navigation.navigate('Main', { index: 3 }) })
+			showDialogMessage('success', "RRC202403270001", "Permintaan berhasil dikirim!", () => { navigation.navigate('Main', { index: 3 }) })
 		}).catch((err) => {
 			console.log(`addRequest: failed`)
 			if (err.response) {
@@ -244,7 +244,7 @@ const AddNewRequestScreen = () => {
 				<TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
 					<ScrollView contentContainerStyle={{ alignItems: "center" }}>
 						<Dropdown
-							label="Request Type"
+							label="Tipe Permintaan"
 							centered
 							style={{
 								width: width * 0.9,
@@ -252,7 +252,7 @@ const AddNewRequestScreen = () => {
 							data={requestTypeData}
 							value={requestTypeForm}
 							setValue={setRequestTypeForm}
-							placeholder="Select request type ..."
+							placeholder="Pilih tipe permintaan"
 							disabled={requestTypeForm}
 						/>
 						{
@@ -267,8 +267,8 @@ const AddNewRequestScreen = () => {
 													onPress={() => showScheduleDate('date')}
 												/>
 											)}
-											label={<Text style={{color: 'black'}}>Select Date</Text>}
-											value={dateForm ? moment(dateForm).format('D MMM YYYY') : dateForm}
+											label={<Text style={{color: 'black'}}>Pilih Tanggal</Text>}
+											value={dateForm ? moment(dateForm).format('D MMMM YYYY') : dateForm}
 											style={{
 												width: width * 0.9,
 												backgroundColor: 'white'
@@ -285,15 +285,15 @@ const AddNewRequestScreen = () => {
 								(
 									<View>
 										<Dropdown
-											label="Schedule"
+											label="Jadwal"
 											style={{
 												width: width * 0.9,
-												alignSelf: "center"
+												alignSelf: "center",
 											}}
 											data={schedulesData}
 											value={scheduleForm}
 											setValue={setScheduleForm}
-											placeholder="Select schedule ..."
+											placeholder="Pilih jadwal"
 											disabled={scheduleForm}
 										/>
 										{
@@ -301,14 +301,14 @@ const AddNewRequestScreen = () => {
 												(
 													<View>
 														<Text style={styles.label}>
-															Current schedule
+															Jadwal saat ini
 														</Text>
 														<View style={{ flexDirection: 'row' }}>
 															<TextInput
 																left={(
 																	<TextInput.Icon icon="calendar" color='black'></TextInput.Icon>
 																)}
-																label={<Text style={{color: 'black'}}>Date</Text>}
+																label={<Text style={{color: 'black'}}>Tanggal</Text>}
 																value={moment(scheduleData.timeStart).format('D MMM YYYY')}
 																style={{
 																	width: width * 0.5,
@@ -318,7 +318,7 @@ const AddNewRequestScreen = () => {
 																disabled
 															/>
 															<TextInput
-																label={<Text style={{color: 'black'}}>Start</Text>}
+																label={<Text style={{color: 'black'}}>Mulai</Text>}
 																value={moment(scheduleData.timeStart).format('HH:mm')}
 																style={{
 																	width: width * 0.2,
@@ -328,7 +328,7 @@ const AddNewRequestScreen = () => {
 																disabled
 															/>
 															<TextInput
-																label={<Text style={{color: 'black'}}>End</Text>}
+																label={<Text style={{color: 'black'}}>Berakhir</Text>}
 																value={moment(scheduleData.timeEnd).format('HH:mm')}
 																style={{
 																	width: width * 0.2,
@@ -339,7 +339,7 @@ const AddNewRequestScreen = () => {
 															/>
 														</View>
 														<Text style={styles.label}>
-															Reschedule to
+															Berubah ke
 														</Text>
 														<View style={{ justifyContent: "center", flexDirection: "row-reverse" }}>
 															<TextInput
@@ -350,7 +350,7 @@ const AddNewRequestScreen = () => {
 																		color='black'
 																	/>
 																)}
-																label={<Text style={{color: 'black'}}>Date</Text>}
+																label={<Text style={{color: 'black'}}>Tanggal</Text>}
 																value={additionalDataForm.timeStart ? moment(new Date(additionalDataForm.timeStart)).format('D MMM YYYY') : null}
 																style={{
 																	width: width * 0.9,
@@ -370,7 +370,7 @@ const AddNewRequestScreen = () => {
 																			color='black'
 																		/>
 																	)}
-																	label={<Text style={{color: 'black'}}>Start</Text>}
+																	label={<Text style={{color: 'black'}}>Mulai</Text>}
 																	value={additionalDataForm.timeStart ? moment(new Date(additionalDataForm.timeStart)).format('HH:mm') : null}
 																	style={{
 																		width: width * 0.45,
@@ -388,7 +388,7 @@ const AddNewRequestScreen = () => {
 																			color='black'
 																		/>
 																	)}
-																	label={<Text style={{color: 'black'}}>End</Text>}
+																	label={<Text style={{color: 'black'}}>Berakhir</Text>}
 																	value={additionalDataForm.timeEnd ? moment(new Date(additionalDataForm.timeEnd)).format('HH:mm') : null}
 																	style={{
 																		width: width * 0.45,
@@ -404,7 +404,7 @@ const AddNewRequestScreen = () => {
 										}
 										<InputForm
 											mode="flat"
-											label="Reason"
+											label="Alasan"
 											input={reasonForm}
 											setInput={setReasonForm}
 											placeholder="Type your reason ..."

@@ -108,6 +108,19 @@ const RequestDetailScreen = ({ route }) => {
         }
     }
 
+    const requestTittle = useMemo(() => {
+        switch (requestDetail.type) {
+            case 'RESCHEDULE':
+                    return 'Perubahan Jadwal'
+            case 'PERMIT':
+                    return 'Izin'
+            case 'LATE_RECORD':
+                    return 'Telat Rekam'
+            default:
+                return
+        }
+    }, [requestDetail])
+
     return (
         <View style={{ flex: 1, backgroundColor: "#ffffff", paddingVertical: 20 }}>
             <ScrollView contentContainerStyle={styles.container}>
@@ -116,19 +129,18 @@ const RequestDetailScreen = ({ route }) => {
                         icon={statusType(requestDetail.type)}
                         size={40}
                         style={styles.ticketIcon}
-                        color='black'
                     />
                     <Text variant="headlineMedium" style={styles.ticketTittle}>
-                        {requestDetail.type?.replace('_', ' ')} REQUEST
+                        {requestTittle}
                     </Text>
                 </View>
                 <Divider style={{ marginTop: 10 }} />
                 <View style={styles.ticketContent}>
                     <TextInput
                         left={(
-                            <TextInput.Icon icon="file-upload-outline" color='black' />
+                            <TextInput.Icon icon="file-upload-outline"/>
                         )}
-                        label={<Text style={{ color: 'black' }}>From</Text>}
+                        label={<Text style={{ fontWeight: "bold" }}>Pengirim</Text>}
                         value={`${requestDetail.sender?.firstName} ${requestDetail.sender?.lastName}`}
                         style={{
                             width: width * 0.8,
@@ -139,15 +151,13 @@ const RequestDetailScreen = ({ route }) => {
                         }}
                         allowFontScaling
                         maxFontSizeMultiplier={1}
-                        textColor='black'
-                        underlineColor='black'
                         editable={false}
                     />
                     <TextInput
                         left={(
                             <TextInput.Icon icon="file-download-outline" color='black' />
                         )}
-                        label={<Text style={{ color: 'black' }}>To</Text>}
+                        label={<Text style={{ fontWeight: "bold" }}>Penerima</Text>}
                         value={`${requestDetail.receiver?.firstName} ${requestDetail.receiver?.lastName}`}
                         style={{
                             width: width * 0.8,
@@ -158,15 +168,13 @@ const RequestDetailScreen = ({ route }) => {
                         }}
                         allowFontScaling
                         maxFontSizeMultiplier={1}
-                        textColor='black'
-                        underlineColor='black'
                         editable={false}
                     />
                     <TextInput
                         left={(
                             <TextInput.Icon icon="file-question-outline" color='black' />
                         )}
-                        label={<Text style={{ color: 'black' }}>Reason</Text>}
+                        label={<Text style={{ fontWeight: "bold" }}>Alasan</Text>}
                         value={`${requestDetail.reason}`}
                         style={{
                             width: width * 0.8,
@@ -174,15 +182,13 @@ const RequestDetailScreen = ({ route }) => {
                         }}
                         allowFontScaling
                         maxFontSizeMultiplier={1}
-                        textColor='black'
-                        underlineColor='black'
                         editable={false}
                     />
                     <TextInput
                         left={(
                             <TextInput.Icon icon="calendar" color='black' />
                         )}
-                        label={<Text style={{ color: 'black' }}>Request Time</Text>}
+                        label={<Text style={{ fontWeight: "bold" }}>Waktu Permintaan</Text>}
                         value={moment(requestDetail.requestTime).format('D MMM YYYY | HH:mm')}
                         style={{
                             width: width * 0.8,
@@ -190,15 +196,13 @@ const RequestDetailScreen = ({ route }) => {
                         }}
                         allowFontScaling
                         maxFontSizeMultiplier={1}
-                        textColor='black'
-                        underlineColor='black'
                         editable={false}
                     />
                     <TextInput
                         left={(
                             <TextInput.Icon icon="list-status" color='black' />
                         )}
-                        label={<Text style={{ color: 'black' }}>Status</Text>}
+                        label={<Text style={{ fontWeight: "bold" }}>Status</Text>}
                         value={requestDetail.status}
                         style={{
                             width: width * 0.8,
@@ -206,28 +210,27 @@ const RequestDetailScreen = ({ route }) => {
                         }}
                         allowFontScaling
                         maxFontSizeMultiplier={1}
-                        textColor='black'
-                        underlineColor='black'
                         editable={false}
                     />
                     <View style={styles.ticketContentGroup}>
                         <Text variant="labelLarge" style={{ fontWeight: "bold", color: 'black' }}>
-                            Schedule
+                            Jadwal
                         </Text>
                         <TextInput
                             left={(
                                 <TextInput.Icon icon="calendar-multiple" color='black' />
                             )}
-                            label={<Text style={{ color: 'black' }}>Subject</Text>}
-                            value={`${requestDetail.schedule?.subject.name} Pertemuan ${requestDetail.schedule?.meetingOrder}`}
+                            label={<Text style={{ fontWeight: "bold" }}>Mata Kuliah</Text>}
+                            value={`${requestDetail.schedule?.subject.name} | Pertemuan ${requestDetail.schedule?.meetingOrder}`}
                             style={{
                                 width: width * 0.8,
-                                backgroundColor: 'white'
+                                backgroundColor: 'white',
+                            }}
+                            contentStyle= {{
+                                textTransform: "capitalize"
                             }}
                             allowFontScaling
                             maxFontSizeMultiplier={1}
-                            textColor='black'
-                            underlineColor='black'
                             editable={false}
                         />
                         <View style={{ flexDirection: 'row' }}>
@@ -235,7 +238,7 @@ const RequestDetailScreen = ({ route }) => {
                                 left={(
                                     <TextInput.Icon icon="calendar-month" color='black' />
                                 )}
-                                label={<Text style={{ color: 'black' }}>Date</Text>}
+                                label={<Text style={{ fontWeight: "bold" }}>Tanggal</Text>}
                                 value={moment(requestDetail.schedule?.timeStart).format('D MMM YYYY')}
                                 style={{
                                     width: width * 0.4,
@@ -251,7 +254,7 @@ const RequestDetailScreen = ({ route }) => {
                                 left={(
                                     <TextInput.Icon icon="clock-outline" color='black' />
                                 )}
-                                label={<Text style={{ color: 'black' }}>Time</Text>}
+                                label={<Text style={{ fontWeight: "bold" }}>Waktu</Text>}
                                 value={`${moment(requestDetail.schedule?.timeStart).format('HH:mm')} - ${moment(requestDetail.schedule?.timeEnd).format('HH:mm')}`}
                                 style={{
                                     width: width * 0.4,
@@ -259,8 +262,6 @@ const RequestDetailScreen = ({ route }) => {
                                 }}
                                 allowFontScaling
                                 maxFontSizeMultiplier={1}
-                                textColor='black'
-                                underlineColor='black'
                                 editable={false}
                             />
                         </View>
@@ -268,7 +269,7 @@ const RequestDetailScreen = ({ route }) => {
                             left={(
                                 <TextInput.Icon icon="google-classroom" color='black' />
                             )}
-                            label={<Text style={{ color: 'black' }}>Class</Text>}
+                            label={<Text style={{ fontWeight: "bold" }}>Kelas</Text>}
                             value={`${requestDetail.schedule?.kelas.name}`}
                             style={{
                                 width: width * 0.8,
@@ -276,21 +277,19 @@ const RequestDetailScreen = ({ route }) => {
                             }}
                             allowFontScaling
                             maxFontSizeMultiplier={1}
-                            textColor='black'
-                            underlineColor='black'
                             editable={false}
                         />
                     </View>
                     <View style={styles.ticketContentGroup}>
                         <Text variant="labelLarge" style={{ fontWeight: "bold", color: 'black' }}>
-                            Request reschedule to
+                            Berubah Ke
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
                             <TextInput
                                 left={(
                                     <TextInput.Icon icon="calendar-month" color='black' />
                                 )}
-                                label={<Text style={{ color: 'black' }}>Date</Text>}
+                                label={<Text style={{ fontWeight: "bold" }}>Tanggal</Text>}
                                 value={moment(requestDetail.requestData?.timeStart).format('D MMM YYYY')}
                                 style={{
                                     width: width * 0.4,
@@ -298,15 +297,13 @@ const RequestDetailScreen = ({ route }) => {
                                 }}
                                 allowFontScaling
                                 maxFontSizeMultiplier={1}
-                                textColor='black'
-                                underlineColor='black'
                                 editable={false}
                             />
                             <TextInput
                                 left={(
                                     <TextInput.Icon icon="clock-outline" color='black' />
                                 )}
-                                label={<Text style={{ color: 'black' }}>Time</Text>}
+                                label={<Text style={{ fontWeight: "bold" }}>Waktu</Text>}
                                 value={`${moment(requestDetail.requestData?.timeStart).format('HH:mm')} - ${moment(requestDetail.requestData?.timeEnd).format('HH:mm')}`}
                                 style={{
                                     width: width * 0.4,
@@ -314,8 +311,6 @@ const RequestDetailScreen = ({ route }) => {
                                 }}
                                 allowFontScaling
                                 maxFontSizeMultiplier={1}
-                                textColor='black'
-                                underlineColor='black'
                                 editable={false}
                             />
                         </View>
@@ -333,12 +328,12 @@ const RequestDetailScreen = ({ route }) => {
                 actions={[
                     {
                         icon: 'note-check',
-                        label: 'Approve',
+                        label: 'Terima',
                         onPress: () => handleApprove()
                     },
                     {
                         icon: 'note-remove',
-                        label: 'Reject',
+                        label: 'Tolak',
                         onPress: () => handleReject()
                     },
                 ]}

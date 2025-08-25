@@ -110,12 +110,12 @@ const RequestScreen = () => {
 
     const showMode = (currentMode) => {
         DateTimePickerAndroid.open({
-          value: date,
-          onChange,
-          maximumDate: new Date(),
-          mode: currentMode,
-          is24Hour: true,
-          accentColor: '#D8261D',
+            value: date,
+            onChange,
+            maximumDate: new Date(),
+            mode: currentMode,
+            is24Hour: true,
+            accentColor: '#D8261D',
         });
     };
 
@@ -222,10 +222,10 @@ const RequestScreen = () => {
     return (
         <View style={styles.container}>
             <View style={{backgroundColor: '#D8261D',  paddingTop: Platform.OS === 'android'? StatusBar.currentHeight : 0, width: '100%'}} />
-            <Tab keys={["Sent", "Received"]} element={[requestSent, requestReceived]}  />
+            <Tab keys={["Dikirim", "Diterima"]} element={[requestSent, requestReceived]}  />
             <AnimatedFAB
                 icon="plus"
-                label='New Request'
+                label='Permintaan Baru'
                 extended={isExtended}
                 style={styles.fab}
                 color='#fff'

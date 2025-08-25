@@ -117,7 +117,7 @@ const SignUpFormScreen = ({ route }) => {
                     <ModalPicker
                         ref={inputRefs.class}
                         centered
-                        label="Class"
+                        label="Kelas"
                         placeholder='Select your class here'
                         input={formData?.class?.title}
                         mode='outlined'
@@ -296,14 +296,14 @@ const SignUpFormScreen = ({ route }) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
             style={styles.container}
         >
-            <Text variant='displayMedium' style={{fontWeight: "bold", marginVertical: 20, color: "black"}}>
-                Sign Up {route.params?.type === 'student'? 'Student' : 'Lecture'}
+            <Text variant='displayMedium' style={{fontWeight: "bold", marginVertical: 20, color: "black", textAlign: "center"}}>
+                Pendaftaran {route.params?.type === 'student'? 'Mahasiswa' : 'Dosen'}
             </Text>
             <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingVertical: 20}}>
                 <InputForm
                     ref={inputRefs.firstName}
                     centered
-                    label="First Name"
+                    label="Nama Depan"
                     placeholder='Input your first name here'
                     input={formData?.firstName}
                     mode='outlined'
@@ -320,7 +320,7 @@ const SignUpFormScreen = ({ route }) => {
                 <InputForm
                     ref={inputRefs.lastName}
                     centered
-                    label="Last Name"
+                    label="Nama Belakang"
                     placeholder='Input your last name here'
                     input={formData?.lastName}
                     mode='outlined'
@@ -345,7 +345,7 @@ const SignUpFormScreen = ({ route }) => {
                         />
                     )}
                     mode='outlined'
-                    label="Date of Birth"
+                    label="Tanggal Lahir"
                     input={formData?.dateOfBirth ? moment(new Date(formData?.dateOfBirth)).format('DD MMMM yyyy') : null}
                     style={styles.form}
                     isRequired={true}
@@ -373,7 +373,7 @@ const SignUpFormScreen = ({ route }) => {
                 <InputForm
                     ref={inputRefs.email}
                     centered
-                    label="Email Address"
+                    label="Alamat Email"
                     placeholder='Input your email address here'
                     input={formData?.email}
                     mode='outlined'
@@ -390,7 +390,7 @@ const SignUpFormScreen = ({ route }) => {
                 <View style={{justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
                     <InputForm
                         centered
-                        label="Code"
+                        label="Kode"
                         input="+62"
                         mode='outlined'
                         editable={false}
@@ -400,7 +400,7 @@ const SignUpFormScreen = ({ route }) => {
                     <InputForm
                         ref={inputRefs.phoneNumber}
                         centered
-                        label="Phone Number"
+                        label="Nomor HP"
                         placeholder='Input your phone number here'
                         input={formData?.phoneNumber}
                         mode='outlined'

@@ -151,7 +151,7 @@ function HomeScreen() {
             return (
                 <>
                     <Text style={styles.sectionTitle}>
-                        Tools
+                        Alat
                     </Text>
                     <FlatList 
                         horizontal
@@ -196,7 +196,7 @@ function HomeScreen() {
             <View style={styles.welcomeView}>
                 <View style={{flexDirection: 'column'}}>
                     <Text style={styles.welcomeText}>
-                        Welcome back, 
+                        Selamat datang, 
                     </Text>
                     <Text style={styles.welcomeNameText}>
                         {`${authState.profile?.user?.firstName} ${authState.profile?.user?.lastName}!`} 
@@ -216,7 +216,7 @@ function HomeScreen() {
             </View>
             {/* Today's Schedule Section */}
             <Text style={styles.sectionTitle}>
-                Today's Schedule
+                Jadwal Hari Ini
             </Text>
             <FlatList 
                 data={scheduleData.data}
@@ -253,7 +253,7 @@ function HomeScreen() {
             }
             {/* History Section */}
             <Text style={styles.sectionTitle}>
-                History
+                Riwayat
             </Text>
             <FlatList 
                 keyExtractor={(item) => item?.id}

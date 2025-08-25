@@ -70,7 +70,7 @@ const History = ({item, isEmpty, isLoading, type}) => {
             <View style={{height: 180, justifyContent: 'center', alignItems: "center", backgroundColor: "white", borderRadius: 30}}>
                 <Image source={noHistoryImg} style={{height: 100, width: 240, alignSelf: "center"}} />
                 <Text style={{alignSelf: "center", fontSize: 18, fontWeight: "bold", color: 'black'}}>
-                    No history yet!
+                    Belum ada riwayat!
                 </Text>
             </View>
         )
