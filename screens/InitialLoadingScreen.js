@@ -11,8 +11,6 @@ import AnonymousStack from './navigators/AnonymousStack';
 import Modal from 'react-native-modal';
 import { Text } from 'react-native-paper';
 import usePrivateCall from './hooks/usePrivateCall';
- './reac'
-
 const spalshImg = require('../assets/splash.png')
 const maintenanceImg = require('../assets/phone-maintenance-concept-illustration.png')
 const {width, height} = Dimensions.get('window')
